@@ -66,9 +66,11 @@ ALLOCATE(TOTBMASS(NVIRTA))
 ALLOCATE(INVTOTBMASS(NVIRTA))
 ALLOCATE(VITYPE(NVIRTA))
 allocate(init_numbcomp(nvirta))
+ALLOCATE(masscoeff(NVIRTA,NBEAD))
 
 TOTBMASS = 0
 INVTOTBMASS = 0
+masscoeff=0
 
 DO I=1,NB
 	READ (10, '(A80)') LINE
@@ -91,7 +93,7 @@ READ(10,*)
 
  ! VS Defined as one atom
 
-ALLOCATE(INDX_ATM(NVIRTA,NATOMS))
+ALLOCATE(INDX_ATM(NVIRTA,NBEAD))
 ALLOCATE(virtual_center(NATOMS))
 INDX_ATM = 0
 virtual_center = 0
@@ -103,30 +105,30 @@ virtual_center = 0
 
 READ(10,*) ENDCHECK
 
-	DO I=1,NVIRTA
-		DO J = 1,NB	
-			IF(VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
-                init_numbcomp(i) = NUMATOM(J)
-				DO H = 1,NUMATOM(J)
-					READ(10,*,IOSTAT=iost)INDX_ATM(I,H)
-!	If iost NE 0 means that IBIsCO reaches the end of file "virtual" but it is trying to read again, 
-!	so there is a mismatch beetwen the total number of atoms in virtual beads and the number of index 
-!	in this file  
-					IF(iost .NE. 0) THEN
-		WRITE(*,*)
-		WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(*,*) '****                    Check virtual file                             ****'
-		WRITE(*,*)
-		WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(1,*) '****                    Check virtual file                             ****'
-		WRITE(1,*)		
-		ISTOP = 1
-		RETURN
-		END IF
-				END DO
-			END IF
-		END DO
-	END DO
+DO I=1,NVIRTA
+   DO J = 1,NB	
+      IF(VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
+         init_numbcomp(i) = NUMATOM(J)
+         DO H = 1,NUMATOM(J)
+            READ(10,*,IOSTAT=iost)INDX_ATM(I,H)
+            !	If iost NE 0 means that IBIsCO reaches the end of file "virtual" but it is trying to read again, 
+            !	so there is a mismatch beetwen the total number of atoms in virtual beads and the number of index 
+            !	in this file  
+            IF(iost .NE. 0) THEN
+               WRITE(*,*)
+               WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+               WRITE(*,*) '****                    Check virtual file                             ****'
+               WRITE(*,*)
+               WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+               WRITE(1,*) '****                    Check virtual file                             ****'
+               WRITE(1,*)		
+               ISTOP = 1
+               RETURN
+            END IF
+         END DO
+      END IF
+   END DO
+END DO
 
 !	After the reading if another reading give iost .EQ. 0 means that there are other index in the file 
 !	"virtual" not readed so there is a mismatch beetwen the total number of atoms in virtual beads and 

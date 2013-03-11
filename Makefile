@@ -1,4 +1,4 @@
-PROG = h-IBIsCO-hack
+PROG = IBIsCO-openmp
 
 SRCS =    moduleparsing.f90 module_var.f90  module_RNEMD.f90  module_PAIR.f90   \
           main.f90 LOOP.f90 LOOPDPD.f90  WRITETP.f90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \
@@ -41,12 +41,14 @@ OBJS =    moduleparsing.o module_var.o  module_RNEMD.o \
           analysis.o SHAKE.o HFPBOND.o HFPANGLE.o HFPTOR.o HAVERAGE.o
 
 #F90 = pgf90
-F90 = gfortran
+#F90 = gfortran
+F90 = ifort
 # ************ Profiling with gfortran *************
-LDFLAGS= -pg
-F90FLAGS  = -g -pg
+#LDFLAGS= -pg
+#F90FLAGS  = -g -pg
 #*****************************************
-#F90 = ifort
+F90FLAGS = -openmp -openmp-report1 -O2
+LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
 #F90FLAGS = -g -pedantic -fbounds-check
 #F90FLAGS = -g -Wall -Wextra -Wconversion

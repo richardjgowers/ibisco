@@ -115,14 +115,17 @@
             ALLOCATE (VCELL(NVIRTA))
             ALLOCATE (VLCLIST(NVIRTA))
         else
-            DO I=1,NVIRTA
-                SUMTOTBMASS = 0.
-			    DO H = 1,init_numbcomp(i)
-                    SUMTOTBMASS = SUMTOTBMASS+MASS(ITYPE(INDX_ATM(I,H)))
-                END DO
-	            TOTBMASS(I) = SUMTOTBMASS
-        	    INVTOTBMASS(I) = 1/TOTBMASS(I)
-            END DO
+           DO I=1,NVIRTA
+              SUMTOTBMASS = 0.
+              DO H = 1,init_numbcomp(i)
+                 SUMTOTBMASS = SUMTOTBMASS+MASS(ITYPE(INDX_ATM(I,H)))
+              END DO
+              TOTBMASS(I) = SUMTOTBMASS
+              INVTOTBMASS(I) = 1/TOTBMASS(I)
+              do H=1,init_numbcomp(I)
+                 masscoeff(I,H) = MASS(ITYPE(INDX_ATM(I,H)))*INVTOTBMASS(I)
+              end do
+           END DO
         end if
       END IF
 
