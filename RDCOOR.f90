@@ -139,7 +139,7 @@ ALLOCATE(virtNmol(nmol))
             num_indx = num_indx+natm(jj)
             count_VS = 1
         end if
-        if(l .eq. nvirta)virtNmol(nmol)=count_VS
+        if(i .eq. nvirta)virtNmol(nmol)=count_VS
 	END DO 
 end if
 
