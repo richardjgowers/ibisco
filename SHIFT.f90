@@ -27,10 +27,10 @@
 ! INT(funzione parte intera) is an intrinsic function that reads a real, cuts the decimal 
 ! part of the number leaving only its integer part (the final format is real)
 	
- t1 = omp_get_wtime()
+! t1 = omp_get_wtime()
 !$OMP PARALLEL DEFAULT(SHARED)&
 !$OMP private(SPX,SPY,SPZ)
-!$OMP DO SCHEDULE(STATIC,1)
+!$OMP DO SCHEDULE(STATIC,1) NUM_THREADS(7)
 DO I = 1, NATOMS
 
 		IF ((SX(I)> BOXX2).OR.(SX(I) < -BOXX2).OR.(SY(I)> BOXY2) &
@@ -58,10 +58,10 @@ DO I = 1, NATOMS
 	END DO
 !$OMP END DO
   !$OMP END PARALLEL
-  t2=omp_get_wtime()
-  tick=omp_get_wtick()
+!  t2=omp_get_wtime()
+!  tick=omp_get_wtick()
 
-        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
+!        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
 	RETURN
         END
 !	*****************************************************************************************

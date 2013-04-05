@@ -30,8 +30,8 @@
             LCFAC = 1.0D0
       END IF
      
-t1 = omp_get_wtime()
-!$OMP PARALLEL DO  DEFAULT(SHARED) SCHEDULE(GUIDED)&
+!t1 = omp_get_wtime()
+!$OMP PARALLEL DO  DEFAULT(SHARED) SCHEDULE(GUIDED) NUM_THREADS(6) &
 !$OMP& REDUCTION(+: PT11K,PT22K,PT33K,PT12K,PT13K,PT23K)&
 !$OMP& private(CM,VXI,VZI,VYI)
 
@@ -79,10 +79,10 @@ t1 = omp_get_wtime()
 
 100     CONTINUE
 !$OMP END PARALLEL DO
-  t2=omp_get_wtime()
-  tick=omp_get_wtick()
+!  t2=omp_get_wtime()
+!  tick=omp_get_wtick()
 
-      write(4001,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
+!      write(4001,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
 
       PT11 = PT11 + PT11K
       PT22 = PT22 + PT22K 
