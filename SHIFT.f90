@@ -28,9 +28,8 @@
 ! part of the number leaving only its integer part (the final format is real)
 	
 ! t1 = omp_get_wtime()
-!$OMP PARALLEL DEFAULT(SHARED)&
-!$OMP private(SPX,SPY,SPZ)
-!$OMP DO SCHEDULE(STATIC,1) NUM_THREADS(7)
+!$OMP PARALLEL DO SCHEDULE(STATIC,1) NUM_THREADS(7) DEFAULT(SHARED)&
+!$OMP& private(SPX,SPY,SPZ)
 DO I = 1, NATOMS
 
 		IF ((SX(I)> BOXX2).OR.(SX(I) < -BOXX2).OR.(SY(I)> BOXY2) &
@@ -56,8 +55,7 @@ DO I = 1, NATOMS
 
 
 	END DO
-!$OMP END DO
-  !$OMP END PARALLEL
+!$OMP END PARALLEL DO
 !  t2=omp_get_wtime()
 !  tick=omp_get_wtick()
 
