@@ -1,4 +1,4 @@
-PROG = IBIsCO-openmp-tt
+PROG = IBIsCO-openmp-rich
 
 SRCS =    moduleparsing.f90 module_var.f90  module_RNEMD.f90  module_PAIR.f90   \
           main.f90 LOOP.f90 LOOPDPD.f90  WRITETP.f90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \

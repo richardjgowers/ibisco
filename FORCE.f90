@@ -2,16 +2,30 @@
 SUBROUTINE FORCE ( )
 
   USE VAR
+  USE OMP_LIB
 
   IMPLICIT NONE
 
   integer :: I, J, K, M, L 
-  integer :: JBEG, JEND, JNAB, TI, TJ, TIJ, NI
+  integer :: JBEG, JEND, JNAB 
+  INTEGER :: TI, TJ, TK, TL, TIJ, TIJK, TIJKL, NI
   real(kind=rkind) :: RCUTSQ, ALPHA
   real(kind=rkind) :: RXI, RYI, RZI, FXI, FYI, FZI
-  real(kind=rkind) :: RXIJ, RYIJ, RZIJ, RIJSQ, FXIJ, FYIJ, FZIJ
-  real(kind=rkind) :: VIJ, FIJ, RIJ
-
+  real(kind=rkind) :: RXIJ, RYIJ, RZIJ, RIJSQ, RIJ, FXIJ, FYIJ, FZIJ
+  real(kind=rkind) :: VIJ, FIJ
+  REAL(KIND=RKIND), dimension(NATOMS) :: FXL,FYL,FZL !Temp openmp variables
+!FPANGLE
+  REAL(KIND=RKIND) :: W, CT
+  REAL(KIND=RKIND) :: RXKJ, RYKJ, RZKJ, RKJ, THETA
+  REAL(KIND=RKIND) :: RXM,RYM,RZM,RM,RXN,RYN,RZN,RN,RXS,RYS,RZS
+  REAL(KIND=RKIND) :: FIJK, VIJK
+  REAL(KIND=RKIND) :: FXIJK, FYIJK, FZIJK
+!FPTOR
+  REAL(KIND=RKIND) :: RXKL,RYKL,RZKL,RKL
+  REAL(KIND=RKIND) :: RXJK,RYJK,RZJK,RJK
+  REAL(KIND=RKIND) :: COSM,SINM,COTANM,COSN,SINN,COTANN,COST,SIGNT,PHI
+  REAL(KIND=RKIND) :: FIJKL,VIJKL
+  REAL(KIND=RKIND) :: FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
   !      *******************************************************************
 
   RCUTSQ = RCUT*RCUT
@@ -22,8 +36,44 @@ SUBROUTINE FORCE ( )
   VTOR   = 0.0D0
   VOOP   = 0.0D0
 
+!$OMP PARALLEL DEFAULT(NONE)&
+!$OMP& SHARED(NATOMS,POINT,RX,RY,RZ,ITYPE,LIST,INBONDT)&
+!$OMP& SHARED(BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
+!$OMP& SHARED(RCUTSQ,BINNB,RNBOND,NBOND_FORCE,NBOND_POT)&
+!$OMP& SHARED(SX,SY,SZ,timestepcheck,RCUT)&
+!$OMP& SHARED(NBONDS,JBOND,typeBond,IBONDT)&
+!$OMP& SHARED(NDATB,BINB,RBOND,BOND_FORCE,BOND_POT)&
+!$OMP& SHARED(NIJK,JANGLEIJK,KANGLEIJK,IANGT)&
+!$OMP& SHARED(BINA,ANGLE,BEND_FORCE,BEND_POT,R2D)&
+!$OMP& SHARED(NIJKL,JTORIJKL,KTORIJKL,LTORIJKL,ITORT)&
+!$OMP& SHARED(BINT,NDATT,TOR_FORCE,TOR_POT,ANGLE_TOR)&
+!$OMP& PRIVATE(I,J,K,L,TI,TJ,TK,TL,M,TIJ,TIJK,TIJKL)&
+!$OMP& PRIVATE(JBEG,JEND,JNAB,RXI,RYI,RZI,FXI,FYI,FZI)&
+!$OMP& PRIVATE(RXIJ,RYIJ,RZIJ,RIJSQ,RIJ)&
+!$OMP& PRIVATE(NI,ALPHA,CT,THETA)&
+!$OMP& PRIVATE(FIJ,VIJ,FXIJ,FYIJ,FZIJ,FXL,FYL,FZL)&
+!$OMP& PRIVATE(RXKJ,RYKJ,RZKJ,RKJ)&
+!$OMP& PRIVATE(RXJK,RYJK,RZJK,RJK)&
+!$OMP& PRIVATE(RXKL,RYKL,RZKL,RKL)&
+!$OMP& PRIVATE(RXM,RYM,RZM,RM,RXN,RYN,RZN,RN,RXS,RYS,RZS)&
+!$OMP& PRIVATE(FIJK,VIJK,FXIJK,FYIJK,FZIJK)&
+!$OMP& PRIVATE(COSM,SINM,COTANM,COSN,SINN,COTANN,COST,SIGNT,PHI)&
+!$OMP& PRIVATE(FIJKL,VIJKL)&
+!$OMP& PRIVATE(FX1,FY1,FZ1,FX4,FY4,FZ4,FX12,FY12,FZ12)&
+!$OMP& REDUCTION(+:VNBOND,VBOND,VANGLE,VTOR)&
+!$OMP& REDUCTION(+:PT11,PT22,PT33,PT12,PT13,PT23)&
+!$OMP& REDUCTION(+:FX,FY,FZ,FXNB,FYNB,FZNB)
+
+
+DO I=1,NATOMS
+   FXL(I) = 0.0
+   FYL(I) = 0.0
+   FZL(I) = 0.0
+END DO
+
   !       ** USE THE LIST TO FIND THE NEIGHBOURS **
-  DO 200 I = 1, NATOMS 
+!$OMP DO SCHEDULE(STATIC,1)
+  DO I = 1, NATOMS !200
 
      JBEG = POINT(I)
      JEND = POINT(I+1) - 1
@@ -35,12 +85,12 @@ SUBROUTINE FORCE ( )
         RXI = RX(I)
         RYI = RY(I)
         RZI = RZ(I)
-        FXI = FX(I)
-        FYI = FY(I)
-        FZI = FZ(I)
+        FXI = 0.0
+        FYI = 0.0
+        FZI = 0.0
         TI = ITYPE(I)
 
-        DO 199 JNAB = JBEG, JEND
+        DO JNAB = JBEG, JEND !199
 
            !		TAKE THE INDEX OF NEIGHBOUR ATOMS
            J = LIST(JNAB)
@@ -82,21 +132,21 @@ SUBROUTINE FORCE ( )
                  FZIJ  = FIJ * RZIJ
 
 
-                 IF (DPDINPUT.EQ.1.and.RIJ.LT.RCUTDPD) THEN
-                    IF (WDPDT.EQ.2) THEN
-                       call FDR(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
-                    ELSEIF (WDPDT.EQ.1) THEN
-                       call FDR_STEP(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
-                    ENDIF
-                 ENDIF
+!                 IF (DPDINPUT.EQ.1.and.RIJ.LT.RCUTDPD) THEN
+!                    IF (WDPDT.EQ.2) THEN
+!                       call FDR(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
+!                    ELSEIF (WDPDT.EQ.1) THEN
+!                       call FDR_STEP(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
+!                    ENDIF
+!                 ENDIF
 
                  FXI   = FXI + FXIJ
                  FYI   = FYI + FYIJ
                  FZI   = FZI + FZIJ
 
-                 FX(J) = FX(J) - FXIJ
-                 FY(J) = FY(J) - FYIJ
-                 FZ(J) = FZ(J) - FZIJ
+                 FXL(J) = FXL(J) - FXIJ
+                 FYL(J) = FYL(J) - FYIJ
+                 FZL(J) = FZL(J) - FZIJ
 
                  !		ADD THE NON-BONDED PART OF PRESSURE
                  PT11 = PT11 + FXIJ * RXIJ
@@ -107,86 +157,112 @@ SUBROUTINE FORCE ( )
                  PT13 = PT13 + FZIJ * RXIJ
                  PT23 = PT23 + FZIJ * RYIJ
                  !***************LOWE ANDERSON***************************************
-                 IF (LAINPUT.EQ.1.AND.RIJ.LT.RCUTDPD) THEN
-                    call LOWEAND (RIJSQ,RXIJ,RYIJ,RZIJ,I,J)
-                 ENDIF
+!                 IF (LAINPUT.EQ.1.AND.RIJ.LT.RCUTDPD) THEN
+!                    call LOWEAND (RIJSQ,RXIJ,RYIJ,RZIJ,I,J)
+!                 ENDIF
                  !***************LOWE ANDERSON***************************************
               END IF   ! endif  IF ( RIJSQ < RCUTSQ )
            END IF     ! endif   IF( TIJ .NE. 0) THEN
-199        CONTINUE
+        END DO !199        CONTINUE
 
-           IF (DPD_BONDED.EQ.1) THEN
-              IF (LAINPUT.EQ.1) THEN
-                 call  LA_ADDITION (I,RXI,RYI,RZI)
-              ELSEIF (DPDINPUT.EQ.1) THEN
-                 IF(WDPDT.EQ.2) THEN
-                    call FDR_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
-                 ELSEIF(WDPDT.EQ.1) THEN
-                    call FDR_STEP_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
-                 ENDIF
-              ENDIF
-           ENDIF
+!        IF (DPD_BONDED.EQ.1) THEN
+!           IF (LAINPUT.EQ.1) THEN
+!              call  LA_ADDITION (I,RXI,RYI,RZI)
+!           ELSEIF (DPDINPUT.EQ.1) THEN
+!              IF(WDPDT.EQ.2) THEN
+!                call FDR_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
+!              ELSEIF(WDPDT.EQ.1) THEN
+!                 call FDR_STEP_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
+!              ENDIF
+!           ENDIF
+!        ENDIF
 
-           FX(I) = FXI
-           FY(I) = FYI
-           FZ(I) = FZI
+        FXL(I) = FXL(I) + FXI
+        FYL(I) = FYL(I) + FYI
+        FZL(I) = FZL(I) + FZI
 
-        ENDIF
-200     CONTINUE
+     ENDIF
+  END DO !200     CONTINUE
+!$OMP END DO
 
-        !	SAVE THE NON-BONDED PART OF FORCE
-	DO I=1, NATOMS
+  !Collate forces from all threads
+DO I=1,NATOMS
+   FX(I) = FX(I) + FXL(I)
+   FY(I) = FY(I) + FYL(I) 
+   FZ(I) = FZ(I) + FZL(I)
+END DO
 
-           FXNB(I) = FX(I)
-           FYNB(I) = FY(I)
-           FZNB(I) = FZ(I)
+!Reset local force counters
+DO I=1,NATOMS
+   FXL(I) = 0.0
+   FYL(I) = 0.0
+   FZL(I) = 0.0
+END DO
 
-	END DO
+  !	SAVE THE NON-BONDED PART OF FORCE
+!$OMP DO SCHEDULE(STATIC,1)
+  DO I=1, NATOMS
+     FXNB(I) = FX(I)
+     FYNB(I) = FY(I)
+     FZNB(I) = FZ(I)
+  END DO
+!$OMP END DO
+
+!$OMP DO
+  DO I = 1, NATOMS
+     RXI = SX(I)
+     RYI = SY(I)
+     RZI = SZ(I)
+     FXI = 0.0
+     FYI = 0.0
+     FZI = 0.0
+     TI = ITYPE(I)
+
+     !	*******************************************************************************************
+     !	*********************CALCULATE THE BONDED FORCE AND POTENTIAL******************************
+!     if(.not. nobond) CALL FPBOND (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+     INCLUDE 'FPBOND.inc'
+     !	*******************************************************************************************
+     !	*************************CALCULATE THE ANGLE FORCE AND POTENTIAL***************************
+!     CALL FPANGLE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+     INCLUDE 'FPANGLE.inc'
+     !	*******************************************************************************************
+     !	**********************CALCULATE THE TORSION FORCE AND POTENTIAL****************************
+!     CALL FPTOR (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+     INCLUDE 'FPTOR.inc'
+     !	*******************************************************************************************
+     !	**********************CALCULATE THE IMPROPER TORSION FORCE AND POTENTIAL********************
+!     CALL FPOUTPLANE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+
+     FXL(I) = FXL(I) + FXI
+     FYL(I) = FYL(I) + FYI
+     FZL(I) = FZL(I) + FZI
+
+  END DO !300        CONTINUE
+!$OMP END DO
+
+!Collate bonded forces
+DO I=1,NATOMS
+   FX(I) = FX(I) + FXL(I) 
+   FY(I) = FY(I) + FYL(I)
+   FZ(I) = FZ(I) + FZL(I)
+END DO
 
 
-        DO 300 I = 1, NATOMS
+!$OMP DO SCHEDULE(STATIC,1)
+  DO I = 1, NATOMS
+     PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
+     PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
+     PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
+     PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
+     PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
+     PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
+  END DO
+!$OMP END DO
 
-           RXI = SX(I)
-           RYI = SY(I)
-           RZI = SZ(I)
-           FXI = FX(I)
-           FYI = FY(I)
-           FZI = FZ(I)
+!$OMP END PARALLEL
 
-           TI = ITYPE(I)
-
-
-           !	*******************************************************************************************
-           !	*********************CALCULATE THE BONDED FORCE AND POTENTIAL******************************
-           if(.not. nobond) CALL FPBOND (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-           !	*******************************************************************************************
-           !	*************************CALCULATE THE ANGLE FORCE AND POTENTIAL***************************
-           CALL FPANGLE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-           !	*******************************************************************************************
-           !	**********************CALCULATE THE TORSION FORCE AND POTENTIAL****************************
-           CALL FPTOR (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-           !	*******************************************************************************************
-           !	**********************CALCULATE THE IMPROPER TORSION FORCE AND POTENTIAL********************
-           CALL FPOUTPLANE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-
-           FX(I) = FXI
-           FY(I) = FYI
-           FZ(I) = FZI
-
-300        CONTINUE
-
-
-           DO I = 1, NATOMS
-              PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
-              PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
-              PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
-              PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
-              PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
-              PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
-           END DO
-
-
-           RETURN
-        END
+  RETURN
+END SUBROUTINE FORCE
 
         !	*********************************************************************************************
