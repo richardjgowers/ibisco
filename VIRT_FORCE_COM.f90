@@ -11,7 +11,7 @@
       REAL(KIND=RKIND) :: RXI, RYI, RZI, FXI, FYI, FZI
       REAL(KIND=RKIND) :: RXIJ, RYIJ, RZIJ, RIJSQ, FXIJ, FYIJ, FZIJ
       REAL(KIND=RKIND) :: VIJ, FIJ, RIJ
-      REAL(KIND=RKIND) :: somma = 0, sommay = 0, sommaz = 0
+!      REAL(KIND=RKIND) :: somma = 0, sommay = 0, sommaz = 0
 
 !***********************************************************************************
 
@@ -51,7 +51,6 @@
               	RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
 
      !        	IF ( RIJSQ < RCUTSQ ) THEN
-!if(i .eq. 1 )write(*,*)i,COMPCOM(J,2),RIJSQ,FCUTB
 			IF (RIJSQ.LT.FCUT) THEN
 	!	IF ( RIJSQ .LE. RCUTSQ ) THEN
 
@@ -123,9 +122,6 @@
 
 
 		END DO
-
-!write(*,*) somma	
-!write(1000,*)
 
 	END IF
 	END IF

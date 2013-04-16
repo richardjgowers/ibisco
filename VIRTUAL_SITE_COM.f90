@@ -40,21 +40,23 @@ NBEAD = 15
 
 OPEN(UNIT=10,FILE=name_file_virt,STATUS='old', IOSTAT=iost)
 
-	IF (iost .NE. 0) THEN
-		WRITE(*,*) '*** FATAL ERROR! File virtual site does not exist ****'
-		WRITE(1,*) '*** FATAL ERROR! File virtual site does not exist ****'
-		ISTOP = 1
-		RETURN
-	END IF
-
-READ(10,*) TEXT_TITLE
-READ(10,*)
-READ(10,*) NVIRTA
-READ(10,'(A80)') LINE
-	CALL PARSE()
-IF (STRNGS(1) == 'bead_type') THEN
-		READ (STRNGS(2),*) NB
+IF (iost .NE. 0) THEN
+   WRITE(*,*) '*** FATAL ERROR! File virtual site does not exist ****'
+   WRITE(1,*) '*** FATAL ERROR! File virtual site does not exist ****'
+   ISTOP = 1
+   RETURN
 END IF
+
+ READ(10,*) TEXT_TITLE
+ READ(10,*)
+ READ(10,*) NVIRTA
+ READ(10,'(A80)') LINE
+ CALL PARSE()
+
+ IF (STRNGS(1) == 'bead_type') THEN
+    READ (STRNGS(2),*) NB
+ END IF
+
 READ(10,*)
 ALLOCATE(virtNmol(nmol))
 ALLOCATE(VIRTRX(NVIRTA))
@@ -72,19 +74,19 @@ TOTBMASS = 0
 INVTOTBMASS = 0
 
 DO I=1,NB
-	READ (10, '(A80)') LINE
-		CALL PARSE ()
-		IF (STRNGS(1) .EQ. 'index') THEN
-						ISTOP = 1
-		WRITE(*,*) '             ******************* FATAL ERROR **********************'
-		WRITE(*,*) '             * Number of bead_types different from Number of Bead *'
-		WRITE(*,*) '             *                Check Virtual File                  *'
-		WRITE(*,*) '             ******************************************************'
-			RETURN 
-		END IF
-	READ (STRNGS(1),*) TYPE_BEAD(I)
-	READ (STRNGS(2),*) NUMATOM(I)
-!	READ(10,*)TYPE_BEAD(I),NUMATOM(I)
+   READ (10, '(A80)') LINE
+   CALL PARSE ()
+   IF (STRNGS(1) .EQ. 'index') THEN
+      ISTOP = 1
+      WRITE(*,*) '             ******************* FATAL ERROR **********************'
+      WRITE(*,*) '             * Number of bead_types different from Number of Bead *'
+      WRITE(*,*) '             *                Check Virtual File                  *'
+      WRITE(*,*) '             ******************************************************'
+      RETURN 
+   END IF
+   READ (STRNGS(1),*) TYPE_BEAD(I)
+   READ (STRNGS(2),*) NUMATOM(I)
+   !	READ(10,*)TYPE_BEAD(I),NUMATOM(I)
 END DO
 
 READ(10,*)
@@ -99,49 +101,49 @@ ALLOCATE(COMPCOM(NVIRTA,NBEAD))
  jj=1
  num_indx = natm(1)
 
-DO L=1,NVIRTA
+ DO L=1,NVIRTA
 
-SUMTOTBMASS = 0
+    SUMTOTBMASS = 0
 
-READ(10,*,IOSTAT=iost) COMPCOM(L,1), VITYPE(L)
-	IF (iost .NE. 0) THEN
-		ISTOP = 1
-		WRITE(*,*)
-		WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(*,*) '****                    Check virtual file                             ****'
-		WRITE(*,*)
-		WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(1,*) '****                    Check virtual file                             ****'
-		WRITE(1,*)		
-		RETURN
-	END IF
-	if(type_label(COMPCOM(L,1)) .ne. 1) then
-		WRITE(*,*)
-		WRITE(*,*) '**** FATAL ERROR! Molecule nr',COMPCOM(L,1), ' is a bead!!! ****'
-		WRITE(*,*)
-		STOP
-	end if
-  
-! Find how many VS we have for each molecule
+    READ(10,*,IOSTAT=iost) COMPCOM(L,1), VITYPE(L)
+    IF (iost .NE. 0) THEN
+       ISTOP = 1
+       WRITE(*,*)
+       WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+       WRITE(*,*) '****                    Check virtual file                             ****'
+       WRITE(*,*)
+       WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+       WRITE(1,*) '****                    Check virtual file                             ****'
+       WRITE(1,*)		
+       RETURN
+    END IF
+    if(type_label(COMPCOM(L,1)) .ne. 1) then
+       WRITE(*,*)
+       WRITE(*,*) '**** FATAL ERROR! Molecule nr',COMPCOM(L,1), ' is a bead!!! ****'
+       WRITE(*,*)
+       STOP
+    end if
+
+    ! Find how many VS we have for each molecule
     if(COMPCOM(L,1) .lt. num_indx)then
-        count_VS = count_VS+1
+       count_VS = count_VS+1
     else
-        virtNmol(jj)=count_VS
-        jj=jj+1
-        num_indx = num_indx+natm(jj)
-        count_VS = 1
+       virtNmol(jj)=count_VS
+       jj=jj+1
+       num_indx = num_indx+natm(jj)
+       count_VS = 1
     end if
     if(l .eq. nvirta)virtNmol(nmol)=count_VS
-!--------------------------------------------
+    !--------------------------------------------
 
 
-	DO I = 1,NB
-		IF (VITYPE(L) .EQ. TYPE_BEAD(I)) THEN
-            init_numbcomp(l) = NUMATOM(I)
-			DO J=2,NUMATOM(I)
-				READ(10,*,IOSTAT=iost) COMPCOM(L,J)
-					IF (iost .NE. 0) THEN
-						ISTOP = 1
+    DO I = 1,NB
+       IF (VITYPE(L) .EQ. TYPE_BEAD(I)) THEN
+          init_numbcomp(l) = NUMATOM(I)
+          DO J=2,NUMATOM(I)
+             READ(10,*,IOSTAT=iost) COMPCOM(L,J)
+             IF (iost .NE. 0) THEN
+                ISTOP = 1
 		WRITE(*,*)
 		WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
 		WRITE(*,*) '****                    Check virtual file                             ****'
@@ -149,88 +151,92 @@ READ(10,*,IOSTAT=iost) COMPCOM(L,1), VITYPE(L)
 		WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
 		WRITE(1,*) '****                    Check virtual file                             ****'
 		WRITE(1,*)		
-						RETURN
-					END IF
-	if(type_label(COMPCOM(L,J)) .ne. 1) then
+                RETURN
+             END IF
+             if(type_label(COMPCOM(L,J)) .ne. 1) then
 		WRITE(*,*)
 		WRITE(*,*) '**** FATAL ERROR! Molecule nr',COMPCOM(L,J), ' is a bead!!! ****'
 		WRITE(*,*)
 		STOP
-	end if   
-			END DO
-		END IF
-	END DO
-END DO
+             end if
+          END DO
+       END IF
+    END DO
+ END DO
 
 READ(10,*,IOSTAT=iost)
-	IF (iost .EQ. 0) THEN
-		ISTOP = 1
-		WRITE(*,*)
-		WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(*,*) '****                    Check virtual file                             ****'
-		WRITE(*,*)
-		WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
-		WRITE(1,*) '****                    Check virtual file                             ****'
-		WRITE(1,*)		
-		RETURN
-	END IF  
+IF (iost .EQ. 0) THEN
+   ISTOP = 1
+   WRITE(*,*)
+   WRITE(*,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+   WRITE(*,*) '****                    Check virtual file                             ****'
+   WRITE(*,*)
+   WRITE(1,*) '**** FATAL ERROR! Number of atom different from number of atom in bead ****'
+   WRITE(1,*) '****                    Check virtual file                             ****'
+   WRITE(1,*)		
+   RETURN
+END IF
+
+ DO I=1,NVIRTA
+    SUMTOTBMASS = 0
+    DO J=1,NB
+       IF (VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
+          init_numbcomp(I) = NUMATOM(J)
+          DO H = 1,NUMATOM(J)
+             SUMTOTBMASS = SUMTOTBMASS+MASS(ITYPE(COMPCOM(I,H)))
+          END DO
+       END IF
+    END DO
+    TOTBMASS(I) = SUMTOTBMASS
+    INVTOTBMASS(I) = 1/TOTBMASS(I)
+!Calculate mass coefficient for virtual site
+    DO H=1,init_numbcomp(I)
+       masscoeff(I,H) = MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
+    END DO
+ END DO
 
     DO I=1,NVIRTA
-	    SUMTOTBMASS = 0
-	    DO J=1,NB
-	    	IF (VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
-                init_numbcomp(i) = NUMATOM(J)
-	    		DO H = 1,NUMATOM(J)
-	    			SUMTOTBMASS = SUMTOTBMASS+MASS(ITYPE(COMPCOM(I,H)))
-	    		END DO
-	    	END IF
-	    END DO
-	    TOTBMASS(I) = SUMTOTBMASS
-	    INVTOTBMASS(I) = 1/TOTBMASS(I)
+
+       SUMTOTX = 0
+       SUMTOTY = 0
+       SUMTOTZ = 0
+
+       DO J=1,NB
+          IF (VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
+             DO H = 1,NUMATOM(J)
+                SUMTOTX = SUMTOTX+MASS(ITYPE(COMPCOM(I,H)))*SX(COMPCOM(I,H))
+                SUMTOTY = SUMTOTY+MASS(ITYPE(COMPCOM(I,H)))*SY(COMPCOM(I,H))
+                SUMTOTZ = SUMTOTZ+MASS(ITYPE(COMPCOM(I,H)))*SZ(COMPCOM(I,H))
+             END DO
+          END IF
+       END DO
+
+       VIRTRX(I) = SUMTOTX*INVTOTBMASS(I)
+       VIRTRY(I) = SUMTOTY*INVTOTBMASS(I)
+       VIRTRZ(I) = SUMTOTZ*INVTOTBMASS(I)
+
+       IF ((VIRTRX(I)> BOXX2).OR.(VIRTRX(I) < -BOXX2).OR.(VIRTRY(I)> BOXY2) &
+            .OR.(VIRTRY(I)< -BOXY2).OR.(VIRTRZ(I)> BOXZ2).OR.(VIRTRZ(I)<-BOXZ2)) THEN
+
+          RPX = VIRTRX(I)/BOXX2
+          RPY = VIRTRY(I)/BOXY2
+          RPZ = VIRTRZ(I)/BOXZ2
+
+          SPX = RPX - 2.0*INT(RPX/2.0)
+          SPY = RPY - 2.0*INT(RPY/2.0)
+          SPZ = RPZ - 2.0*INT(RPZ/2.0)
+
+          RPX = (SPX - 2.0*INT(SPX))*BOXX2
+          RPY = (SPY - 2.0*INT(SPY))*BOXY2
+          RPZ = (SPZ - 2.0*INT(SPZ))*BOXZ2
+
+          VIRTRX(I) = RPX
+          VIRTRY(I) = RPY
+          VIRTRZ(I) = RPZ 
+
+       END IF
+
     END DO
-
-DO I=1,NVIRTA
-
-	SUMTOTX = 0
-	SUMTOTY = 0
-	SUMTOTZ = 0
-
-	DO J=1,NB
-		IF (VITYPE(I) .EQ. TYPE_BEAD(J)) THEN
-			DO H = 1,NUMATOM(J)
- 				SUMTOTX = SUMTOTX+MASS(ITYPE(COMPCOM(I,H)))*SX(COMPCOM(I,H))
-				SUMTOTY = SUMTOTY+MASS(ITYPE(COMPCOM(I,H)))*SY(COMPCOM(I,H))
-				SUMTOTZ = SUMTOTZ+MASS(ITYPE(COMPCOM(I,H)))*SZ(COMPCOM(I,H))
-		END DO
-		END IF
-	END DO
-
-		VIRTRX(I) = SUMTOTX*INVTOTBMASS(I)
-		VIRTRY(I) = SUMTOTY*INVTOTBMASS(I)
-		VIRTRZ(I) = SUMTOTZ*INVTOTBMASS(I)
-
-		IF ((VIRTRX(I)> BOXX2).OR.(VIRTRX(I) < -BOXX2).OR.(VIRTRY(I)> BOXY2) &
-		.OR.(VIRTRY(I)< -BOXY2).OR.(VIRTRZ(I)> BOXZ2).OR.(VIRTRZ(I)<-BOXZ2)) THEN
-
-		RPX = VIRTRX(I)/BOXX2
-		RPY = VIRTRY(I)/BOXY2
-		RPZ = VIRTRZ(I)/BOXZ2
-
-		SPX = RPX - 2.0*INT(RPX/2.0)
-		SPY = RPY - 2.0*INT(RPY/2.0)
-		SPZ = RPZ - 2.0*INT(RPZ/2.0)
-
-		RPX = (SPX - 2.0*INT(SPX))*BOXX2
-		RPY = (SPY - 2.0*INT(SPY))*BOXY2
-		RPZ = (SPZ - 2.0*INT(SPZ))*BOXZ2
-
-		VIRTRX(I) = RPX
-		VIRTRY(I) = RPY
-		VIRTRZ(I) = RPZ 
-
-		END IF 
-
-END DO
 
 RETURN
 END
