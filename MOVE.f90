@@ -73,7 +73,7 @@
            PT13K = PT13K + CM * VXI * VZI
            PT23K = PT23K + CM * VYI * VZI
 
-          FX(I) = 0.0D0
+           FX(I) = 0.0D0
            FY(I) = 0.0D0
            FZ(I) = 0.0D0
 
