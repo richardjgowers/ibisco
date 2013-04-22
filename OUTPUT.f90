@@ -147,28 +147,28 @@
 
 
       WRITE (115, *)'Step:                     ', I
-      WRITE (115, 100)'Simulated time:           ', TREAL
-      WRITE (115, 100)'Total energy:             ', TOTEP, REP
-      WRITE (115, 100)'Potential energy:         ', TOTPOTP, RVP
-      WRITE (115, 100)'Kinetic energy:           ', EKP, REKP
-      WRITE (115, 100)'Tot. Nonbonded energy:         ', totVNBOND, RVNBONDP
-      WRITE (115, 100)'      Nonbonded_Atom  energy:  ', VNBONDP, RVNBONDP_At
-      WRITE (115, 100)'      Nonbonded_Beads  energy: ', VNBONDP_CG, RVNBONDP_CG
-      WRITE (115, 100)'      Nonbonded_mix  energy:   ', VNBONDP_MIX, RVNBONDP_MIX
-      WRITE (115, 100)'Tot. Bond  energy:        ', totVBOND , RVBONDP
-      WRITE (115, 100)'      Bond_Atom  energy:  ', VBONDP, RVBONDP_At
-      WRITE (115, 100)'      Bond_Beads  energy: ', VBONDP_CG, RVBONDP_CG
-      WRITE (115, 100)'      Bond_mix  energy:   ', VBONDP_MIX, RVBONDP_MIX
-      WRITE (115, 100)'Tot. Angle energy:         ', totVANGLE, RVANGLEP
-      WRITE (115, 100)'      Angle_Atom  energy:  ', VAngleP, RVAngleP_At
-      WRITE (115, 100)'      Angle_Beads  energy: ', VAngleP_CG, RVAngleP_CG
-      WRITE (115, 100)'      Angle_mix  energy:   ', VAngleP_MIX, RVAngleP_MIX
+      WRITE (115, 100)'Simulated_time:           ', TREAL
+      WRITE (115, 100)'Total_energy:             ', TOTEP, REP
+      WRITE (115, 100)'Potential_energy:         ', TOTPOTP, RVP
+      WRITE (115, 100)'Kinetic_energy:           ', EKP, REKP
+      WRITE (115, 100)'Tot._Nonbonded_energy:         ', totVNBOND, RVNBONDP
+      WRITE (115, 100)'      Nonbonded_Atom_energy:  ', VNBONDP, RVNBONDP_At
+      WRITE (115, 100)'      Nonbonded_Beads_energy: ', VNBONDP_CG, RVNBONDP_CG
+      WRITE (115, 100)'      Nonbonded_mix_energy:   ', VNBONDP_MIX, RVNBONDP_MIX
+      WRITE (115, 100)'Tot._Bond_energy:        ', totVBOND , RVBONDP
+      WRITE (115, 100)'      Bond_Atom_energy:  ', VBONDP, RVBONDP_At
+      WRITE (115, 100)'      Bond_Beads_energy: ', VBONDP_CG, RVBONDP_CG
+      WRITE (115, 100)'      Bond_mix_energy:   ', VBONDP_MIX, RVBONDP_MIX
+      WRITE (115, 100)'Tot._Angle_energy:         ', totVANGLE, RVANGLEP
+      WRITE (115, 100)'      Angle_Atom_energy:  ', VAngleP, RVAngleP_At
+      WRITE (115, 100)'      Angle_Beads_energy: ', VAngleP_CG, RVAngleP_CG
+      WRITE (115, 100)'      Angle_mix_energy:   ', VAngleP_MIX, RVAngleP_MIX
       WRITE (115, 100)'Tot. Torsion energy:       ', totVTORS, RVTORP
-      WRITE (115, 100)'     Torsion_Atom  energy: ', VTORP, RVTORP_At
-      WRITE (115, 100)'     Torsion_Beads  energy:', VTORP_CG, RVTORP_CG
-      WRITE (115, 100)'     Torsion_mix  energy:  ', VTORP_MIX, RVTORP_MIX
+      WRITE (115, 100)'     Torsion_Atom_energy: ', VTORP, RVTORP_At
+      WRITE (115, 100)'     Torsion_Beads_energy:', VTORP_CG, RVTORP_CG
+      WRITE (115, 100)'     Torsion_mix_energy:  ', VTORP_MIX, RVTORP_MIX
 
-      WRITE (115, 100)'Improper torsion energy:  ', VOOPP, RVOOPP
+      WRITE (115, 100)'Improper_torsion_energy:  ', VOOPP, RVOOPP
       WRITE (115, 100)'Temperature:              ', TP, RTEMPP
       WRITE (115, 100)'Pressure:                 ', PRESSP, RPP
       WRITE (115, 100)'Pressure(x):              ', PT11P, RPT11P
@@ -177,11 +177,11 @@
       WRITE (115, 100)'Pressure(xy):             ', PT12P, RPT12P
       WRITE (115, 100)'Pressure(xz):             ', PT13P, RPT13P
       WRITE (115, 100)'Pressure(yz):             ', PT23P, RPT23P
-      WRITE (115, 100)'Box volume:               ', VOLP, RVOLP
-      WRITE (115, 100)'Box length(x):            ', BOXX, RBOXX
-      WRITE (115, 100)'Box length(y):            ', BOXY, RBOXY
-      WRITE (115, 100)'Box length(z):            ', BOXZ, RBOXZ
-      WRITE (115, 100)'Mass density:             ', DENSP, RDENSP
+      WRITE (115, 100)'Box_volume:               ', VOLP, RVOLP
+      WRITE (115, 100)'Box_length(x):            ', BOXX, RBOXX
+      WRITE (115, 100)'Box_length(y):            ', BOXY, RBOXY
+      WRITE (115, 100)'Box_length(z):            ', BOXZ, RBOXZ
+      WRITE (115, 100)'Mass_density:             ', DENSP, RDENSP
       WRITE (115, 100)
       WRITE (115, 100)
 
