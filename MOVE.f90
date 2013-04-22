@@ -1,6 +1,7 @@
       SUBROUTINE MOVE ( )
 
       USE VAR
+      USE OMP_LIB 
       IMPLICIT NONE
 
       INTEGER       I
@@ -8,6 +9,7 @@
       REAL*8            VXI, VYI, VZI
       REAL*8            PT11K, PT22K, PT33K
       REAL*8            PT12K, PT23K, PT13K
+      real(kind=rkind) :: t1,t2,tick
 
 !      REAL*8        RXI, RYI, RZI, EKNEW
 !      INTEGER       I, J
@@ -27,8 +29,15 @@
       ELSE
             LCFAC = 1.0D0
       END IF
+     
+t1 = omp_get_wtime()
+!$OMP PARALLEL DO  DEFAULT(SHARED) SCHEDULE(GUIDED)&
+!$OMP& REDUCTION(+: PT11K,PT22K,PT33K,PT12K,PT13K,PT23K)&
+!$OMP& private(CM,VXI,VZI,VYI)
+
 
       DO 100 I = 1, NATOMS
+
             CM = BEADMASS(I)
 
             VXI = VX(I)
@@ -54,20 +63,26 @@
 !        DO 200 I = 1, NATOMS
 !           CM = BEADMASS(I)
            VXI = VTX(I)
+           VZI = VTZ(I)
+           VYI = VTY(I)  
+           PT11K = PT11K + CM *VXI * VXI
+           PT22K = PT22K + CM *VYI * VYI  
+           PT33K = PT33K + CM *VZI * VZI
 
-           PT11K = PT11K + CM *VXI ** 2.0
-           PT22K = PT22K + CM *VTY(I) ** 2.0
-           PT33K = PT33K + CM *VTZ(I) ** 2.0
+           PT12K = PT12K + CM * VXI * VYI
+           PT13K = PT13K + CM * VXI * VZI
+           PT23K = PT23K + CM * VYI * VZI
 
-           PT12K = PT12K + CM * VXI * VTY(I)
-           PT13K = PT13K + CM * VXI * VTZ(I)
-           PT23K = PT23K + CM * VTY(I) * VTZ(I)
-
-           FX(I) = 0.0D0
+          FX(I) = 0.0D0
            FY(I) = 0.0D0
            FZ(I) = 0.0D0
 
 100     CONTINUE
+!$OMP END PARALLEL DO
+!  t2=omp_get_wtime()
+!  tick=omp_get_wtick()
+
+!      write(4001,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
 
       PT11 = PT11 + PT11K
       PT22 = PT22 + PT22K 

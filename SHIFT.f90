@@ -17,15 +17,21 @@
 	SUBROUTINE SHIFT()
 
 	USE VAR
+        USE OMP_LIB
         IMPLICIT NONE
         INTEGER I
 	REAL*8		 SPX, SPY, SPZ
+        real(kind=rkind) :: t1,t2,tick
 !       *******************************************************************
 
 ! INT(funzione parte intera) is an intrinsic function that reads a real, cuts the decimal 
 ! part of the number leaving only its integer part (the final format is real)
 	
-	DO I = 1, NATOMS
+ t1 = omp_get_wtime()
+!$OMP PARALLEL DEFAULT(SHARED)&
+!$OMP private(SPX,SPY,SPZ)
+!$OMP DO SCHEDULE(STATIC,1)
+DO I = 1, NATOMS
 
 		IF ((SX(I)> BOXX2).OR.(SX(I) < -BOXX2).OR.(SY(I)> BOXY2) &
 		.OR.(SY(I)< -BOXY2).OR.(SZ(I)> BOXZ2).OR.(SZ(I)<-BOXZ2)) THEN
@@ -48,8 +54,14 @@
 		RZ(I) = SZ(I)
 		END IF 
 
-	END DO
 
+	END DO
+!$OMP END DO
+  !$OMP END PARALLEL
+!  t2=omp_get_wtime()
+!  tick=omp_get_wtick()
+
+!        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
 	RETURN
         END
 !	*****************************************************************************************

@@ -82,8 +82,6 @@ IMPLICIT	NONE
                 FYIJK  = FIJK * RYN/RIJ
                 FZIJK  = FIJK * RZN/RIJ
 
-                if(i .le. 765) write(9301,*) i, j, k, ti, tj, tk, fxijk, theta 
-
                 FXI   = FXI + FXIJK
                 FYI   = FYI + FYIJK
                 FZI   = FZI + FZIJK
