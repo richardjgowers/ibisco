@@ -58,10 +58,10 @@ DO I = 1, NATOMS
 	END DO
 !$OMP END DO
   !$OMP END PARALLEL
-!  t2=omp_get_wtime()
-!  tick=omp_get_wtick()
+  t2=omp_get_wtime()
+  tick=omp_get_wtick()
 
-!        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
+        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
 	RETURN
         END
 !	*****************************************************************************************

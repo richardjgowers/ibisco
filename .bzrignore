@@ -103,3 +103,5 @@ VISC_NEMD.o
 VISC_PROFILE.o
 WRITETP.o
 WRITETRJ.o
+./hybrid_input_MOVE
+IBIsCO-openmp-tt

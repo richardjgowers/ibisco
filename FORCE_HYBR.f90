@@ -505,6 +505,7 @@ do A=1,NATOMS
    FZ(A) = FZ(A) + FZL(A)
 END DO
 
+
 !$OMP END PARALLEL
 
 !###############################################################################
@@ -597,7 +598,6 @@ DO I=1,NATOMS
 END DO
 
 !$OMP END PARALLEL
-
       DO I = 1, NATOMS
 
             PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
