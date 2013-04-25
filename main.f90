@@ -32,7 +32,7 @@
       OPEN ( 115 , FILE = 's-md.out')
       OPEN ( 116 , FILE = 's-md.tp')
       OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
-      WRITE( 115, *)'IBIsCO Revision 15:'
+      WRITE( 115, *)'IBIsCO Revision 17:'
       OPEN (1, FILE='ERROR')
       WRITE(*,*)
       ISTOP = 0
