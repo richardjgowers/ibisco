@@ -163,7 +163,7 @@
       WRITE (115, 100)'      Angle_Atom_energy:  ', VAngleP, RVAngleP_At
       WRITE (115, 100)'      Angle_Beads_energy: ', VAngleP_CG, RVAngleP_CG
       WRITE (115, 100)'      Angle_mix_energy:   ', VAngleP_MIX, RVAngleP_MIX
-      WRITE (115, 100)'Tot._Torsion energy:       ', totVTORS, RVTORP
+      WRITE (115, 100)'Tot. Torsion energy:       ', totVTORS, RVTORP
       WRITE (115, 100)'     Torsion_Atom_energy: ', VTORP, RVTORP_At
       WRITE (115, 100)'     Torsion_Beads_energy:', VTORP_CG, RVTORP_CG
       WRITE (115, 100)'     Torsion_mix_energy:  ', VTORP_MIX, RVTORP_MIX
@@ -186,15 +186,15 @@
       WRITE (115, 100)
 
       WRITE (22, *)'Step:                      ', I
-      WRITE (22, *)'Simulated_time:            ', TREAL
-      WRITE (22, *)'Total_energy:              ', TOTEP, REP
-      WRITE (22, *)'Potential_energy:          ', TOTPOTP, RVP
-      WRITE (22, *)'Kinetic_energy:            ', EKP, REKP
-      WRITE (22, *)'Nonbonded_energy:          ', VNBONDP, RVNBONDP
-      WRITE (22, *)'Bond_energy:              ', VBONDP, RVBONDP
-      WRITE (22, *)'Angle_energy:              ', VANGLEP, RVANGLEP
-      WRITE (22, *)'Torsion_energy:            ', VTORP, RVTORP
-      WRITE (22, *)'Improper_torsion_energy:   ', VOOPP, RVOOPP
+      WRITE (22, *)'Simulated time:            ', TREAL
+      WRITE (22, *)'Total energy:              ', TOTEP, REP
+      WRITE (22, *)'Potential energy:          ', TOTPOTP, RVP
+      WRITE (22, *)'Kinetic energy:            ', EKP, REKP
+      WRITE (22, *)'Nonbonded energy:          ', VNBONDP, RVNBONDP
+      WRITE (22, *)'Bond  energy:              ', VBONDP, RVBONDP
+      WRITE (22, *)'Angle energy:              ', VANGLEP, RVANGLEP
+      WRITE (22, *)'Torsion energy:            ', VTORP, RVTORP
+      WRITE (22, *)'Improper torsion energy:   ', VOOPP, RVOOPP
       WRITE (22, *)'Temperature:               ', TP, RTEMPP
       WRITE (22, *)'Pressure:                  ', PRESSP, RPP
       WRITE (22, *)'Pressure(x):               ', PT11P, RPT11P
@@ -203,11 +203,11 @@
       WRITE (22, *)'Pressure(xy):              ', PT12P, RPT12P
       WRITE (22, *)'Pressure(xz):              ', PT13P, RPT13P
       WRITE (22, *)'Pressure(yz):              ', PT23P, RPT23P
-      WRITE (22, *)'Box_volume:                ', VOLP, RVOLP
-      WRITE (22, *)'Box_length(x):             ', BOXX, RBOXX
-      WRITE (22, *)'Box_length(y):             ', BOXY, RBOXY
-      WRITE (22, *)'Box_length(z):             ', BOXZ, RBOXZ
-      WRITE (22, *)'Mass_density:              ', DENSP, RDENSP
+      WRITE (22, *)'Box volume:                ', VOLP, RVOLP
+      WRITE (22, *)'Box length(x):             ', BOXX, RBOXX
+      WRITE (22, *)'Box length(y):             ', BOXY, RBOXY
+      WRITE (22, *)'Box length(z):             ', BOXZ, RBOXZ
+      WRITE (22, *)'Mass density:              ', DENSP, RDENSP
 
         CLOSE (22)      
 
