@@ -161,7 +161,7 @@ logical,pointer :: typeBond(:)
 !***************************************
 
  CHARACTER(80), POINTER :: LABEL(:)
- CHARACTER(80) :: TITLE, NEIGHBORLIST
+ CHARACTER(72) :: TITLE, NEIGHBORLIST
  CHARACTER(len=2):: TYn
  CHARACTER(1) day(9)
  INTEGER :: iseed       !for RANDOM NUMBER generator
