@@ -22,7 +22,7 @@ REAL(KIND=8) :: rx1,ry1,rz1,rx2,ry2,rz2,rx3,ry3,rz3,rx4,ry4,rz4,phi_t
 	REAL*8	      FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
 !      ******************************************************************
 
-
+write(*,*)'ciao!'
 DO M = 1, NOOPIJKL(I)
 
     J = JOOPIJKL(I, M)
