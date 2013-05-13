@@ -605,7 +605,7 @@
 	        IF(IOOPT(IT,JT,KT,LT).EQ.0) THEN
  !                 IOOPT(IT,JT,KT,LT) = I
 		  IOOPT(IT,JT,KT,LT) = I
-                  IOOPT(LT,KT,JT,IT) = I
+!                  IOOPT(LT,KT,JT,IT) = I
 !               IOOPT(IT,JT,LT,KT) = I
 !		IOOPT(IT,LT,JT,KT) = I
 !		IOOPT(IT,LT,KT,JT) = I

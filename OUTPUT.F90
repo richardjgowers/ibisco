@@ -1,3 +1,4 @@
+#include "ibi-preprocess.h"
 
       SUBROUTINE OUTPUT (I)
       USE VAR
@@ -17,6 +18,9 @@
     real(kind=rkind) :: RVBONDP_MIX, RVANGLEP_MIX, RVTORP_MIX, RVOOPP_MIX, RVNBONDP_MIX
     real(kind=rkind) :: RVNBONDP_CG, RVBONDP_CG, RVANGLEP_CG, RVTORP_CG, RVOOPP_CG
     real(kind=rkind) :: totVNBOND, totVBOND, totVANGLE, totVTORP, totVOOPP, totVTORS
+#ifdef DEBUG_OOP
+    real(kind=rkind) :: VOOPP_L,VOOPP_LD,VOOPP_D,VOOPP_ring
+#endif
 !      REAL*8 DENSP, RDENSP, BOXZP, RBOXZP,BOXYP, RBOXYP, BOXXP, RBOXXP
 !      REAL*8 :: TREAL, TOTE
 !       *******************************************************************
@@ -108,6 +112,13 @@
       TOTPOTP = TOTPOTP + VNBONDP_MIX + VBONDP_MIX + VANGLEP_MIX + VTORP_MIX + VOOP_MIX
       RVP = RV *CONV
 
+#ifdef DEBUG_OOP
+      VOOPP_ring = VOOP_ring *CONV
+      VOOPP_LD = VOOP_LD *CONV
+      VOOPP_L = VOOP_L *CONV
+      VOOPP_D = VOOP_D *CONV
+#endif
+
       TOTEP = TOTPOTP + EKP
       REP = RE *CONV
 
@@ -169,6 +180,12 @@
       WRITE (115, 100)'     Torsion_mix_energy:  ', VTORP_MIX, RVTORP_MIX
 
       WRITE (115, 100)'Improper_torsion_energy:  ', VOOPP, RVOOPP
+#ifdef DEBUG_OOP
+      WRITE (115, *)'           Ring:          ', VOOPP_ring
+      WRITE (115, *)'             LD:          ', VOOPP_LD
+      WRITE (115, *)'             L:          ', VOOPP_L
+      WRITE (115, *)'             D:          ', VOOPP_D
+#endif
       WRITE (115, 100)'Temperature:              ', TP, RTEMPP
       WRITE (115, 100)'Pressure:                 ', PRESSP, RPP
       WRITE (115, 100)'Pressure(x):              ', PT11P, RPT11P

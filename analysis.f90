@@ -6,16 +6,13 @@ implicit none
 
 integer :: i,j,l,k,inA,inF,q,vsite,endVS,begVS
 
-!OPEN ( 213 , FILE = 'analysis.conf', form='UNFORMATTED', access='SEQUENTIAL')
-
 OPEN ( unit=213 , FILE = 'analysis.conf',status='replace', form='UNFORMATTED', access='SEQUENTIAL')
-!OPEN ( unit=213 , FILE = 'analysis.conf',status='replace')
 
 write(213)natoms
 
 write(213)ntype
 do i=1,ntype
-    write(213)label(i)
+    write(213)label(i),name_label(i)
 end do
 
 if(ibrdescr .EQ. 0)then

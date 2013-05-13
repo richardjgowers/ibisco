@@ -1,3 +1,4 @@
+#include "ibi-preprocess.h"
 
 SUBROUTINE FORCE ( )
 
@@ -8,7 +9,7 @@ SUBROUTINE FORCE ( )
 
   integer :: I, J, K, M, L 
   integer :: JBEG, JEND, JNAB 
-  INTEGER :: TI, TJ, TK, TL, TIJ, TIJK, TIJKL, NI
+  INTEGER :: TI, TJ, TK, TL, TIJ, TIJK, TIJKL, NI, TOIJKL
   real(kind=rkind) :: RCUTSQ, ALPHA
   real(kind=rkind) :: RXI, RYI, RZI, FXI, FYI, FZI
   real(kind=rkind) :: RXIJ, RYIJ, RZIJ, RIJSQ, RIJ, FXIJ, FYIJ, FZIJ
@@ -26,6 +27,10 @@ SUBROUTINE FORCE ( )
   REAL(KIND=RKIND) :: COSM,SINM,COTANM,COSN,SINN,COTANN,COST,SIGNT,PHI
   REAL(KIND=RKIND) :: FIJKL,VIJKL
   REAL(KIND=RKIND) :: FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
+!FPOOP
+!  REAL(KIND=RKIND) :: rx1,ry1,rz1,rx2,ry2,rz2,rx3,ry3,rz3,rx4,ry4,rz4,phi_t
+!  real(kind=RKIND) :: rxmn,rymn,rzmn,rmn
+!  real(kind=8),parameter :: eps=1.0D-4
   !      *******************************************************************
 
   RCUTSQ = RCUT*RCUT
@@ -35,6 +40,13 @@ SUBROUTINE FORCE ( )
   VANGLE = 0.0D0
   VTOR   = 0.0D0
   VOOP   = 0.0D0
+#ifdef DEBUG_OOP
+      VOOP_ring   = 0.0D0
+      VOOP_LD   = 0.0D0
+      VOOP_L   = 0.0D0
+      VOOP_D   = 0.0D0
+#endif
+
   PT11 = 0.0
   PT22 = 0.0
   PT33 = 0.0
@@ -269,7 +281,8 @@ END DO
      INCLUDE 'FPTOR.inc'
      !	*******************************************************************************************
      !	**********************CALCULATE THE IMPROPER TORSION FORCE AND POTENTIAL********************
-!     CALL FPOUTPLANE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+     CALL FPOUTPLANE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
+!     INCLUDE 'FPOUTPLANE.inc'
 
      FXL(I) = FXL(I) + FXI
      FYL(I) = FYL(I) + FYI

@@ -1,3 +1,4 @@
+#include "ibi-preprocess.h"
 
 !	******************************************************************
 !	NATOMS		TOTAL NUMBER OF ATOMS
@@ -136,6 +137,12 @@ REAL(kind=rkind), POINTER :: STVANGLE_At(:), STV_At(:)
  character(len=18) :: name_file_virt
  character(len=7),pointer  :: name_mol(:) 
  character(len=2),dimension(18) :: name_label='NU'
+
+#ifdef DEBUG_OOP
+!     Variables for Testing the OOP with the Atomistic PolyStyrene
+REAL*8 :: VOOP_ring,VOOP_LD,VOOP_L,VOOP_D
+#endif
+
 
 
 !     Variables for MTS

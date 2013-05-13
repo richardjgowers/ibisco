@@ -32,35 +32,35 @@ SUBROUTINE SETLIS()
            IF (NOTYPE.GT.0) THEN
               IF (NBONDS(I).EQ.3) THEN
 
-                 do ll = 1,2
-                    if(ll .eq. 1)then
-                       O = JBOND(I,1)
-                       Z = JBOND(I,2)
-                       P = JBOND(I,3)
-                       !    elseif(ll .eq. 2)then
-                       !        Z = JBOND(I,3)
-                       !        P = JBOND(I,1)
-                       !        O = JBOND(I,2)
-                       !    elseif(ll .eq. 2)then
-                       !        Z = JBOND(I,2)
-                       !        P = JBOND(I,1)
-                       !        O = JBOND(I,3)
+                do ll = 1,6
+                    if(ll .eq. 1)then ! questa era quella che c'era
+                        Z = JBOND(I,1)
+                        P = JBOND(I,2)
+                        O = JBOND(I,3)
                     elseif(ll .eq. 2)then
-                       O = JBOND(I,1)
-                       Z = JBOND(I,3)
-                       P = JBOND(I,2)
-                       !    elseif(ll .eq. 5)then
-                       !        Z = JBOND(I,2)
-                       !        P = JBOND(I,3)
-                       !        O = JBOND(I,1)
-                       !    elseif(ll .eq. 6)then
-                       !        Z = JBOND(I,3)
-                       !        P = JBOND(I,2)
-                       !        O = JBOND(I,1)
-                    end if
-                    ZT = ITYPE(Z)
-                    PT = ITYPE(P)
-                    OT = ITYPE(O)
+                        Z = JBOND(I,3)
+                        P = JBOND(I,1)
+                        O = JBOND(I,2)
+                    elseif(ll .eq. 3)then
+                        Z = JBOND(I,2)
+                        P = JBOND(I,1)
+                        O = JBOND(I,3)
+                    elseif(ll .eq. 4)then ! questa era quella che c'era con (ll .eq. 2)
+                        Z = JBOND(I,1)
+                        P = JBOND(I,3)
+                        O = JBOND(I,2)
+                   elseif(ll .eq. 5)then
+                        Z = JBOND(I,2)
+                        P = JBOND(I,3)
+                        O = JBOND(I,1)
+                   elseif(ll .eq. 6)then
+                        Z = JBOND(I,3)
+                        P = JBOND(I,2)
+                        O = JBOND(I,1)
+                   end if
+                   ZT = ITYPE(Z)
+                   PT = ITYPE(P)
+                   OT = ITYPE(O)
 
                     IF (IOOPT(IT,ZT,PT,OT).NE.0 .and. NOOPIJKL(I) .eq. 0) THEN
                        !		        WRITE(*,*) 'found',i,z,p,o,ll
@@ -251,7 +251,6 @@ SUBROUTINE SETLIS()
                                 !**** No parameters defined for this torsion type! ****	
 
                                 check_YES_NOTYPE:IF (NOTYPE.GT.0) THEN
-
                                    checkOOP:IF(IOOPT(IT,JT,KT,LT) .EQ. 0) THEN
 
                                       NOWRITE = 0

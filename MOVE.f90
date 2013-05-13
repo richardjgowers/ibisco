@@ -35,7 +35,6 @@
 !$OMP& REDUCTION(+: PT11K,PT22K,PT33K,PT12K,PT13K,PT23K)&
 !$OMP& private(CM,VXI,VZI,VYI)
 
-
       DO 100 I = 1, NATOMS
 
             CM = BEADMASS(I)
