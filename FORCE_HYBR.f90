@@ -24,6 +24,8 @@ REAL(KIND=RKIND) :: FXIJK, FYIJK, FZIJK
  REAL(KIND=RKIND) :: FIJKL,VIJKL
  REAL(KIND=RKIND) :: FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
 
+ REAL(KIND=RKIND), DIMENSION(NVIRTA) :: FXVL, FYVL, FZVL
+
 !      REAL,PARAMETER :: hrij = 0.4
 DO I = 1, NATOMS
            FX(I) = 0.0D0
@@ -55,12 +57,13 @@ FZI = 0.0
 
 !$OMP PARALLEL DEFAULT(NONE)&
 !$OMP& SHARED(A,num_bead,num_vs,indx_atm,init_numbcomp,vitype,virtual_center,INDEX_AB,POINT,RX,RY,RZ)&
-!$OMP& SHARED(masscoeff,NATOMS,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
+!$OMP& SHARED(masscoeff,NATOMS,NVIRTA,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
 !$OMP& SHARED(FCUTA,FCUTB,BINNB,NDATNB,MASS,INVTOTBMASS,RNBOND,NBOND_FORCE,NBOND_POT,timestepcheck)&
 !$OMP& SHARED(SX,SY,SZ,NBONDS,JBOND,IBONDT,typeBond,BINB,BINA,NDATB,RCUT,BOND_FORCE,BOND_POT,RBOND)&
 !$OMP& SHARED(NIJK,JANGLEIJK,IANGT,R2D,BEND_FORCE,BEND_POT,ANGLE,NIJKL)&
 !$OMP& SHARED(KANGLEIJK,KTORIJKL,JTORIJKL,LTORIJKL,ITORT,BINT,NDATT,TOR_POT,TOR_FORCE,ANGLE_TOR)&
-!$OMP& PRIVATE(FXI,FYI,FZI,FXL,FYL,FZL,me,TI,RXJK,RYJK,RZJK,RXKL,RYKL,RZKL,RJK,RKL)&
+!$OMP& PRIVATE(FXI,FYI,FZI,FXL,FYL,FZL,FXVL,FYVL,FZVL)&
+!$OMP& PRIVATE(me,TI,RXJK,RYJK,RZJK,RXKL,RYKL,RZKL,RJK,RKL)&
 !$OMP& PRIVATE(hh,I,JBEG,JEND,RXI,RYI,RZI,RXM,RYM,RZM,RM,RXN,RYN,RZN,RXS,RYS,RZS)&
 !$OMP& PRIVATE(JNAB,J,TJ,TK,TIJ,TIJK,RXIJ,RYIJ,RZIJ,RIJSQ,TL,TIJKL)&
 !$OMP& PRIVATE(RIJ,NI,ALPHA,FIJ,VIJ,VIJK,FIJK,FXIJ,FYIJ,FZIJ,FXIJK,FYIJK,FZIJK)&
@@ -83,6 +86,12 @@ DO A=1,NATOMS
    FXL(A) = 0.0
    FYL(A) = 0.0
    FZL(A) = 0.0
+END DO
+
+DO A=1,NVIRTA
+   FXVL(A) = 0.0
+   FYVL(A) = 0.0
+   FZVL(A) = 0.0
 END DO
 
 !###############################################################################
@@ -206,13 +215,16 @@ DO hh=1,num_bead !DO 200
                   FYI   = FYI + FYIJ
                   FZI   = FZI + FZIJ
                   
-                  do H=1,init_numbcomp(vsite)
-                     K = indx_atm(vsite,H)
-                     FXL(K) = FXL(K) - FXIJ*masscoeff(vsite,H)
-                     FYL(K) = FYL(K) - FYIJ*masscoeff(vsite,H)
-                     FZL(K) = FZL(K) - FZIJ*masscoeff(vsite,H)                    
-                  end do
-                  
+!                  do H=1,init_numbcomp(vsite)
+!                     K = indx_atm(vsite,H)
+!                     FXL(K) = FXL(K) - FXIJ*masscoeff(vsite,H)
+!                     FYL(K) = FYL(K) - FYIJ*masscoeff(vsite,H)
+!                     FZL(K) = FZL(K) - FZIJ*masscoeff(vsite,H)                    
+!                  end do
+                  FXVL(vsite) = FXVL(vsite) - FXIJ
+                  FYVL(vsite) = FYVL(vsite) - FYIJ
+                  FZVL(vsite) = FZVL(vsite) - FZIJ
+
                   !		ADD THE NON-BONDED PART OF PRESSURE
                   PT11 = PT11 + FXIJ * RXIJ
                   PT22 = PT22 + FYIJ * RYIJ
@@ -265,7 +277,7 @@ do hh=num_bead+1,num_vs !do 220
 
          !		TAKE THE INDEX OF NEIGHBOUR ATOMS or BEADS
          J = LIST(JNAB)
-         if(type_label(j) .eq. 1)then !If J is a bead
+         if(type_label(j) .eq. 1)then !If J is an atom
 
             !		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
             TJ = ITYPE(J)
@@ -362,13 +374,17 @@ do hh=num_bead+1,num_vs !do 220
                   FXIJ  = FIJ * RXIJ
                   FYIJ  = FIJ * RYIJ
                   FZIJ  = FIJ * RZIJ
-                
-                  do H=1,init_numbcomp(vsite)
-                     K = indx_atm(vsite,H)
-                     FXL(K) = FXL(K) + FXIJ*masscoeff(vsite,H)
-                     FYL(K) = FYL(K) + FYIJ*masscoeff(vsite,H)
-                     FZL(K) = FZL(K) + FZIJ*masscoeff(vsite,H)                 
-                  end do
+ 
+                  FXVL(vsite) = FXVL(vsite) + FXIJ
+                  FYVL(vsite) = FYVL(vsite) + FYIJ
+                  FZVL(vsite) = FZVL(vsite) + FZIJ
+               
+!                 do H=1,init_numbcomp(vsite)
+!                    K = indx_atm(vsite,H)
+!                    FXL(K) = FXL(K) + FXIJ*masscoeff(vsite,H)
+!                    FYL(K) = FYL(K) + FYIJ*masscoeff(vsite,H)
+!                    FZL(K) = FZL(K) + FZIJ*masscoeff(vsite,H)                 
+!                 end do
 
                   !FX(J) = FX(J) - FXIJ
                   !FY(J) = FY(J) - FYIJ
@@ -399,6 +415,15 @@ do hh=num_bead+1,num_vs !do 220
    ENDIF
 end do !do 220
 !$OMP END DO
+
+DO A=1,NVIRTA
+   DO H=1,init_numbcomp(A)
+      K = indx_atm(A,H)
+      FXL(K) = FXL(K) + FXVL(A)*masscoeff(A,H)
+      FYL(K) = FYL(K) + FYVL(A)*masscoeff(A,H)
+      FZL(K) = FZL(K) + FZVL(A)*masscoeff(A,H)
+   END DO
+END DO
 
 !###############################################################################
 !###############################################################################
