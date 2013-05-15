@@ -80,9 +80,9 @@
 	        FY(I) = FYI
 	        FZ(I) = FZI
 
-		VFXNB(I) = VFXNB(I) + FX(I)
-		VFYNB(I) = VFYNB(I) + FY(I)
-		VFZNB(I) = VFZNB(I) + FZ(I)
+		VFXNB(I) = VFXNB(I) + FXIJ
+		VFYNB(I) = VFYNB(I) + FYIJ
+		VFZNB(I) = VFZNB(I) + FZIJ
 
 !*****************************************************************************************************************
 ! The force is weighted on the weight of each single atoms in the bead
