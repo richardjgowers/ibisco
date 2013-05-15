@@ -31,6 +31,7 @@ SUBROUTINE FORCE ( )
 !  REAL(KIND=RKIND) :: rx1,ry1,rz1,rx2,ry2,rz2,rx3,ry3,rz3,rx4,ry4,rz4,phi_t
 !  real(kind=RKIND) :: rxmn,rymn,rzmn,rmn
 !  real(kind=8),parameter :: eps=1.0D-4
+  INTEGER :: NITEMS
   !      *******************************************************************
 
   RCUTSQ = RCUT*RCUT
@@ -55,7 +56,7 @@ SUBROUTINE FORCE ( )
   PT23 = 0.0
 
 !$OMP PARALLEL DEFAULT(NONE)&
-!$OMP& SHARED(NATOMS,POINT,RX,RY,RZ,ITYPE,LIST,INBONDT)&
+!$OMP& SHARED(NATOMS,NITEMS,POINT,RX,RY,RZ,ITYPE,LIST,INBONDT)&
 !$OMP& SHARED(BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
 !$OMP& SHARED(RCUTSQ,BINNB,RNBOND,NBOND_FORCE,NBOND_POT)&
 !$OMP& SHARED(SX,SY,SZ,timestepcheck,RCUT)&
@@ -94,116 +95,9 @@ DO I=1,NATOMS
 END DO
 
   !       ** USE THE LIST TO FIND THE NEIGHBOURS **
+NITEMS = NATOMS
 !$OMP DO SCHEDULE(STATIC,1)
-  DO I = 1, NATOMS !200
-
-     JBEG = POINT(I)
-     JEND = POINT(I+1) - 1
-
-     !       ** CHECK THAT ATOM I HAS NEIGHBOURS **
-
-     IF( JBEG .LE. JEND ) THEN
-
-        RXI = RX(I)
-        RYI = RY(I)
-        RZI = RZ(I)
-        FXI = 0.0
-        FYI = 0.0
-        FZI = 0.0
-        TI = ITYPE(I)
-
-        DO JNAB = JBEG, JEND !199
-
-           !		TAKE THE INDEX OF NEIGHBOUR ATOMS
-           J = LIST(JNAB)
-
-           !		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
-           TJ = ITYPE(J)
-           TIJ = INBONDT(TI, TJ)
-
-           IF( TIJ .NE. 0) THEN	
-              RXIJ = RXI - RX(J)
-              RYIJ = RYI - RY(J)
-              RZIJ = RZI - RZ(J)
-
-              RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-              RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-              RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-
-              RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
-
-              IF ( RIJSQ < RCUTSQ ) THEN
-
-                 RIJ = DSQRT(RIJSQ)
-                 NI = INT (RIJ / BINNB(TIJ))
-
-                 !		LINEAR INTEPOLATION
-                 ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-
-                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
-                      + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-
-                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
-                      + ALPHA*NBOND_POT(TIJ,NI+1)
-
-                 VNBOND = VNBOND + VIJ
-
-                 FXIJ  = FIJ * RXIJ
-                 FYIJ  = FIJ * RYIJ
-                 FZIJ  = FIJ * RZIJ
-
-!                 IF (DPDINPUT.EQ.1.and.RIJ.LT.RCUTDPD) THEN
-!                    IF (WDPDT.EQ.2) THEN
-!                       call FDR(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
-!                    ELSEIF (WDPDT.EQ.1) THEN
-!                       call FDR_STEP(I,J,FXIJ,FYIJ,FZIJ,RXIJ,RYIJ,RZIJ,RIJ)
-!                    ENDIF
-!                 ENDIF
-
-                 FXI   = FXI + FXIJ
-                 FYI   = FYI + FYIJ
-                 FZI   = FZI + FZIJ
-
-                 FXL(J) = FXL(J) - FXIJ
-                 FYL(J) = FYL(J) - FYIJ
-                 FZL(J) = FZL(J) - FZIJ
-
-                 !		ADD THE NON-BONDED PART OF PRESSURE
-                 PT11 = PT11 + FXIJ * RXIJ
-                 PT22 = PT22 + FYIJ * RYIJ
-                 PT33 = PT33 + FZIJ * RZIJ
-
-                 PT12 = PT12 + FYIJ * RXIJ
-                 PT13 = PT13 + FZIJ * RXIJ
-                 PT23 = PT23 + FZIJ * RYIJ
-
-                 !***************LOWE ANDERSON***************************************
-!                 IF (LAINPUT.EQ.1.AND.RIJ.LT.RCUTDPD) THEN
-!                    call LOWEAND (RIJSQ,RXIJ,RYIJ,RZIJ,I,J)
-!                 ENDIF
-                 !***************LOWE ANDERSON***************************************
-              END IF   ! endif  IF ( RIJSQ < RCUTSQ )
-           END IF     ! endif   IF( TIJ .NE. 0) THEN
-        END DO !199        CONTINUE
-
-!        IF (DPD_BONDED.EQ.1) THEN
-!           IF (LAINPUT.EQ.1) THEN
-!              call  LA_ADDITION (I,RXI,RYI,RZI)
-!           ELSEIF (DPDINPUT.EQ.1) THEN
-!              IF(WDPDT.EQ.2) THEN
-!                call FDR_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
-!              ELSEIF(WDPDT.EQ.1) THEN
-!                 call FDR_STEP_ADDITION (I,RXI,RYI,RZI,FXI,FYI,FZI )
-!              ENDIF
-!           ENDIF
-!        ENDIF
-
-        FXL(I) = FXL(I) + FXI
-        FYL(I) = FYL(I) + FYI
-        FZL(I) = FZL(I) + FZI
-
-     ENDIF
-  END DO !200     CONTINUE
+include 'nb.inc'
 !$OMP END DO
 
   !Collate forces from all threads
