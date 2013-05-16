@@ -109,6 +109,9 @@
 !        IF(ISTOP .EQ. 1) STOP
 !      END IF
 !     STORE THE POSITION OF THE VIRTUAL SITE
+
+      NVIRTA = 0 !By default NVIRTA is 0
+
       IF(IBRDESCR .EQ. 0) THEN
          CALL RDVIRTUAL()
       END IF
@@ -122,8 +125,12 @@
 
 !Calculate mass coeffs
 DO I=1,NVIRTA
+   sumtotBmass = 0.0D0
    DO J=1,init_numbcomp(I)
-      masscoeff(I,J) = MASS(ITYPE(INDX_ATM(I,J))) / MASS(VITYPE(I))
+      sumtotBmass = sumtotBmass + mass(itype(indx_atm(I,J)))
+   END DO
+   DO J=1,init_numbcomp(I)
+      masscoeff(I,J) = MASS(ITYPE(INDX_ATM(I,J))) / sumtotBmass
    END DO
 END DO
 

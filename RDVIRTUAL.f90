@@ -25,7 +25,7 @@ READ(10,*) NVIRTA
 READ(10,*)
 READ(10,*)
 
-NB = 2
+NB = 2 !FIX THIS 
 
 ALLOCATE(VIRTRX(NVIRTA))
 ALLOCATE(VIRTRY(NVIRTA))
@@ -65,12 +65,6 @@ DO I=1,NVIRTA
       RETURN
    END IF
 END DO
-
-DO I=1,NVIRTA
-   TOTBMASS(I) = mass(vitype(I))
-   INVTOTBMASS(I) = 1/mass(vitype(I))
-END DO
-
 
 !Calculate centre coordinates of virtual sites
 DO I=1,NVIRTA
