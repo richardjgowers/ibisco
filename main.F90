@@ -52,31 +52,31 @@
       IF (ISTOP == 1) STOP
 
       IF (PPF_INPUT.EQ.1) THEN
-      RDEN1 = 0.D0
-      RDEN2 = 0.D0
-      RV_AVE1 = 0.D0
-      RV_AVE2 = 0.D0
- 
-      RVXPRO = 0.d0
-      RDENSITY = 0.d0
-      RTEEMP = 0.d0
-      RPZX = 0.d0
+         RDEN1 = 0.D0
+         RDEN2 = 0.D0
+         RV_AVE1 = 0.D0
+         RV_AVE2 = 0.D0
 
-      OPEN ( 173 , FILE = 'Visco_PPF.dat')
-      OPEN ( 183 , FILE = 'VGr_Vis.dat' )
-      OPEN ( 193 , FILE = 'R_PPF.pro')
-      OPEN ( 139 , FILE = 'C_PPF.pro') 
-      WRITE(173,*) 'Tsteps, Time(s),C_viscosity(cP),R_viscosity(cP)'
-      write(139,*) '1_Binindex, 2_Bin(nm),3_C_velocity(m/s),', &
-      '4_C_Density(kg/m^3),5_C_Temp(K),6_C_stressZX(kPa)'
-      write(193,*) '1_Binindex, 2_Bin(nm),3_R_velocity(m/s),', &
-      '4_R_Density(kg/m^3),5_R_Temp(K),6_R_stressZX(kPa)'
-      write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)),',&
-      '4_RV_Grad(s^(-1)), 5_CPxz(kPa), 6_RPxz(kPa), 7_C_Visc(cP), 8_R_Visc(cP)'
-      
-      !       write(139,*) '1_Binindex, 2_Bin,3_C_velocity,4_C_Density,5_C_Temp,6_C_stressZX'
-      !       write(193,*) '1_Binindex, 2_Bin,3_R_velocity,4_R_Density,5_R_Temp,6_R_stressZX'
-      !       write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)), 4_RV_Grad(s^(-1)), 5_CPxz(Pa), 6_RPxz(Pa), 7_C_Visc(cP), 8_R_Visc(cP)'
+         RVXPRO = 0.d0
+         RDENSITY = 0.d0
+         RTEEMP = 0.d0
+         RPZX = 0.d0
+
+         OPEN ( 173 , FILE = 'Visco_PPF.dat')
+         OPEN ( 183 , FILE = 'VGr_Vis.dat' )
+         OPEN ( 193 , FILE = 'R_PPF.pro')
+         OPEN ( 139 , FILE = 'C_PPF.pro') 
+         WRITE(173,*) 'Tsteps, Time(s),C_viscosity(cP),R_viscosity(cP)'
+         write(139,*) '1_Binindex, 2_Bin(nm),3_C_velocity(m/s),', &
+              '4_C_Density(kg/m^3),5_C_Temp(K),6_C_stressZX(kPa)'
+         write(193,*) '1_Binindex, 2_Bin(nm),3_R_velocity(m/s),', &
+              '4_R_Density(kg/m^3),5_R_Temp(K),6_R_stressZX(kPa)'
+         write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)),',&
+              '4_RV_Grad(s^(-1)), 5_CPxz(kPa), 6_RPxz(kPa), 7_C_Visc(cP), 8_R_Visc(cP)'
+
+         !       write(139,*) '1_Binindex, 2_Bin,3_C_velocity,4_C_Density,5_C_Temp,6_C_stressZX'
+         !       write(193,*) '1_Binindex, 2_Bin,3_R_velocity,4_R_Density,5_R_Temp,6_R_stressZX'
+         !       write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)), 4_RV_Grad(s^(-1)), 5_CPxz(Pa), 6_RPxz(Pa), 7_C_Visc(cP), 8_R_Visc(cP)'
       ENDIF
 
       VVCONST = 0.5d0
@@ -94,44 +94,38 @@
       CALL RDINTERACT  ()
       IF (ISTOP == 1) STOP
 
-      if(IBRDESCR .EQ. 0) THEN
-        name_file_virt='virtual'
-      end if
+!      if(IBRDESCR .EQ. 0) THEN
+!        name_file_virt='virtual'
+!      end if
 
 
-!     STORE THE POSITION OF THE VIRTUAL SITE
 
-      IF (IBRDESCR .EQ. 0) THEN   
-        if(virtsite .eq. 1)then         
-            CALL VIRTUAL_SITE()
-        end if
-        IF(ISTOP .EQ. 1) STOP
-      END IF
 
-      !READ CONFIG.NEW FILE (INITIAL VELOCITIES AND CONFIGURATIONS)
+
+!      IF (IBRDESCR .EQ. 0) THEN   
+!        if(virtsite .eq. 1)then         
+!            CALL VIRTUAL_SITE()
+!        end if
+!        IF(ISTOP .EQ. 1) STOP
+!      END IF
+
+!      READ CONFIG.NEW FILE (INITIAL VELOCITIES AND CONFIGURATIONS)
       CALL  RDCOOR  ()
       IF (ISTOP == 1) STOP
 
+!     STORE THE POSITION OF THE VIRTUAL SITE
+      IF(IBRDESCR .EQ. 0) THEN
+         CALL RDVIRTUAL()
+      END IF
+
       IF (IBRDESCR .EQ. 0) THEN   
-        if(virtsite .eq. 0)then         
-            CALL VIRTUAL_SITE_COM()
-            IF(ISTOP .EQ. 1) STOP
-            ALLOCATE(VIRT_POINT_SEC(NVIRTA+1))
-            ALLOCATE (VCELL(NVIRTA))
-            ALLOCATE (VLCLIST(NVIRTA))
-        else
-           DO I=1,NVIRTA
-              SUMTOTBMASS = 0.
-              DO H = 1,init_numbcomp(i)
-                 SUMTOTBMASS = SUMTOTBMASS+MASS(ITYPE(INDX_ATM(I,H)))
-              END DO
-              TOTBMASS(I) = SUMTOTBMASS
-              INVTOTBMASS(I) = 1/TOTBMASS(I)
-              do H=1,init_numbcomp(I)
-                 masscoeff(I,H) = MASS(ITYPE(INDX_ATM(I,H)))*INVTOTBMASS(I)
-              end do
-           END DO
-        end if
+!        if(virtsite .eq. 0)then         
+!            CALL VIRTUAL_SITE_COM()
+!            IF(ISTOP .EQ. 1) STOP
+
+!        else
+
+!        end if
       END IF
 
       TIN = TEMP
@@ -166,7 +160,6 @@
       VTOR   = 0.0D0
       VOOP   = 0.0D0
       TOTMASS = 0.0D0
-!      write(*,*)vscale
 
 !     CALCULATE THE INITIAL TEMPERATURE AND KINETIC ENERGY
       DO 100 I = 1, NATOMS
@@ -176,8 +169,6 @@
 
       EK = 0.5D0 * EK
       TEMP = EK * MKTEMP
-
-write(*,*)ek,temp * TEMPSCALE
 
 !     CREATE LISTS OF BONDS, ANGLES AND TORSIONS
       CALL SETLIS

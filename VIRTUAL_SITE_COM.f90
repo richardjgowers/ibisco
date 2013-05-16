@@ -37,7 +37,6 @@
 
 NBEAD = 15
 
-
 OPEN(UNIT=10,FILE=name_file_virt,STATUS='old', IOSTAT=iost)
 
 IF (iost .NE. 0) THEN
@@ -70,6 +69,7 @@ ALLOCATE(INVTOTBMASS(NVIRTA))
 ALLOCATE(VITYPE(NVIRTA))
 allocate(init_numbcomp(nvirta))
 ALLOCATE(masscoeff(NVIRTA,NBEAD))
+
 
 TOTBMASS = 0
 INVTOTBMASS = 0
