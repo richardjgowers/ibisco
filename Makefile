@@ -19,7 +19,7 @@ SRCS =    moduleparsing.f90 module_var.F90  module_RNEMD.f90  module_PAIR.f90   
           NON_BOND_ARRAY_BEAD_SEC.f90 NON_BOND_FIRST.f90 LOOP_HYBR_MTS4.f90 LOOP_HYBR_MTS5.f90 \
           FORCE_HYBR_PRE-MTS.f90 LOOP_HYBR_MTS4_COM.f90 FORCE_HYBR_PRE-MTS_COM.f90\
           LOOP_HYBR_MTS5_COM.f90 LOOP_HYBR_COM.f90 FORCE_HYBR_COM.f90 VIRTUAL_SITE_COM.f90 analysis.f90 SHAKE.f90 \
-          HFPBOND.f90 HFPANGLE.f90 HFPTOR.f90 HAVERAGE.f90 ibi-preprocess.h
+          HFPBOND.f90 HFPANGLE.f90 HFPTOR.f90 HAVERAGE.f90 ibi-preprocess.h RDVIRTUAL.f90 VIRTUAL_DEF.f90
 
 OBJS =    moduleparsing.o module_var.o  module_RNEMD.o \
           module_PAIR.o   main.o LOOP.o LOOPDPD.o WRITETP.o MAPS.o   FTABLE.o WRITETRJ.o \
@@ -38,7 +38,7 @@ OBJS =    moduleparsing.o module_var.o  module_RNEMD.o \
           config.o LOOP_HYBR_MTS3.o FORCE_HYBR_MTS_COM.o\
           NON_BOND_ARRAY_BEAD_SEC.o NON_BOND_FIRST.o FORCE_HYBR_PRE-MTS_COM.o\
           FORCE_HYBR_PRE-MTS.o LOOP_HYBR_MTS4_COM.o LOOP_HYBR_MTS5_COM.o LOOP_HYBR_COM.o FORCE_HYBR_COM.o VIRTUAL_SITE_COM.o \
-          analysis.o SHAKE.o HFPBOND.o HFPANGLE.o HFPTOR.o HAVERAGE.o
+          analysis.o SHAKE.o HFPBOND.o HFPANGLE.o HFPTOR.o HAVERAGE.o RDVIRTUAL.o VIRTUAL_DEF.o
 
 .SUFFIXES: $(SUFFIXES) .f90 .F90
 
@@ -52,8 +52,8 @@ F90 = gfortran
 #F90FLAGS = -openmp -openmp-report1 -O2
 #LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
-F90FLAGS = -fbounds-check -fopenmp -O2 -fbacktrace
-LDFLAGS = -fopenmp -O2 -fbacktrace
+F90FLAGS = -g -fopenmp -fbacktrace -fbounds-check
+LDFLAGS = -g -fopenmp -fbacktrace -fbounds-check
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #F90FLAGS  = -g -fbounds-check 
 #F90FLAGS = -O3

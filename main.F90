@@ -108,17 +108,26 @@
 !        end if
 !        IF(ISTOP .EQ. 1) STOP
 !      END IF
-
-!      READ CONFIG.NEW FILE (INITIAL VELOCITIES AND CONFIGURATIONS)
-      CALL  RDCOOR  ()
-      IF (ISTOP == 1) STOP
-
 !     STORE THE POSITION OF THE VIRTUAL SITE
       IF(IBRDESCR .EQ. 0) THEN
          CALL RDVIRTUAL()
       END IF
 
-      IF (IBRDESCR .EQ. 0) THEN   
+!      READ CONFIG.NEW FILE (INITIAL VELOCITIES AND CONFIGURATIONS)
+      CALL  RDCOOR  ()
+      IF (ISTOP == 1) STOP
+
+!     SHIFT THE ATOMS INSIDE THE BOX
+      CALL SHIFT ()
+
+!Calculate mass coeffs
+DO I=1,NVIRTA
+   DO J=1,init_numbcomp(I)
+      masscoeff(I,J) = MASS(ITYPE(INDX_ATM(I,J))) / MASS(VITYPE(I))
+   END DO
+END DO
+
+!      IF (IBRDESCR .EQ. 0) THEN   
 !        if(virtsite .eq. 0)then         
 !            CALL VIRTUAL_SITE_COM()
 !            IF(ISTOP .EQ. 1) STOP
@@ -126,7 +135,7 @@
 !        else
 
 !        end if
-      END IF
+!      END IF
 
       TIN = TEMP
       TFAC = DSQRT(TIN)
@@ -235,8 +244,7 @@
 
       CALL MAPS () 
 
-!     SHIFT THE ATOMS INSIDE THE BOX
-      CALL SHIFT ()
+
 
 
 !       MAKEING THE NEIGHBOUR LIST

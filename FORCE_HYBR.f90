@@ -11,6 +11,7 @@ REAL(kind=rkind) :: RXI, RYI, RZI, FXI, FYI, FZI, FXIJa, FYIJa, FZIJa
 REAL(kind=rkind) :: RXIJ, RYIJ, RZIJ, RIJSQ, FXIJ, FYIJ, FZIJ
 REAL(kind=rkind) :: VIJ, FIJ, RIJ
 REAL(kind=rkind), DIMENSION(NATOMS) :: FXL, FYL, FZL
+REAL(KIND=RKIND), DIMENSION(NVIRTA) :: FXVL, FYVL, FZVL
 !HFPANGLE
 REAL(KIND=RKIND) :: W, CT
 REAL(KIND=RKIND) :: RXKJ, RYKJ, RZKJ, RKJ, THETA
@@ -24,7 +25,6 @@ REAL(KIND=RKIND) :: FXIJK, FYIJK, FZIJK
  REAL(KIND=RKIND) :: FIJKL,VIJKL
  REAL(KIND=RKIND) :: FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
 
- REAL(KIND=RKIND), DIMENSION(NVIRTA) :: FXVL, FYVL, FZVL
 
 !      REAL,PARAMETER :: hrij = 0.4
 DO I = 1, NATOMS
@@ -32,6 +32,7 @@ DO I = 1, NATOMS
            FY(I) = 0.0D0
            FZ(I) = 0.0D0
 END DO
+
 
 VNBOND     = 0.0D0
 VBOND      = 0.0D0
@@ -88,7 +89,7 @@ DO A=1,NATOMS
    FZL(A) = 0.0
 END DO
 
-DO A=1,NVIRTA
+DO A = 1, NVIRTA
    FXVL(A) = 0.0
    FYVL(A) = 0.0
    FZVL(A) = 0.0
@@ -572,7 +573,6 @@ DO I=1,NATOMS
    FZL(I) = 0.0
 END DO
 
-
 !$OMP DO SCHEDULE(STATIC,1)
       DO  I = 1, NATOMS
 
@@ -622,19 +622,20 @@ DO I=1,NATOMS
 END DO
 
 !$OMP END PARALLEL
-      DO I = 1, NATOMS
 
-            PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
-            PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
-            PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
 
-            PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
-            PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
-            PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
 
-      END DO
+DO I = 1, NATOMS
 
-      RETURN
-      END SUBROUTINE FORCE_HYBR
+   PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
+   PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
+   PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
 
-!	*********************************************************************************************
+   PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
+   PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
+   PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
+   
+END DO
+
+RETURN
+END SUBROUTINE FORCE_HYBR
