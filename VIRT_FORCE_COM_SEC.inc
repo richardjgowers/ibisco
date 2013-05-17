@@ -32,20 +32,25 @@
                   NI = INT (RIJ / BINNB(TIJ))
 !     LINEAR INTEPOLATION
                   ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+
+                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0-ALPHA) &
                   + ALPHA*NBOND_FORCE(TIJ,NI+1) 
+
                   VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
                   + ALPHA*NBOND_POT(TIJ,NI+1)
+
                   VNBOND_MIX = VNBOND_MIX + VIJ
 
                   FXIJ  = FIJ * RXIJ
                   FYIJ  = FIJ * RYIJ
                   FZIJ  = FIJ * RZIJ
-                  FX(J) = FX(J) - FXIJ
-                  FY(J) = FY(J) - FYIJ
-                  FZ(J) = FZ(J) - FZIJ
-                  VFXNB(J) = VFXNB(J) + FXIJ
-                  VFYNB(J) = VFYNB(J) + FYIJ
+
+                  FXL(J) = FXL(J) - FXIJ
+                  FYL(J) = FYL(J) - FYIJ
+                  FZL(J) = FZL(J) - FZIJ
+
+                  VFXNB(J) = VFXNB(J) + FXIJ !FIX THIS
+                  VFYNB(J) = VFYNB(J) + FYIJ !Shouldn't this be -FXIJ?
                   VFZNB(J) = VFZNB(J) + FZIJ
                   
 !     ADD THE NON-BONDED PART OF PRESSURE
@@ -57,17 +62,21 @@
                   PT13 = PT13 + FZIJ * RXIJ
                   PT23 = PT23 + FZIJ * RYIJ
 
-                  DO H = 1,init_numbcomp(i)
-                     K = COMPCOM(I,H)
+                  FXVL(I) = FXVL(I) + FXIJ
+                  FYVL(I) = FYVL(I) + FYIJ
+                  FZVL(I) = FZVL(I) + FZIJ
+
+!                 DO H = 1,init_numbcomp(i)
+!                    K = COMPCOM(I,H)
 !     FXIJa = FXIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
 !     FYIJa = FYIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
 !     FZIJa = FZIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
 !     FX(COMPCOM(I,H)) = FX(COMPCOM(I,H)) + FXIJa
 !     FY(COMPCOM(I,H)) = FY(COMPCOM(I,H)) + FYIJa
 !     FZ(COMPCOM(I,H)) = FZ(COMPCOM(I,H)) + FZIJa
-                     FXL(K) = FXL(K) + FXIJ*masscoeff(I,H)
-                     FYL(K) = FYL(K) + FYIJ*masscoeff(I,H)
-                     FZL(K) = FZL(K) + FZIJ*masscoeff(I,H)
+!                    FXL(K) = FXL(K) + FXIJ*masscoeff(I,H)
+!                    FYL(K) = FYL(K) + FYIJ*masscoeff(I,H)
+!                    FZL(K) = FZL(K) + FZIJ*masscoeff(I,H)
 !     VFXNB(COMPCOM(J,H)) = FX(COMPCOM(J,H))
 !     VFYNB(COMPCOM(J,H)) = FY(COMPCOM(J,H))
 !     VFZNB(COMPCOM(J,H)) = FZ(COMPCOM(J,H))
@@ -91,7 +100,7 @@
 !     PT23 = PT23 + FZIJa * RYIJ
 
 
-                  END DO
+!                  END DO
 
                   
 

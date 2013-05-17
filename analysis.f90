@@ -36,7 +36,7 @@ vsite=1
 begVS=1
 endVS=0
 
-if(ibrdescr .eq. 0) then
+if(ibrdescr .eq. 100) then !FIX THIS
     write(213)nvirta
 !    write(213)name_label
     if(VIRTSITE .EQ. 0)then

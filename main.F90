@@ -123,6 +123,9 @@
 !     SHIFT THE ATOMS INSIDE THE BOX
       CALL SHIFT ()
 
+!Calculate centers of VS
+      CALL VIRTUAL_DEF()
+
 !Calculate mass coeffs
 DO I=1,NVIRTA
    sumtotBmass = 0.0D0

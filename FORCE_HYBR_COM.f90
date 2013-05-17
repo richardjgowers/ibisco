@@ -1,4 +1,3 @@
-
 SUBROUTINE FORCE_HYBR_COM ( )
 
   USE VAR
@@ -16,6 +15,7 @@ SUBROUTINE FORCE_HYBR_COM ( )
   REAL(KIND=RKIND) :: FXIJa, FYIJa, FZIJa
   !openmp variables
   REAL(KIND=RKIND), dimension(NATOMS) :: FXL, FYL, FZL
+  REAL(KIND=RKIND), DIMENSION(NVIRTA) :: FXVL, FYVL, FZVL
 
   !      REAL,PARAMETER :: hrij = 0.4
 
@@ -25,7 +25,7 @@ SUBROUTINE FORCE_HYBR_COM ( )
              FY(I) = 0.0D0
              FZ(I) = 0.0D0
 
-  END DO !100     CONTINUE
+  END DO
 
   VNBOND     = 0.0D0
   VBOND      = 0.0D0
@@ -48,12 +48,13 @@ SUBROUTINE FORCE_HYBR_COM ( )
 
 !$OMP PARALLEL DEFAULT(NONE) &
 !$OMP& SHARED(num_bead,natoms,INDEX_AB,POINT,RX,RY,RZ,ITYPE,VLIST,VLIST_SEC,LIST,INBONDT)&
-!$OMP& SHARED(VIRT_POINT,VIRT_POINT_SEC,VITYPE,VIRTRX,VIRTRY,VIRTRZ,COMPCOM)&
+!$OMP& SHARED(VIRT_POINT,VIRT_POINT_SEC,VITYPE,VIRTRX,VIRTRY,VIRTRZ,COMPCOM,indx_atm)&
 !$OMP& SHARED(BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ,FCUT,FCUTA,FCUTB)&
 !$OMP& SHARED(RNBOND,BINNB,NBOND_FORCE,NBOND_POT,NDATNB,timestepcheck,masscoeff)&
 !$OMP& SHARED(init_numbcomp,NVIRTA)&
-!$OMP& PRIVATE(VJBEG,VJEND,VJNAB)&
-!$OMP& PRIVATE(hh,i,K,JBEG,JEND,JNAB,RXI,RYI,RZI,FXI,FYI,FZI,FXL,FYL,FZL)&
+!$OMP& PRIVATE(A,VJBEG,VJEND,VJNAB)&
+!$OMP& PRIVATE(hh,I,K,JBEG,JEND,JNAB,RXI,RYI,RZI,FXI,FYI,FZI)&
+!$OMP& PRIVATE(FXL,FYL,FZL,FXVL,FYVL,FZVL)&
 !$OMP& PRIVATE(TI,J,TJ,TIJ,RXIJ,RYIJ,RZIJ,RIJSQ,RIJ)&
 !$OMP& PRIVATE(NI,ALPHA,FIJ,VIJ,FXIJ,FYIJ,FZIJ)&
 !$OMP& REDUCTION(+:VNBOND_MIX,VNBOND_CG,VNBOND)&
@@ -62,9 +63,15 @@ SUBROUTINE FORCE_HYBR_COM ( )
 !$OMP& REDUCTION(+:FX,FY,FZ)
 
 DO A=1,NATOMS
-   FXL(A) = 0.0
-   FYL(A) = 0.0
-   FZL(A) = 0.0
+   FXL(A) = 0.0D0
+   FYL(A) = 0.0D0
+   FZL(A) = 0.0D0
+END DO
+
+DO A=1,NVIRTA
+   FXVL(A) = 0.0D0
+   FYVL(A) = 0.0D0
+   FZVL(A) = 0.0D0
 END DO
 
   !###############################################################################
@@ -90,9 +97,9 @@ END DO
         !FXI = FX(I)
         !FYI = FY(I)
         !FZI = FZ(I)
-        FXI = 0.0
-        FYI = 0.0
-        FZI = 0.0
+        FXI = 0.0D0
+        FYI = 0.0D0
+        FZI = 0.0D0
         TI = ITYPE(I)
 
         DO JNAB = JBEG, JEND !Do 199
@@ -105,12 +112,15 @@ END DO
            TIJ = INBONDT(TI, TJ)
 
            IF( TIJ .NE. 0) THEN	
+
               RXIJ = RXI - RX(J)
               RYIJ = RYI - RY(J)
               RZIJ = RZI - RZ(J)
+
               RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
               RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
               RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
+
               RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
               IF ( RIJSQ < FCUTB ) THEN
                  RIJ = DSQRT(RIJSQ)
@@ -126,9 +136,9 @@ END DO
                  !		LINEAR INTEPOLATION
 
                  ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                       + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                       + ALPHA*NBOND_POT(TIJ,NI+1)
 
                  VNBOND_CG = VNBOND_CG + VIJ
@@ -212,9 +222,9 @@ END DO
 !        FXI = FX(I)
 !        FYI = FY(I)
 !        FZI = FZ(I)
-        FXI = 0.0
-        FYI = 0.0
-        FZI = 0.0
+        FXI = 0.0D0
+        FYI = 0.0D0
+        FZI = 0.0D0
         TI = ITYPE(I)
 
         DO JNAB = JBEG, JEND !Do 209
@@ -247,9 +257,9 @@ END DO
                  !		LINEAR INTEPOLATION
 
                  ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                       + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                       + ALPHA*NBOND_POT(TIJ,NI+1)
                  VNBOND = VNBOND + VIJ
                  FXIJ  = FIJ * RXIJ
@@ -314,12 +324,24 @@ END DO
 !###############################################################################
 
 !    CALL VIRT_FORCE_COM_SEC (FCUTB)
+FCUT = FCUTB
 !$OMP DO SCHEDULE(STATIC,1)
 DO I=1,NVIRTA
   include 'VIRT_FORCE_COM_SEC.inc' 
 END DO
 !$OMP END DO
 
+!Distribute forces from VS onto atoms underneath
+DO I=1,NVIRTA
+   DO J=1,init_numbcomp(I)
+      A = INDX_ATM(I,J)
+      FXL(A) = FXL(A) + FXVL(I)*masscoeff(I,J)
+      FYL(A) = FYL(A) + FYVL(I)*masscoeff(I,J)
+      FZL(A) = FZL(A) + FZVL(I)*masscoeff(I,J)
+   END DO
+END DO
+
+!Collate local forces onto global list
 DO A=1,NATOMS
    FX(A) = FX(A) + FXL(A) 
    FY(A) = FY(A) + FYL(A) 
@@ -327,7 +349,6 @@ DO A=1,NATOMS
 END DO
 
 !$OMP END PARALLEL
-
 
 !	SAVE THE NON-BONDED PART OF FORCE
 	DO I=1, NATOMS
