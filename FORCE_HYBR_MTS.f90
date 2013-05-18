@@ -4,7 +4,7 @@
       USE VAR
       IMPLICIT NONE
 
-      INTEGER :: I, J, K, M, L, hh, h
+      INTEGER :: I, J, K, M, L, hh, h, atm, tatm
 	  INTEGER :: JBEG, JEND, JNAB, TI, TJ, TIJ, NI
       REAL(KIND=RKIND) :: RCUTSQ, RCUTIBRSQ, ALPHA, FCUT
       REAL(KIND=RKIND) :: RXI, RYI, RZI, FXI, FYI, FZI, FXIJa, FYIJa, FZIJa
@@ -41,11 +41,11 @@ IF( JBEG .LE. JEND ) THEN
 
     RXI = RX(I)
     RYI = RY(I)
-	RZI = RZ(I)
-	FXI = FX(I)
-    FYI = FY(I)
-    FZI = FZ(I)
-	TI = ITYPE(I)
+    RZI = RZ(I)
+    FXI = 0.0D0
+    FYI = 0.0D0
+    FZI = 0.0D0
+    TI = ITYPE(I)
 
     DO 199 JNAB = JBEG, JEND
 
@@ -109,7 +109,9 @@ IF( JBEG .LE. JEND ) THEN
                 END IF   ! endif  IF ( RIJSQ < RCUTSQ )
             END IF     ! endif   IF( TIJ .NE. 0) THEN
     else
-	   	    TIJ = INBONDT(TI, vitype(virtual_center(J)))
+       K = VIRT_CENTER(J)
+       TJ = VITYPE(K)
+       TIJ = INBONDT(TI,TJ)
 !write(3000,*)'BEAD', I,J
  	        IF( TIJ .NE. 0) THEN	
                 RXIJ = RXI - RX(J)
@@ -137,29 +139,27 @@ IF( JBEG .LE. JEND ) THEN
 		            VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
 		                      + ALPHA*NBOND_POT(TIJ,NI+1)
 		            VNBOND = VNBOND + VIJ
-		            FXIJ  = FIJ * RXIJ
-                    FYIJ  = FIJ * RYIJ
-                    FZIJ  = FIJ * RZIJ
+              FXIJ  = FIJ * RXIJ
+              FYIJ  = FIJ * RYIJ
+              FZIJ  = FIJ * RZIJ
 
                     FXI   = FXI + FXIJ
                     FYI   = FYI + FYIJ
                     FZI   = FZI + FZIJ
 
-                    DO H = 1,init_numbcomp(virtual_center(J))
-!write(3000,*)INDX_ATM(virtual_center(j),H),I,J
-			            FXIJa = FXIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-			            FYIJa = FYIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-			            FZIJa = FZIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-                        FX(INDX_ATM(virtual_center(J),H)) = FX(INDX_ATM(virtual_center(J),H)) - FXIJa
-                        FY(INDX_ATM(virtual_center(J),H)) = FY(INDX_ATM(virtual_center(J),H)) - FYIJa
-                        FZ(INDX_ATM(virtual_center(J),H)) = FZ(INDX_ATM(virtual_center(J),H)) - FZIJa
+                    DO H = 1,VIRT_NUMATOMS(TJ)
+                       atm = VIRT_ATM_IND(K,H)
+                       tatm = ITYPE(atm)
+                       FX(atm) = FX(atm) - FXIJ*VIRT_MASSCOEFF(TJ,tatm)
+                       FY(atm) = FY(atm) - FYIJ*VIRT_MASSCOEFF(TJ,tatm)
+                       FZ(atm) = FZ(atm) - FZIJ*VIRT_MASSCOEFF(TJ,tatm)
                     END DO
 		
 !		ADD THE NON-BONDED PART OF PRESSURE
                     PT11 = PT11 + FXIJ * RXIJ
                     PT22 = PT22 + FYIJ * RYIJ
                     PT33 = PT33 + FZIJ * RZIJ
- 	                PT12 = PT12 + FYIJ * RXIJ
+                    PT12 = PT12 + FYIJ * RXIJ
                     PT13 = PT13 + FZIJ * RXIJ
                     PT23 = PT23 + FZIJ * RYIJ
 
@@ -168,9 +168,9 @@ IF( JBEG .LE. JEND ) THEN
         end if ! if(type_label(j) .eq. 1)
 199     CONTINUE
 
-        FX(I) = FXI
-        FY(I) = FYI
-        FZ(I) = FZI
+        FX(I) = FX(I) + FXI
+        FY(I) = FY(I) + FYI
+        FZ(I) = FZ(I) + FZI
 
     ENDIF
 200     CONTINUE
@@ -190,11 +190,11 @@ IF( JBEG .LE. JEND ) THEN
 
     RXI = RX(I)
     RYI = RY(I)
-	RZI = RZ(I)
-	FXI = FX(I)
-    FYI = FY(I)
-    FZI = FZ(I)
-	TI = ITYPE(I)
+    RZI = RZ(I)
+    FXI = 0.0D0
+    FYI = 0.0D0
+    FZI = 0.0D0
+    TI = ITYPE(I)
 
     DO 219 JNAB = JBEG, JEND
 
@@ -207,22 +207,22 @@ IF( JBEG .LE. JEND ) THEN
 	   	    TIJ = INBONDT(TI, TJ)
  	        IF( TIJ .NE. 0) THEN	
                 RXIJ = RXI - RX(J)
-           	    RYIJ = RYI - RY(J)
-           	    RZIJ = RZI - RZ(J)
-           	    RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-           	    RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-           	    RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-           	    RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
- 		        IF ( RIJSQ < FCUTA ) THEN
-		            RIJ = DSQRT(RIJSQ)
-                    NI = INT (RIJ / BINNB(TIJ))
-                        IF(NI .GT. NDATNB(TIJ)) THEN
-                            WRITE(*,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
-                            WRITE(*,*)'Atom/Bead ',I,J,'RIJ ',RIJ
-                            WRITE(1,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
-                            WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
-                            STOP
-                        END IF
+                RYIJ = RYI - RY(J)
+                RZIJ = RZI - RZ(J)
+                RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
+                RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
+                RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
+                RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
+                IF ( RIJSQ < FCUTA ) THEN
+                   RIJ = DSQRT(RIJSQ)
+                   NI = INT (RIJ / BINNB(TIJ))
+                   IF(NI .GT. NDATNB(TIJ)) THEN
+                      WRITE(*,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
+                      WRITE(*,*)'Atom/Bead ',I,J,'RIJ ',RIJ
+                      WRITE(1,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
+                      WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
+                      STOP
+                   END IF
                
 !		LINEAR INTEPOLATION
                     ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
@@ -231,23 +231,23 @@ IF( JBEG .LE. JEND ) THEN
 		            VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
 		                      + ALPHA*NBOND_POT(TIJ,NI+1)
 		            VNBOND = VNBOND + VIJ
-		            FXIJ  = FIJ * RXIJ
-                    FYIJ  = FIJ * RYIJ
-                    FZIJ  = FIJ * RZIJ
-   
-!     QUI HO TOLTO LA PARTE DOVE C'ERA IL DPD, TANTO PER ORA NON SERVE
-                    FXI   = FXI + FXIJ
-                    FYI   = FYI + FYIJ
-                    FZI   = FZI + FZIJ
-                    FX(J) = FX(J) - FXIJ
-                    FY(J) = FY(J) - FYIJ
-                    FZ(J) = FZ(J) - FZIJ
+              FXIJ  = FIJ * RXIJ
+              FYIJ  = FIJ * RYIJ
+              FZIJ  = FIJ * RZIJ
+              
+              !     QUI HO TOLTO LA PARTE DOVE C'ERA IL DPD, TANTO PER ORA NON SERVE
+              FXI   = FXI + FXIJ
+              FYI   = FYI + FYIJ
+              FZI   = FZI + FZIJ
+              FX(J) = FX(J) - FXIJ
+              FY(J) = FY(J) - FYIJ
+              FZ(J) = FZ(J) - FZIJ
 		
 !		ADD THE NON-BONDED PART OF PRESSURE
                     PT11 = PT11 + FXIJ * RXIJ
                     PT22 = PT22 + FYIJ * RYIJ
                     PT33 = PT33 + FZIJ * RZIJ
- 	                PT12 = PT12 + FYIJ * RXIJ
+                    PT12 = PT12 + FYIJ * RXIJ
                     PT13 = PT13 + FZIJ * RXIJ
                     PT23 = PT23 + FZIJ * RYIJ
 
@@ -255,55 +255,55 @@ IF( JBEG .LE. JEND ) THEN
         END IF     ! endif   IF( TIJ .NE. 0) THEN
 
         else ! Here we have the interaction with beads
+           K = VIRT_CENTER(I) !K is the virtual site 
+           TI = VITYPE(K)
 
-		    TJ = ITYPE(J)
-	   	    TIJ = INBONDT(vitype(virtual_center(I)), TJ)
+           TJ = ITYPE(J)
+           TIJ = INBONDT(TI,TJ)
 
- 	        IF( TIJ .NE. 0) THEN	
-                RXIJ = RXI - RX(J)
-           	    RYIJ = RYI - RY(J)
-           	    RZIJ = RZI - RZ(J)
-           	    RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-           	    RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-           	    RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-           	    RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
- 		        IF ( RIJSQ < FCUTB ) THEN
-		            RIJ = DSQRT(RIJSQ)
-                    NI = INT (RIJ / BINNB(TIJ))
-                        IF(NI .GT. NDATNB(TIJ)) THEN
-                            WRITE(*,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
-                            WRITE(*,*)'Atom/Bead ',I,J,'RIJ ',RIJ
-                            WRITE(1,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
-                            WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
-                            STOP
-                        END IF
+           IF( TIJ .NE. 0) THEN	
+              RXIJ = RXI - RX(J)
+              RYIJ = RYI - RY(J)
+              RZIJ = RZI - RZ(J)
+              RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
+              RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
+              RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
+              RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
+              IF ( RIJSQ < FCUTB ) THEN
+                 RIJ = DSQRT(RIJSQ)
+                 NI = INT (RIJ / BINNB(TIJ))
+                 IF(NI .GT. NDATNB(TIJ)) THEN
+                    WRITE(*,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
+                    WRITE(*,*)'Atom/Bead ',I,J,'RIJ ',RIJ
+                    WRITE(1,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
+                    WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
+                    STOP
+                 END IF
                
 !		LINEAR INTEPOLATION
-                    ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                    FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
-                              + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-		            VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
-		                      + ALPHA*NBOND_POT(TIJ,NI+1)
-		            VNBOND = VNBOND + VIJ
-		            FXIJ  = FIJ * RXIJ
-                    FYIJ  = FIJ * RYIJ
-                    FZIJ  = FIJ * RZIJ
+                 ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
+                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                      + ALPHA*NBOND_FORCE(TIJ,NI+1) 
+                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                      + ALPHA*NBOND_POT(TIJ,NI+1)
+                 VNBOND = VNBOND + VIJ
+                 FXIJ  = FIJ * RXIJ
+                 FYIJ  = FIJ * RYIJ
+                 FZIJ  = FIJ * RZIJ
 
-                    DO H = 1,init_numbcomp(virtual_center(I))
-!write(1000,*)INDX_ATM(virtual_center(I),H),I,J
-			            FXIJa = FXIJ*MASS(ITYPE(INDX_ATM(virtual_center(I),H)))*INVTOTBMASS(virtual_center(I))
-			            FYIJa = FYIJ*MASS(ITYPE(INDX_ATM(virtual_center(I),H)))*INVTOTBMASS(virtual_center(I))
-			            FZIJa = FZIJ*MASS(ITYPE(INDX_ATM(virtual_center(I),H)))*INVTOTBMASS(virtual_center(I))
-                        FX(INDX_ATM(virtual_center(I),H)) = FX(INDX_ATM(virtual_center(I),H)) + FXIJa
-                        FY(INDX_ATM(virtual_center(I),H)) = FY(INDX_ATM(virtual_center(I),H)) + FYIJa
-                        FZ(INDX_ATM(virtual_center(I),H)) = FZ(INDX_ATM(virtual_center(I),H)) + FZIJa
+                    DO H = 1,VIRT_NUMATOMS(TI)
+                       atm = VIRT_ATM_IND(K,H)
+                       tatm = ITYPE(atm)
+                       FX(atm) = FX(atm) + FXIJ*VIRT_MASSCOEFF(TI,tatm)
+                       FY(atm) = FY(atm) + FYIJ*VIRT_MASSCOEFF(TI,tatm)
+                       FZ(atm) = FZ(atm) + FZIJ*VIRT_MASSCOEFF(TI,tatm)
                     END DO
 		
 !		ADD THE NON-BONDED PART OF PRESSURE
                     PT11 = PT11 + FXIJ * RXIJ
                     PT22 = PT22 + FYIJ * RYIJ
                     PT33 = PT33 + FZIJ * RZIJ
- 	                PT12 = PT12 + FYIJ * RXIJ
+                    PT12 = PT12 + FYIJ * RXIJ
                     PT13 = PT13 + FZIJ * RXIJ
                     PT23 = PT23 + FZIJ * RYIJ
 
@@ -312,9 +312,9 @@ IF( JBEG .LE. JEND ) THEN
         end if ! if(type_label(j) .eq. 1)
 219     CONTINUE
 
-            FX(I) = FXI
-            FY(I) = FYI
-            FZ(I) = FZI
+            FX(I) = FX(I) + FXI
+            FY(I) = FY(I) + FYI
+            FZ(I) = FZ(I) + FZI
 
     ENDIF
 220     CONTINUE
@@ -335,29 +335,29 @@ IF( JBEG .LE. JEND ) THEN
 
     RXI = RX(I)
     RYI = RY(I)
-	RZI = RZ(I)
-	FXI = FX(I)
+    RZI = RZ(I)
+    FXI = FX(I)
     FYI = FY(I)
     FZI = FZ(I)
-	TI = ITYPE(I)
+    TI = ITYPE(I)
 
     DO 209 JNAB = JBEG, JEND
 
-!		TAKE THE INDEX OF NEIGHBOUR ATOMS
-		J = LIST(JNAB)
-	
-!		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
-		TJ = ITYPE(J)
-	   	TIJ = INBONDT(TI, TJ)
-		
- 	    IF( TIJ .NE. 0) THEN	
-            RXIJ = RXI - RX(J)
-           	RYIJ = RYI - RY(J)
-           	RZIJ = RZI - RZ(J)
-           	RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-           	RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-           	RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-           	RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
+       !		TAKE THE INDEX OF NEIGHBOUR ATOMS
+       J = LIST(JNAB)
+
+       !		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
+       TJ = ITYPE(J)
+       TIJ = INBONDT(TI, TJ)
+
+       IF( TIJ .NE. 0) THEN	
+         RXIJ = RXI - RX(J)
+         RYIJ = RYI - RY(J)
+         RZIJ = RZI - RZ(J)
+         RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
+         RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
+         RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
+         RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
  		    IF ( RIJSQ < FCUTA ) THEN
 		        RIJ = DSQRT(RIJSQ)
                 NI = INT (RIJ / BINNB(TIJ))
@@ -371,15 +371,15 @@ IF( JBEG .LE. JEND ) THEN
                
 !		LINEAR INTEPOLATION
 
-                ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
-                          + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-		        VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
-		                  + ALPHA*NBOND_POT(TIJ,NI+1)
-		        VNBOND = VNBOND + VIJ
-		        FXIJ  = FIJ * RXIJ
-                FYIJ  = FIJ * RYIJ
-                FZIJ  = FIJ * RZIJ
+                    ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
+                    FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                         + ALPHA*NBOND_FORCE(TIJ,NI+1) 
+                    VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                         + ALPHA*NBOND_POT(TIJ,NI+1)
+                    VNBOND = VNBOND + VIJ
+                    FXIJ  = FIJ * RXIJ
+                    FYIJ  = FIJ * RYIJ
+                    FZIJ  = FIJ * RZIJ
    
 !     QUI HO TOLTO LA PARTE DOVE C'ERA IL DPD, TANTO PER ORA NON SERVE
 
@@ -394,7 +394,7 @@ IF( JBEG .LE. JEND ) THEN
                 PT11 = PT11 + FXIJ * RXIJ
                 PT22 = PT22 + FYIJ * RYIJ
                 PT33 = PT33 + FZIJ * RZIJ
- 	            PT12 = PT12 + FYIJ * RXIJ
+                PT12 = PT12 + FYIJ * RXIJ
                 PT13 = PT13 + FZIJ * RXIJ
                 PT23 = PT23 + FZIJ * RYIJ
 

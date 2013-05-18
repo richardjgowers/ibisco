@@ -35,7 +35,7 @@ ALLOCATE(VIRT_NUMATOMS(NTYPE)) !Number of atoms in different virtual site types
 ALLOCATE(VIRT_MASS(NTYPE), VIRT_INVMASS(NTYPE)) !Mass of VS
 ALLOCATE(VIRT_MASSCOEFF(NTYPE,NTYPE)) !Masscoefficient for atom in VS. Usage VIRT_MASSCOEFF(virt type, atom type)
 ALLOCATE(VITYPE(NVIRTA)) !Type of each virtual site.  Types are the same as in interaction file
-ALLOCATE(VIRT_CENTER(NVIRTA) !Center is 0 for COM VS or index of atom
+ALLOCATE(VIRT_CENTER(NVIRTA)) !Center is 0 for COM VS or index of atom
 ALLOCATE(VIRT_VS_IND(NATOMS)) !Returns the VS that an atom belongs to
 ALLOCATE(INDX_ATM(NVIRTA,MAX_ATOMS)) !Temp array for reading info
 !ALLOCATE(VIRT_ATM_IND(NVIRTA,ACTUAL_MAX)) !Returns the index of atoms in a VS
@@ -50,9 +50,10 @@ ALLOCATE(VIRT_POINT_SEC(NVIRTA+1))
 ALLOCATE(VCELL(NVIRTA))
 ALLOCATE(VLCLIST(NVIRTA))
 
-include 'virtual_rdcoor.inc'
+
 
 indx_atm = 0
+VIRT_VS_IND = 0
 
 !Read virtual site information
 VIRT_NUMATOMS = 0
@@ -65,6 +66,8 @@ DO I=1,NVIRTA
       ISTOP = 1
       RETURN
    END IF
+
+   VIRT_VS_IND(VIRT_CENTER(I)) = I
 
    IF(NUMATOM .gt. MAX_ATOMS) THEN
       WRITE(*,*) 'Number of atoms in VS exceeds maximum, check virtual file'
@@ -83,6 +86,9 @@ DO I=1,NVIRTA
    END IF
 END DO
 
+!Populates some information for neighbour list creation
+include 'virtual_rdcoor.inc'
+
 !Transfer atom index info into smallest array possible
 ACTUAL_MAX = 0
 ACTUAL_MAX = MAXVAL(VIRT_NUMATOMS) !Find the maximum number of atoms in a VS
@@ -94,18 +100,9 @@ DO I=1,NVIRTA
       K = INDX_ATM(I,J)
 
       VIRT_ATM_IND(I,J) = K
-      VIRT_VS_IND(K) = I
+!      VIRT_VS_IND(K) = I
    END DO
 END DO
-
-!Generate VS index for all atoms in a VS
-VIRT_VS_IND = 0
-DO I=1,NVIRTA
-   DO J=1,NUMATOMS(VITYPE(I))
-      VIRT_VS_IND(VIRT_ATM_IND(I,J)) = I
-   END DO
-END DO
-
 
 !Calculate VS mass information
 !VS mass is taken as sum of atoms within and NOT the mass of the bead it represents
@@ -132,7 +129,7 @@ DO I=1,NVIRTA
    END IF
 
    DO J=1,VIRT_NUMATOMS(TI)
-      TJ = ITYPE(VIRT_ATM_INDX(I,J))
+      TJ = ITYPE(VIRT_ATM_IND(I,J))
       VIRT_MASSCOEFF(TI,TJ) = MASS(TJ)*VIRT_INVMASS(TI)
    END DO
 END DO

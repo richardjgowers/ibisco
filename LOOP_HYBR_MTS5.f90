@@ -18,7 +18,7 @@
       USE VAR
       USE RNEMD
       IMPLICIT NONE
-      INTEGER :: I,IL, JL, HL,IP, HH, j, h
+      INTEGER :: I,IL, JL, HL,IP, HH, j, h, atm, tatm, K
 	  INTEGER :: JBEG, JEND, JNAB, TI, TJ, TIJ, NI
       REAL(KIND=RKIND) :: SUMTOTX, SUMTOTY, SUMTOTZ, K1,K2,K3,K4,K5
       REAL(KIND=RKIND) :: SPX, SPY, SPZ
@@ -120,8 +120,10 @@ IF( JBEG .LE. JEND ) THEN
 		J = LIST(JNAB)
 
 	    if(type_label(j) .eq. 1)then
-	   	    TIJ = INBONDT(TI, vitype(virtual_center(J)))
-!write(3000,*)'BEAD', I,J
+       K = VIRT_CENTER(J)
+       TJ = VITYPE(K)
+       TIJ = INBONDT(TI,TJ)
+
  	        IF( TIJ .NE. 0) THEN	
                 RXIJ = RXI - RX(J)
            	    RYIJ = RYI - RY(J)
@@ -156,13 +158,12 @@ IF( JBEG .LE. JEND ) THEN
                     FYI   = FYI + FYIJ
                     FZI   = FZI + FZIJ
 
-                    DO H = 1,init_numbcomp(virtual_center(J))
-			            FXIJa = FXIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-			            FYIJa = FYIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-			            FZIJa = FZIJ*MASS(ITYPE(INDX_ATM(virtual_center(J),H)))*INVTOTBMASS(virtual_center(J))
-                        FX(INDX_ATM(virtual_center(J),H)) = FX(INDX_ATM(virtual_center(J),H)) - FXIJa
-                        FY(INDX_ATM(virtual_center(J),H)) = FY(INDX_ATM(virtual_center(J),H)) - FYIJa
-                        FZ(INDX_ATM(virtual_center(J),H)) = FZ(INDX_ATM(virtual_center(J),H)) - FZIJa
+                    DO H = 1,VIRT_NUMATOMS(TJ)
+                       atm = VIRT_ATM_IND(K,H)
+                       tatm = ITYPE(atm)
+                       FX(atm) = FX(atm) - FXIJ*VIRT_MASSCOEFF(TJ,tatm)
+                       FY(atm) = FY(atm) - FYIJ*VIRT_MASSCOEFF(TJ,tatm)
+                       FZ(atm) = FZ(atm) - FZIJ*VIRT_MASSCOEFF(TJ,tatm)
                     END DO
 
                 END IF   ! endif  IF ( RIJSQ < RCUTB )

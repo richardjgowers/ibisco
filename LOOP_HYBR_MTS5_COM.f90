@@ -18,7 +18,7 @@
       USE VAR
       USE RNEMD
       IMPLICIT NONE
-      INTEGER :: I,IL, JL, HL,IP,HH
+      INTEGER :: I,IL, JL, HL,IP,HH, KL, TI
       INTEGER :: NOUP = 0
       REAL(KIND=RKIND) :: SUMTOTX, SUMTOTY, SUMTOTZ,K1,K2,K3,K4,K5
       REAL(KIND=RKIND) :: SPX, SPY, SPZ
@@ -63,14 +63,18 @@ do i = 1, NSTEP
                 SUMTOTX = 0.0D0
                 SUMTOTY = 0.0D0
                 SUMTOTZ = 0.0D0
-                DO HL = 1,init_numbcomp(il)
-                    SUMTOTX = SUMTOTX+MASS(ITYPE(COMPCOM(IL,HL)))*SX(COMPCOM(IL,HL))
-                    SUMTOTY = SUMTOTY+MASS(ITYPE(COMPCOM(IL,HL)))*SY(COMPCOM(IL,HL))
-                    SUMTOTZ = SUMTOTZ+MASS(ITYPE(COMPCOM(IL,HL)))*SZ(COMPCOM(IL,HL))
+
+                DO JL = 1,VIRT_NUMATOMS(TI)
+                   KL = VIRT_ATM_IND(IL,JL)
+                   SUMTOTX = SUMTOTX+MASS(ITYPE(KL))*SX(KL)
+                   SUMTOTY = SUMTOTY+MASS(ITYPE(KL))*SY(KL)
+                   SUMTOTZ = SUMTOTZ+MASS(ITYPE(KL))*SZ(KL)
                 END DO
-                VIRTRX(IL) = SUMTOTX*INVTOTBMASS(IL)
-                VIRTRY(IL) = SUMTOTY*INVTOTBMASS(IL)
-                VIRTRZ(IL) = SUMTOTZ*INVTOTBMASS(IL)
+
+                VIRTRX(IL) = SUMTOTX*VIRT_INVMASS(TI)
+                VIRTRY(IL) = SUMTOTY*VIRT_INVMASS(TI)
+                VIRTRZ(IL) = SUMTOTZ*VIRT_INVMASS(TI)
+
                 IF ((VIRTRX(IL)> BOXX2).OR.(VIRTRX(IL) < -BOXX2).OR.(VIRTRY(IL)> BOXY2) &
                       .OR.(VIRTRY(IL)< -BOXY2).OR.(VIRTRZ(IL)> BOXZ2).OR.(VIRTRZ(IL)<-BOXZ2)) THEN
                     RPX = VIRTRX(IL)/BOXX2
@@ -99,14 +103,19 @@ IF (MOD(I, VUPDATE) .EQ. 0) THEN
             SUMTOTX = 0.0D0
             SUMTOTY = 0.0D0
             SUMTOTZ = 0.0D0
-            DO HL = 1,init_numbcomp(il)
-                SUMTOTX = SUMTOTX+MASS(ITYPE(COMPCOM(IL,HL)))*SX(COMPCOM(IL,HL))
-                SUMTOTY = SUMTOTY+MASS(ITYPE(COMPCOM(IL,HL)))*SY(COMPCOM(IL,HL))
-                SUMTOTZ = SUMTOTZ+MASS(ITYPE(COMPCOM(IL,HL)))*SZ(COMPCOM(IL,HL))
+
+            DO JL = 1,VIRT_NUMATOMS(TI)
+               KL = VIRT_ATM_IND(IL,JL)
+               SUMTOTX = SUMTOTX+MASS(ITYPE(KL))*SX(KL)
+               SUMTOTY = SUMTOTY+MASS(ITYPE(KL))*SY(KL)
+               SUMTOTZ = SUMTOTZ+MASS(ITYPE(KL))*SZ(KL)
             END DO
-            VIRTRX(IL) = SUMTOTX*INVTOTBMASS(IL)
-            VIRTRY(IL) = SUMTOTY*INVTOTBMASS(IL)
-            VIRTRZ(IL) = SUMTOTZ*INVTOTBMASS(IL)
+
+            VIRTRX(IL) = SUMTOTX*VIRT_INVMASS(TI)
+            VIRTRY(IL) = SUMTOTY*VIRT_INVMASS(TI)
+            VIRTRZ(IL) = SUMTOTZ*VIRT_INVMASS(TI)
+
+
             IF ((VIRTRX(IL)> BOXX2).OR.(VIRTRX(IL) < -BOXX2).OR.(VIRTRY(IL)> BOXY2) &
                 .OR.(VIRTRY(IL)< -BOXY2).OR.(VIRTRZ(IL)> BOXZ2).OR.(VIRTRZ(IL)<-BOXZ2)) THEN
                 RPX = VIRTRX(IL)/BOXX2

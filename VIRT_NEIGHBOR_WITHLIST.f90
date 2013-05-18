@@ -84,7 +84,7 @@ VNLIST = 0
 		                ENDIF
                     ENDIF
                 else    ! If jp is an Atoms it checks if it is a VS and then if is within the cut-off and possibly add it in the Vlist
-                     if(virtual_center(jp) .ne. 0)then
+                     if(VIRT_VS_IND(jp) .ne. 0)then
 		                RXIJ = RXI - RX(JP)
 		                RYIJ = RYI - RY(JP)
 		                RZIJ = RZI - RZ(JP)
@@ -136,7 +136,7 @@ VNLIST = 0
                             ENDIF
                         ENDIF
                     else
-                        if(virtual_center(jp) .ne. 0)then
+                        if(VIRT_VS_IND(jp) .ne. 0)then
 		                    RXIJ = RXI - RX(JP)
 		                    RYIJ = RYI - RY(JP)
 		                    RZIJ = RZI - RZ(JP)
@@ -164,7 +164,7 @@ VNLIST = 0
         RZI = RZ(IP)           
         JP = LCLIST(IP)
 
-        if(virtual_center(ip) .ne. 0)then
+        if(VIRT_VS_IND(ip) .ne. 0)then
 
 ! If the atom in a VS also the neighbour list has to include beads also
 
@@ -247,7 +247,7 @@ VNLIST = 0
               ENDIF  !300
            END DO
 
-        else !if(virtual_center(ip) .ne. 0)
+        else !if(VIRT_VS_IND(ip) .ne. 0)
 
  200    IF (JP .GT. 0) THEN
             do
@@ -315,7 +315,7 @@ VNLIST = 0
                 end do
               ENDIF  !300
            END DO
-    end if !if(virtual_center(ip) .ne. 0)
+    end if !if(VIRT_VS_IND(ip) .ne. 0)
 END IF ! (TYPE_LABEL(IP) .EQ. 2) THEN
         END DO ! do ip=1,natoms
 

@@ -5,6 +5,7 @@ use var
 implicit none
 
 integer :: i,j,l,k,inA,inF,q,vsite,endVS,begVS
+integer :: init_numbcomp(10) = 0, indx_atm(10,10) = 0
 
 OPEN ( unit=213 , FILE = 'analysis.conf',status='replace', form='UNFORMATTED', access='SEQUENTIAL')
 

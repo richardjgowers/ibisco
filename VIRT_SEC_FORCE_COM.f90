@@ -5,7 +5,7 @@
 
       INTEGER :: I,J,K,H
       INTEGER :: VJBEG, VJEND, VJNAB
-      INTEGER :: JBEG, JEND, JNAB, TI, TJ, TIJ, NI
+      INTEGER :: JBEG, JEND, JNAB, TI, TJ,TK,TIJ, NI
       REAL(KIND=RKIND), INTENT(IN) :: FCUT
       REAL(KIND=RKIND) :: RCUTSQ, ALPHA, FXIJa, FYIJa, FZIJa
       REAL(KIND=RKIND) :: RXI, RYI, RZI, FXI, FYI, FZI
@@ -15,7 +15,7 @@
 !***********************************************************************************
 
 DO I = 1, NVIRTA
-
+   
     VJBEG = VIRT_POINT_SEC(I)
     VJEND = VIRT_POINT_SEC(I+1) - 1
 
@@ -73,13 +73,19 @@ DO I = 1, NVIRTA
             PT13 = PT13 + FZIJ * RXIJ
             PT23 = PT23 + FZIJ * RYIJ
 
-    		DO H = 1,init_numbcomp(i)
-    			FXIJa = FXIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-    			FYIJa = FYIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-    			FZIJa = FZIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-	            FX(COMPCOM(I,H)) = FX(COMPCOM(I,H)) + FXIJa
-    		    FY(COMPCOM(I,H)) = FY(COMPCOM(I,H)) + FYIJa
-    		    FZ(COMPCOM(I,H)) = FZ(COMPCOM(I,H)) + FZIJa
+    		DO H = 1,VIRT_NUMATOMS(TI)
+         K = VIRT_ATM_IND(I,H)
+         TK = ITYPE(K)
+         FX(K) = FX(K) + FXIJ*VIRT_MASSCOEFF(TI,TK)
+         FY(K) = FY(K) + FYIJ*VIRT_MASSCOEFF(TI,TK)
+         FZ(K) = FZ(K) + FZIJ*VIRT_MASSCOEFF(TI,TK)
+
+!    			FXIJa = FXIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
+!    			FYIJa = FYIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
+!    			FZIJa = FZIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
+!	            FX(COMPCOM(I,H)) = FX(COMPCOM(I,H)) + FXIJa
+!    		    FY(COMPCOM(I,H)) = FY(COMPCOM(I,H)) + FYIJa
+!    		    FZ(COMPCOM(I,H)) = FZ(COMPCOM(I,H)) + FZIJa
 
 
 !			VFXNB(COMPCOM(J,H)) = FX(COMPCOM(J,H))

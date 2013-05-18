@@ -97,7 +97,7 @@
            NUM_VS = NUM_BA
 
            DO I = 1,NATOMS
-              IF (TYPE_LABEL(I) .EQ. 1 .and.  virtual_center(I) .ne. 0) THEN
+              IF (TYPE_LABEL(I) .EQ. 1 .and.  VIRT_VS_IND(I) .ne. 0) THEN
                  NUM_VS = NUM_VS + 1
                  INDEX_AB(NUM_VS) = I
               END IF
@@ -106,7 +106,7 @@
            PP = NUM_VS
 
            DO I = 1,NATOMS
-              IF (TYPE_LABEL(I) .EQ. 1  .and.  virtual_center(I) .eq. 0) THEN
+              IF (TYPE_LABEL(I) .EQ. 1  .and.  VIRT_VS_IND(I) .eq. 0) THEN
                  PP = PP + 1
                  INDEX_AB(PP) = I
               END IF
@@ -150,14 +150,14 @@
            END DO
            NUM_VS = NUM_BEAD
            DO I = 1,NATOMS
-              IF (TYPE_LABEL(I) .EQ. 1 .and.  virtual_center(I) .ne. 0) THEN
+              IF (TYPE_LABEL(I) .EQ. 1 .and.  VIRT_VS_IND(I) .ne. 0) THEN
                  NUM_VS = NUM_VS + 1
                  INDEX_AB(NUM_VS) = I
               END IF
            END DO
            PP = NUM_VS
            DO I = 1,NATOMS
-              IF (TYPE_LABEL(I) .EQ. 1  .and.  virtual_center(I) .eq. 0) THEN
+              IF (TYPE_LABEL(I) .EQ. 1  .and.  VIRT_VS_IND(I) .eq. 0) THEN
                  PP = PP + 1
                  INDEX_AB(PP) = I
               END IF

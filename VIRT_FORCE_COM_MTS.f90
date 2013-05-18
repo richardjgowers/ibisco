@@ -4,7 +4,7 @@
 	IMPLICIT NONE
 
       INTEGER,INTENT(IN) :: I
-      INTEGER :: J,K,H
+      INTEGER :: J,K,H, atm, tatm
       INTEGER :: VJBEG, VJEND, VJNAB
       INTEGER       JBEG, JEND, JNAB, TI, TJ, TIJ, NI
       REAL(KIND=RKIND) :: RCUTSQ, ALPHA, FXIJa, FYIJa, FZIJa, FCUT
@@ -88,42 +88,14 @@
 
 !*****************************************************************************************************************
 ! The force is weighted on the weight of each single atoms in the bead
+        DO H = 1,VIRT_NUMATOMS(TJ)
+           atm = VIRT_ATM_IND(J,H)
+           tatm = ITYPE(atm)
+           FX(atm) = FX(atm) - FXIJ*VIRT_MASSCOEFF(TJ,tatm)
+           FY(atm) = FY(atm) - FYIJ*VIRT_MASSCOEFF(TJ,tatm)
+           FZ(atm) = FZ(atm) - FZIJ*VIRT_MASSCOEFF(TJ,tatm)
+        END DO
 
-        DO H = 1,init_numbcomp(j)
-			FXIJa = FXIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-			FYIJa = FYIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-			FZIJa = FZIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-
-	              FX(COMPCOM(J,H)) = FX(COMPCOM(J,H)) - FXIJa
- 		        FY(COMPCOM(J,H)) = FY(COMPCOM(J,H)) - FYIJa
-		        FZ(COMPCOM(J,H)) = FZ(COMPCOM(J,H)) - FZIJa
-
-
-!			VFXNB(COMPCOM(J,H)) = FX(COMPCOM(J,H))
-!			VFYNB(COMPCOM(J,H)) = FY(COMPCOM(J,H))
-!			VFZNB(COMPCOM(J,H)) = FZ(COMPCOM(J,H))
-
-
-!                  RXIJ = RXI - RX(COMPCOM(J,H))
-!                  RYIJ = RYI - RY(COMPCOM(J,H))
-!                  RZIJ = RZI - RZ(COMPCOM(J,H))
-
-!                  RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-!                  RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-!                  RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-
-!		ADD THE NON-BONDED PART OF PRESSURE
-
-!            PT11 = PT11 + FXIJa * RXIJ
-!            PT22 = PT22 + FYIJa * RYIJ
-!            PT33 = PT33 + FZIJa * RZIJ
- 	
-!            PT12 = PT12 + FYIJa * RXIJ
-!            PT13 = PT13 + FZIJa * RXIJ
-!            PT23 = PT23 + FZIJa * RYIJ
-
-
-		END DO
 
 	END IF
 	END IF

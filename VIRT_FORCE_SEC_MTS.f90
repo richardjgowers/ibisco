@@ -3,7 +3,7 @@
 	USE VAR
 	IMPLICIT NONE
 
-        INTEGER :: I,J,K,H
+        INTEGER :: I,J,K,H, atm, tatm
 	INTEGER :: VJBEG, VJEND, VJNAB
 	INTEGER       JBEG, JEND, JNAB, TI, TJ, TIJ, NI
         REAL(KIND=RKIND) :: RCUTSQ, ALPHA, FXIJa, FYIJa, FZIJa,FCUT
@@ -14,7 +14,7 @@
 !***********************************************************************************
 
 DO I = 1, NVIRTA
-
+   K = VIRT_CENTER(I)
         VJBEG = VIRT_POINT_SEC(I)
         VJEND = VIRT_POINT_SEC(I+1) - 1
 
@@ -22,9 +22,9 @@ DO I = 1, NVIRTA
 
         IF( VJBEG .LE. VJEND ) THEN
 
-      RXI = RX(INDEX_VSITE(I))
-      RYI = RY(INDEX_VSITE(I))
-      RZI = RZ(INDEX_VSITE(I))
+      RXI = RX(K)
+      RYI = RY(K)
+      RZI = RZ(K)
       TI = VITYPE(I)
 
 
@@ -67,21 +67,6 @@ DO I = 1, NVIRTA
             FXIJ  = FIJ * RXIJ
             FYIJ  = FIJ * RYIJ
             FZIJ  = FIJ * RZIJ
-
-!                FXI   = FXI + FXIJ
-!                FYI   = FYI + FYIJ
-!                FZI   = FZI + FZIJ    
-
-!            FX(J) = FX(J) - FXIJ
- !           FY(J) = FY(J) - FYIJ
-  !          FZ(J) = FZ(J) - FZIJ
-
-	!	VFXNB(J) = VFXNB(J) + FXIJ
-	!	VFYNB(J) = VFYNB(J) + FYIJ
-	!	VFZNB(J) = VFZNB(J) + FZIJ
-   
-
-
 	
 !		ADD THE NON-BONDED PART OF PRESSURE
             PT11 = PT11 + FXIJ * RXIJ
@@ -96,41 +81,14 @@ DO I = 1, NVIRTA
 !*****************************************************************************************************************
 ! In the case the virtual site is a real atom the force is weighted on the weight of each single atoms in the bead
 
-        DO H = 1,init_numbcomp(j)
-			FXIJa = FXIJ*MASS(ITYPE(INDX_ATM(J,H)))*INVTOTBMASS(J)
-			FYIJa = FYIJ*MASS(ITYPE(INDX_ATM(J,H)))*INVTOTBMASS(J)
-			FZIJa = FZIJ*MASS(ITYPE(INDX_ATM(J,H)))*INVTOTBMASS(J)
+        DO H = 1,VIRT_NUMATOMS(TJ)
+           atm = VIRT_ATM_IND(J,H)
+           tatm = ITYPE(atm)
+           FX(atm) = FX(atm) - FXIJ*VIRT_MASSCOEFF(TJ,tatm)
+           FY(atm) = FY(atm) - FYIJ*VIRT_MASSCOEFF(TJ,tatm)
+           FZ(atm) = FZ(atm) - FZIJ*VIRT_MASSCOEFF(TJ,tatm)
+        END DO
 
-	              FX(INDX_ATM(J,H)) = FX(INDX_ATM(J,H)) - FXIJa
- 		        FY(INDX_ATM(J,H)) = FY(INDX_ATM(J,H)) - FYIJa
-		        FZ(INDX_ATM(J,H)) = FZ(INDX_ATM(J,H)) - FZIJa
-
-!                  RXIJ = RX(J) - RX(INDX_ATM(J,H))
-!              	RYIJ = RY(J) - RY(INDX_ATM(J,H))
-!              	RZIJ = RZ(J) - RZ(INDX_ATM(J,H))
-
-!              	RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-!              	RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-!              	RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-
-!		ADD THE NON-BONDED PART OF PRESSURE
-!        	PT11 = PT11 + FXIJa * RXIJ
-!            PT22 = PT22 + FYIJa * RYIJ
-!        	PT33 = PT33 + FZIJa * RZIJ
- 	
-!        	PT12 = PT12 + FYIJa * RXIJ
-!        	PT13 = PT13 + FZIJa * RXIJ
-!          	PT23 = PT23 + FZIJa * RYIJ
-
-
-
-
-!			VFXNB(INDX_ATM(J,H)) = FX(INDX_ATM(J,H))
-!			VFYNB(INDX_ATM(J,H)) = FY(INDX_ATM(J,H))
-!			VFZNB(INDX_ATM(J,H)) = FZ(INDX_ATM(J,H))
-
-		END DO
-	
 
 	END IF
 	END IF

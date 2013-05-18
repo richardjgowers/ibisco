@@ -3,7 +3,7 @@
 	USE VAR
 	IMPLICIT NONE
 
-        INTEGER :: I,J,K,H
+        INTEGER :: I,J,K,H, atm, tatm
 	INTEGER :: VJBEG, VJEND, VJNAB
 	INTEGER       JBEG, JEND, JNAB, TI, TJ, TIJ, NI
         REAL(KIND=RKIND) :: RCUTSQ, ALPHA, FXIJa, FYIJa, FZIJa,FCUT
@@ -31,22 +31,22 @@ DO I = 1, NVIRTA
         DO VJNAB = VJBEG, VJEND
 
 !		TAKE THE INDEX OF NEIGHBOUR ATOMS
-		J = VLIST_SEC(VJNAB)
+           J = VLIST_SEC(VJNAB)
 	
 !		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
-		TJ = ITYPE(J)
-            TIJ = INBONDT(TI, TJ)
+           TJ = ITYPE(J)
+           TIJ = INBONDT(TI, TJ)
 		
             IF( TIJ .NE. 0) THEN	
-                  RXIJ = RXI - RX(J)
-                  RYIJ = RYI - RY(J)
-                  RZIJ = RZI - RZ(J)
+               RXIJ = RXI - RX(J)
+               RYIJ = RYI - RY(J)
+               RZIJ = RZI - RZ(J)
 
-                  RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-                  RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-                  RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
+               RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
+               RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
+               RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
 
-                  RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
+               RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
 
 		IF ( RIJSQ .LE. FCUT ) THEN
 
@@ -81,38 +81,12 @@ DO I = 1, NVIRTA
             PT13 = PT13 + FZIJ * RXIJ
             PT23 = PT23 + FZIJ * RYIJ
 
-    		DO H = 1,init_numbcomp(i)
-    			FXIJa = FXIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-    			FYIJa = FYIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-    			FZIJa = FZIJ*MASS(ITYPE(COMPCOM(I,H)))*INVTOTBMASS(I)
-	            FX(COMPCOM(I,H)) = FX(COMPCOM(I,H)) + FXIJa
-    		    FY(COMPCOM(I,H)) = FY(COMPCOM(I,H)) + FYIJa
-    		    FZ(COMPCOM(I,H)) = FZ(COMPCOM(I,H)) + FZIJa
-
-
-!			VFXNB(COMPCOM(J,H)) = FX(COMPCOM(J,H))
-!			VFYNB(COMPCOM(J,H)) = FY(COMPCOM(J,H))
-!			VFZNB(COMPCOM(J,H)) = FZ(COMPCOM(J,H))
-
-
-!                  RXIJ = RX(J) - RX(COMPCOM(I,H))
-!              	RYIJ = RY(J) - RY(COMPCOM(I,H))
-!              	RZIJ = RZ(J) - RZ(COMPCOM(I,H))
-
-!              	RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-!              	RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-!              	RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-
-!		ADD THE NON-BONDED PART OF PRESSURE
-!        	PT11 = PT11 + FXIJa * RXIJ
-!            PT22 = PT22 + FYIJa * RYIJ
-!        	PT33 = PT33 + FZIJa * RZIJ
- 	
-!        	PT12 = PT12 + FYIJa * RXIJ
-!        	PT13 = PT13 + FZIJa * RXIJ
-!          	PT23 = PT23 + FZIJa * RYIJ
-
-
+    		DO H = 1,VIRT_NUMATOMS(TI)
+         atm = VIRT_ATM_IND(I,H)
+         tatm = ITYPE(atm)
+         FX(atm) = FX(atm) + FXIJ*VIRT_MASSCOEFF(TI,tatm)
+         FY(atm) = FY(atm) + FYIJ*VIRT_MASSCOEFF(TI,tatm)
+         FZ(atm) = FZ(atm) + FZIJ*VIRT_MASSCOEFF(TI,tatm)
 		END DO
 	
 

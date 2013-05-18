@@ -122,8 +122,8 @@ REAL*8, POINTER ::  VXO(:),  VYO(:), VZO(:)
 INTEGER :: NUM_BEAD = 0,timestepcheck,nonbondvirt, NUM_VS = 0, NUM_BA=0
 INTEGER :: NB
 integer :: contactB=0, contactA=0
-INTEGER,POINTER :: INDEX_AB(:),virtual_center(:),virtNmol(:)
-INTEGER, POINTER :: VIRT_NUMATOMS(:), VIRT_CENTER(:), VIRT_VS_IND(:)
+INTEGER,POINTER :: INDEX_AB(:),virtNmol(:)
+INTEGER, POINTER :: VIRT_NUMATOMS(:), VIRT_CENTER(:), VIRT_VS_IND(:), VIRT_ATM_IND(:,:)
 REAL(KIND=RKIND), POINTER :: VIRT_MASS(:), VIRT_INVMASS(:), VIRT_MASSCOEFF(:,:)
 real(kind=rkind) :: FCUTA,FCUTB
 real(kind=rkind) :: VBOND_MIX, VANGLE_MIX, VTOR_MIX, VOOP_MIX, VNBOND_MIX
