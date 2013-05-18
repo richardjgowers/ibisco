@@ -28,9 +28,6 @@ end if
 
 write(213)nmol
 
-
-!name_mol='PS_AT'
-
 l=0
 vsite=1
 begVS=1

@@ -4,23 +4,23 @@
 !
 !
 
-      SUBROUTINE LOOP_HYBR ()
-      USE VAR
-      USE RNEMD
-      IMPLICIT NONE
-      INTEGER :: I
+SUBROUTINE LOOP_HYBR ()
+  USE VAR
+  USE RNEMD
 
+  IMPLICIT NONE
+  INTEGER :: I
 
-DO i=1,NSTEP
+DO I=1,NSTEP
 
-            timestepcheck = i
-            PT11 = 0.0D0
-            PT22 = 0.0D0
-            PT33 = 0.0D0
+   timestepcheck = I
+   PT11 = 0.0D0
+   PT22 = 0.0D0
+   PT33 = 0.0D0
 
-            PT12 = 0.0D0
-            PT13 = 0.0D0
-            PT23 = 0.0D0
+   PT12 = 0.0D0
+   PT13 = 0.0D0
+   PT23 = 0.0D0
 
 !		SHIFT THE ATOMS INSIDE THE BOX 
             CALL SHIFT ()
@@ -66,14 +66,14 @@ DO i=1,NSTEP
               
 
 	!		CALCULATE THE DIAGONAL COMPONENTS OF PRESSURE TENSOR
-                  VOLUME = BOXX * BOXY * BOXZ
-                  PT11 = PT11 / VOLUME
-                  PT22 = PT22 / VOLUME
-                  PT33 = PT33 / VOLUME
+            VOLUME = BOXX * BOXY * BOXZ
+            PT11 = PT11 / VOLUME
+            PT22 = PT22 / VOLUME
+            PT33 = PT33 / VOLUME
 
-                  PT12 = PT12 / VOLUME
-                  PT13 = PT13 / VOLUME
-                  PT23 = PT23 / VOLUME
+            PT12 = PT12 / VOLUME
+            PT13 = PT13 / VOLUME
+            PT23 = PT23 / VOLUME
 
 	!		RESET THE NET MOMENTUM TO ZERO
                   IF (DPDINPUT.NE.1.AND.LAINPUT.NE.1) THEN

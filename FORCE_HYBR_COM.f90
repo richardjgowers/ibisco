@@ -48,10 +48,10 @@ SUBROUTINE FORCE_HYBR_COM ( )
 
 !$OMP PARALLEL DEFAULT(NONE) &
 !$OMP& SHARED(num_bead,natoms,INDEX_AB,POINT,RX,RY,RZ,ITYPE,VLIST,VLIST_SEC,LIST,INBONDT)&
-!$OMP& SHARED(VIRT_POINT,VIRT_POINT_SEC,VITYPE,VIRTRX,VIRTRY,VIRTRZ,COMPCOM,indx_atm)&
+!$OMP& SHARED(VIRT_POINT,VIRT_POINT_SEC,VITYPE,VIRTRX,VIRTRY,VIRTRZ,VIRT_IND_ATM)&
 !$OMP& SHARED(BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ,FCUT,FCUTA,FCUTB)&
-!$OMP& SHARED(RNBOND,BINNB,NBOND_FORCE,NBOND_POT,NDATNB,timestepcheck,masscoeff)&
-!$OMP& SHARED(init_numbcomp,NVIRTA)&
+!$OMP& SHARED(RNBOND,BINNB,NBOND_FORCE,NBOND_POT,NDATNB,timestepcheck,VIRT_masscoeff)&
+!$OMP& SHARED(VIRT_NUMATOMS,NVIRTA)&
 !$OMP& PRIVATE(A,VJBEG,VJEND,VJNAB)&
 !$OMP& PRIVATE(hh,I,K,JBEG,JEND,JNAB,RXI,RYI,RZI,FXI,FYI,FZI)&
 !$OMP& PRIVATE(FXL,FYL,FZL,FXVL,FYVL,FZVL)&
@@ -80,7 +80,6 @@ END DO
   do hh=1,num_bead !Do 200
      i = INDEX_AB(hh)
 
-     !	CALL VIRT_FORCE_COM(I,FCUTB)
      FCUT = FCUTB !Change value of FCUT to fake the subroutine
      include 'VIRT_FORCE_COM.inc'
 
@@ -94,9 +93,7 @@ END DO
         RXI = RX(I)
         RYI = RY(I)
         RZI = RZ(I)
-        !FXI = FX(I)
-        !FYI = FY(I)
-        !FZI = FZ(I)
+
         FXI = 0.0D0
         FYI = 0.0D0
         FZI = 0.0D0
@@ -129,7 +126,7 @@ END DO
                     WRITE(*,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
                     WRITE(*,*)'Atom/Bead ',I,J,'RIJ ',RIJ
                     WRITE(1,*)'FATAL ERROR: Entry in non bonded table', TIJ,' does not exist'
-!                    WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
+                    WRITE(*,*)'Simulation stopped at time step: ', timestepcheck
                     STOP
                  END IF
 
@@ -152,9 +149,7 @@ END DO
                  FXI   = FXI + FXIJ
                  FYI   = FYI + FYIJ
                  FZI   = FZI + FZIJ
-!                 FX(J) = FX(J) - FXIJ
-!                 FY(J) = FY(J) - FYIJ
-!                 FZ(J) = FZ(J) - FZIJ
+
                  FXL(J) = FXL(J) - FXIJ
                  FYL(J) = FYL(J) - FYIJ
                  FZL(J) = FZL(J) - FZIJ
@@ -194,9 +189,6 @@ END DO
 !           ENDIF
 !        ENDIF
 
-!        FX(I) = FXI
-!        FY(I) = FYI
-!        FZ(I) = FZI
         FXL(I) = FXL(I) + FXI
         FYL(I) = FYL(I) + FYI
         FZL(I) = FZL(I) + FZI
@@ -219,9 +211,7 @@ END DO
         RXI = RX(I)
         RYI = RY(I)
         RZI = RZ(I)
-!        FXI = FX(I)
-!        FYI = FY(I)
-!        FZI = FZ(I)
+
         FXI = 0.0D0
         FYI = 0.0D0
         FZI = 0.0D0
@@ -229,9 +219,8 @@ END DO
 
         DO JNAB = JBEG, JEND !Do 209
 
-           !		TAKE THE INDEX OF NEIGHBOUR ATOMS
            J = LIST(JNAB)
-           !		TAKE THE TYPE OF NEIGHBOUR ATOM AND NON-BONDED INTERACTIONS	
+
            TJ = ITYPE(J)
            TIJ = INBONDT(TI, TJ)
 
@@ -271,9 +260,7 @@ END DO
                  FXI   = FXI + FXIJ
                  FYI   = FYI + FYIJ
                  FZI   = FZI + FZIJ
-!                 FX(J) = FX(J) - FXIJ
-!                 FY(J) = FY(J) - FYIJ
-!                 FZ(J) = FZ(J) - FZIJ
+
                  FXL(J) = FXL(J) - FXIJ
                  FYL(J) = FYL(J) - FYIJ
                  FZL(J) = FZL(J) - FZIJ
@@ -312,9 +299,6 @@ END DO
 !           ENDIF
 !        ENDIF
 
- !       FX(I) = FXI
- !       FY(I) = FYI
- !       FZ(I) = FZI
         FXL(I) = FXL(I) + FXI
         FYL(I) = FYL(I) + FYI
         FZL(I) = FZL(I) + FZI
@@ -333,11 +317,13 @@ END DO
 
 !Distribute forces from VS onto atoms underneath
 DO I=1,NVIRTA
-   DO J=1,init_numbcomp(I)
-      A = INDX_ATM(I,J)
-      FXL(A) = FXL(A) + FXVL(I)*masscoeff(I,J)
-      FYL(A) = FYL(A) + FYVL(I)*masscoeff(I,J)
-      FZL(A) = FZL(A) + FZVL(I)*masscoeff(I,J)
+   TI = VITYPE(I)
+   DO J=1,VIRT_NUMATOMS(TI)
+      A = VIRT_ATM_IND(I,J)
+      TJ = ITYPE(A)
+      FXL(A) = FXL(A) + FXVL(I)*VIRT_MASSCOEFF(TI,TJ)
+      FYL(A) = FYL(A) + FYVL(I)*VIRT_MASSCOEFF(TI,TJ)
+      FZL(A) = FZL(A) + FZVL(I)*VIRT_MASSCOEFF(TI,TJ)
    END DO
 END DO
 

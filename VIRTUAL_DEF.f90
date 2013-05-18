@@ -11,32 +11,27 @@ REAL(KIND=RKIND) :: SUMTOTBMASS
 
 !Calculate centres of virtual sites
 DO I=1,NVIRTA
-   IF (INDEX_VSITE(I) .NE. 0)THEN !If using a functional site
-      J = INDEX_VSITE(I)
+   IF (VIRT_CENTER(I) .NE. 0)THEN !If using a functional site
+      J = VIRT_CENTER(I)
       VIRTRX(I) = RX(J)
       VIRTRY(I) = RY(J)
       VIRTRZ(I) = RZ(J)
    ELSE !Else using a COM
-      SUMTOTBMASS = 0.0D0
+      TI = VITYPE(I)
       SUMTOTX = 0.0D0
       SUMTOTY = 0.0D0
       SUMTOTZ = 0.0D0
       !Finds COM
-      DO J=1,INIT_NUMBCOMP(I)
-         K = INDX_ATM(I,J)
+      DO J=1,VIRT_NUMATOMS(TI)
+         K = VIRT_ATM_IND(I,J)
          SUMTOTX = SUMTOTX + MASS(ITYPE(K))*SX(K)
          SUMTOTY = SUMTOTY + MASS(ITYPE(K))*SY(K)
          SUMTOTZ = SUMTOTZ + MASS(ITYPE(K))*SZ(K)
-         SUMTOTBMASS = SUMTOTBMASS + MASS(ITYPE(K))
       END DO
 
-!      VIRTRX(I) = SUMTOTX/MASS(VITYPE(I)) 
-!      VIRTRY(I) = SUMTOTY/MASS(VITYPE(I)) 
-!      VIRTRZ(I) = SUMTOTZ/MASS(VITYPE(I)) 
-
-      VIRTRX(I) = SUMTOTX/SUMTOTBMASS
-      VIRTRY(I) = SUMTOTY/SUMTOTBMASS 
-      VIRTRZ(I) = SUMTOTZ/SUMTOTBMASS 
+      VIRTRX(I) = SUMTOTX*VIRT_INVMASS(TI)
+      VIRTRY(I) = SUMTOTY*VIRT_INVMASS(TI)
+      VIRTRZ(I) = SUMTOTZ*VIRT_INVMASS(TI)
 
       !Applies PBC
 
@@ -48,13 +43,13 @@ DO I=1,NVIRTA
          RPY = VIRTRY(I)/BOXY2
          RPZ = VIRTRZ(I)/BOXZ2
 
-         SPX = RPX - 2.0*INT(RPX/2.0)
-         SPY = RPY - 2.0*INT(RPY/2.0)
-         SPZ = RPZ - 2.0*INT(RPZ/2.0)
+         SPX = RPX - 2.0D0 * INT(RPX/2.0)
+         SPY = RPY - 2.0D0 * INT(RPY/2.0)
+         SPZ = RPZ - 2.0D0 * INT(RPZ/2.0)
 
-         RPX = (SPX - 2.0*INT(SPX))*BOXX2
-         RPY = (SPY - 2.0*INT(SPY))*BOXY2
-         RPZ = (SPZ - 2.0*INT(SPZ))*BOXZ2
+         RPX = (SPX - 2.0D0 * INT(SPX))*BOXX2
+         RPY = (SPY - 2.0D0 * INT(SPY))*BOXY2
+         RPZ = (SPZ - 2.0D0 * INT(SPZ))*BOXZ2
 
          VIRTRX(I) = RPX
          VIRTRY(I) = RPY

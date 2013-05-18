@@ -21,8 +21,8 @@
 
 SUBROUTINE VIRT_NEIGHBOR_WITHLIST()
 
-	USE VAR
-	IMPLICIT NONE
+  USE VAR
+  IMPLICIT NONE
 
 integer :: NLIST, I, J, K, JCELL0, JCELL, NABOR,IP,JP,VNLIST
 integer :: VNLISTSEC
@@ -56,10 +56,10 @@ VNLIST = 0
 
 !IF IP is a Bead the list for the virtual atom is written 
         IF(TYPE_LABEL(IP) .EQ. 2) THEN
-            RXI = RX(IP)
-            RYI = RY(IP)
-            RZI = RZ(IP)
-            JP = LCLIST(IP)
+           RXI = RX(IP)
+           RYI = RY(IP)
+           RZI = RZ(IP)
+           JP = LCLIST(IP)
 
  600        IF (JP.GT.0) THEN
                 do

@@ -52,14 +52,11 @@ VANGLE_CG  = 0.0D0
 VTOR_CG    = 0.0D0
 VOOP_CG    = 0.0D0
 VNBOND_CG  = 0.0D0
-FXI = 0.0
-FYI = 0.0
-FZI = 0.0
 
 !$OMP PARALLEL DEFAULT(NONE)&
-!$OMP& SHARED(num_bead,num_vs,indx_atm,init_numbcomp,vitype,virtual_center,INDEX_AB,POINT,RX,RY,RZ)&
-!$OMP& SHARED(masscoeff,NATOMS,NVIRTA,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
-!$OMP& SHARED(FCUTA,FCUTB,BINNB,NDATNB,MASS,INVTOTBMASS,RNBOND,NBOND_FORCE,NBOND_POT,timestepcheck)&
+!$OMP& SHARED(num_bead,num_vs,VIRT_NUMATOMS,VIRT_ATM_IND,vitype,virt_center,INDEX_AB,POINT,RX,RY,RZ)&
+!$OMP& SHARED(virt_masscoeff,NATOMS,NVIRTA,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
+!$OMP& SHARED(FCUTA,FCUTB,BINNB,NDATNB,MASS,VIRT_MASS,RNBOND,NBOND_FORCE,NBOND_POT,timestepcheck)&
 !$OMP& SHARED(SX,SY,SZ,NBONDS,JBOND,IBONDT,typeBond,BINB,BINA,NDATB,RCUT,BOND_FORCE,BOND_POT,RBOND)&
 !$OMP& SHARED(NIJK,JANGLEIJK,IANGT,R2D,BEND_FORCE,BEND_POT,ANGLE,NIJKL)&
 !$OMP& SHARED(KANGLEIJK,KTORIJKL,JTORIJKL,LTORIJKL,ITORT,BINT,NDATT,TOR_POT,TOR_FORCE,ANGLE_TOR)&
@@ -108,9 +105,7 @@ DO hh=1,num_bead !DO 200
       RXI = RX(I)
       RYI = RY(I)
       RZI = RZ(I)
-      !    FXI = FX(I)
-      !    FYI = FY(I)
-      !    FZI = FZ(I)
+
       FXI=0.0
       FYI=0.0
       FZI=0.0
@@ -145,9 +140,9 @@ DO hh=1,num_bead !DO 200
 
                   !		LINEAR INTEPOLATION
                   ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_POT(TIJ,NI+1)
 
                   VNBOND_CG = VNBOND_CG + VIJ
@@ -161,9 +156,7 @@ DO hh=1,num_bead !DO 200
                   FXI   = FXI + FXIJ
                   FYI   = FYI + FYIJ
                   FZI   = FZI + FZIJ
-                  !FX(J) = FX(J) - FXIJ
-                  !FY(J) = FY(J) - FYIJ
-                  !FZ(J) = FZ(J) - FZIJ
+
                   FXL(J) = FXL(J) - FXIJ
                   FYL(J) = FYL(J) - FYIJ
                   FZL(J) = FZL(J) - FZIJ
@@ -179,8 +172,9 @@ DO hh=1,num_bead !DO 200
                END IF   ! endif  IF ( RIJSQ < RCUTSQ )
             END IF     ! endif   IF( TIJ .NE. 0) THEN
          else !Else if typelabel
-            vsite = virtual_center(J)
-            TIJ = INBONDT(TI, vitype(vsite))
+            vsite = VIRT_VS_IND(J)
+            TJ = VITYPE(vsite)
+            TIJ = INBONDT(TI,TJ)
             IF( TIJ .NE. 0) THEN	
                RXIJ = RXI - RX(J)
                RYIJ = RYI - RY(J)
@@ -201,9 +195,9 @@ DO hh=1,num_bead !DO 200
                   END IF
                   !		LINEAR INTEPOLATION
                   ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_POT(TIJ,NI+1)
 
                   VNBOND_MIX = VNBOND_MIX + VIJ
@@ -216,12 +210,6 @@ DO hh=1,num_bead !DO 200
                   FYI   = FYI + FYIJ
                   FZI   = FZI + FZIJ
                   
-!                  do H=1,init_numbcomp(vsite)
-!                     K = indx_atm(vsite,H)
-!                     FXL(K) = FXL(K) - FXIJ*masscoeff(vsite,H)
-!                     FYL(K) = FYL(K) - FYIJ*masscoeff(vsite,H)
-!                     FZL(K) = FZL(K) - FZIJ*masscoeff(vsite,H)                    
-!                  end do
                   FXVL(vsite) = FXVL(vsite) - FXIJ
                   FYVL(vsite) = FYVL(vsite) - FYIJ
                   FZVL(vsite) = FZVL(vsite) - FZIJ
@@ -238,9 +226,7 @@ DO hh=1,num_bead !DO 200
             END IF     ! endif   IF( TIJ .NE. 0) THEN
          end if ! if(type_label(j) .eq. 1)
       END DO
-      !FX(I) = FX(I) + FXI
-      !FY(I) = FY(I) + FYI
-      !FZ(I) = FZ(I) + FZI
+
       FXL(I) = FXL(I) + FXI
       FYL(I) = FYL(I) + FYI
       FZL(I) = FZL(I) + FZI
@@ -266,12 +252,10 @@ do hh=num_bead+1,num_vs !do 220
       RXI = RX(I)
       RYI = RY(I)
       RZI = RZ(I)
-      !    FXI = FX(I)
-      !    FYI = FY(I)
-      !    FZI = FZ(I)
-      FXI = 0.0
-      FYI = 0.0
-      FZI = 0.0
+
+      FXI = 0.0D0
+      FYI = 0.0D0
+      FZI = 0.0D0
       TI = ITYPE(I)
 
       DO JNAB = JBEG, JEND !Do 219
@@ -304,9 +288,9 @@ do hh=num_bead+1,num_vs !do 220
 
                   !		LINEAR INTEPOLATION
                   ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_POT(TIJ,NI+1)
 
                   VNBOND = VNBOND + VIJ
@@ -320,9 +304,6 @@ do hh=num_bead+1,num_vs !do 220
                   FYI   = FYI + FYIJ
                   FZI   = FZI + FZIJ
 
-                  !FX(J) = FX(J) - FXIJ
-                  !FY(J) = FY(J) - FYIJ
-                  !FZ(J) = FZ(J) - FZIJ
                   FXL(J) = FXL(J) - FXIJ
                   FYL(J) = FYL(J) - FYIJ
                   FZL(J) = FZL(J) - FZIJ
@@ -341,8 +322,9 @@ do hh=num_bead+1,num_vs !do 220
          else ! Here we have the interaction with beads
 
             TJ = ITYPE(J)
-            vsite=virtual_center(I)
-            TIJ = INBONDT(vitype(vsite), TJ)
+            vsite=VIRT_VS_IND(I)
+            TI = VITYPE(vsite)
+            TIJ = INBONDT(TI,TJ)
 
             IF( TIJ .NE. 0) THEN	
                RXIJ = RXI - RX(J)
@@ -365,9 +347,9 @@ do hh=num_bead+1,num_vs !do 220
                   END IF
                   !		LINEAR INTEPOLATION
                   ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+                  FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                        + ALPHA*NBOND_POT(TIJ,NI+1)
 
                   VNBOND_MIX = VNBOND_MIX + VIJ
@@ -380,16 +362,6 @@ do hh=num_bead+1,num_vs !do 220
                   FYVL(vsite) = FYVL(vsite) + FYIJ
                   FZVL(vsite) = FZVL(vsite) + FZIJ
                
-!                 do H=1,init_numbcomp(vsite)
-!                    K = indx_atm(vsite,H)
-!                    FXL(K) = FXL(K) + FXIJ*masscoeff(vsite,H)
-!                    FYL(K) = FYL(K) + FYIJ*masscoeff(vsite,H)
-!                    FZL(K) = FZL(K) + FZIJ*masscoeff(vsite,H)                 
-!                 end do
-
-                  !FX(J) = FX(J) - FXIJ
-                  !FY(J) = FY(J) - FYIJ
-                  !FZ(J) = FZ(J) - FZIJ
                   FXL(J) = FXL(J) - FXIJ
                   FYL(J) = FYL(J) - FYIJ
                   FZL(J) = FZL(J) - FZIJ
@@ -407,9 +379,6 @@ do hh=num_bead+1,num_vs !do 220
          end if ! if(type_label(j) .eq. 1)
       END DO !do 219
 
-      !FX(I) = FX(I) + FXI
-      !FY(I) = FY(I) + FYI
-      !FZ(I) = FZ(I) + FZI
       FXL(I) = FXL(I) + FXI
       FYL(I) = FYL(I) + FYI
       FZL(I) = FZL(I) + FZI
@@ -417,12 +386,14 @@ do hh=num_bead+1,num_vs !do 220
 end do !do 220
 !$OMP END DO
 
-DO A=1,NVIRTA
-   DO H=1,init_numbcomp(A)
-      K = indx_atm(A,H)
-      FXL(K) = FXL(K) + FXVL(A)*masscoeff(A,H)
-      FYL(K) = FYL(K) + FYVL(A)*masscoeff(A,H)
-      FZL(K) = FZL(K) + FZVL(A)*masscoeff(A,H)
+DO I=1,NVIRTA
+   TI = VITYPE(I)
+   DO J=1,VIRT_NUMATOMS(TI)
+      K = VIRT_ATM_IND(I,J)
+      TJ = ITYPE(K)
+      FXL(K) = FXL(K) + FXVL(I)*VIRT_MASSCOEFF(TI,TJ)
+      FYL(K) = FYL(K) + FYVL(I)*VIRT_MASSCOEFF(TI,TJ)
+      FZL(K) = FZL(K) + FZVL(I)*VIRT_MASSCOEFF(TI,TJ)
    END DO
 END DO
 
@@ -441,12 +412,10 @@ do hh=num_vs+1,natoms !Do 210
       RXI = RX(I)
       RYI = RY(I)
       RZI = RZ(I)
-      !    FXI = FX(I)
-      !    FYI = FY(I)
-      !    FZI = FZ(I)
-      FXI = 0.0
-      FYI = 0.0
-      FZI = 0.0
+
+      FXI = 0.0D0
+      FYI = 0.0D0
+      FZI = 0.0D0
       TI = ITYPE(I)
 
       DO JNAB = JBEG, JEND !DO 209
@@ -479,9 +448,9 @@ do hh=num_vs+1,natoms !Do 210
                !LINEAR INTEPOLATION
 
                ALPHA=(RIJ-RNBOND(TIJ,NI))/BINNB(TIJ)
-               FIJ = NBOND_FORCE(TIJ,NI)*(1.0-ALPHA) &
+               FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
                     + ALPHA*NBOND_FORCE(TIJ,NI+1) 
-               VIJ = NBOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
+               VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                     + ALPHA*NBOND_POT(TIJ,NI+1)
                VNBOND = VNBOND + VIJ
                FXIJ  = FIJ * RXIJ
@@ -493,9 +462,7 @@ do hh=num_vs+1,natoms !Do 210
                FXI   = FXI + FXIJ
                FYI   = FYI + FYIJ
                FZI   = FZI + FZIJ
-               !FX(J) = FX(J) - FXIJ
-               !FY(J) = FY(J) - FYIJ
-               !FZ(J) = FZ(J) - FZIJ
+
                FXL(J) = FXL(J) - FXIJ
                FYL(J) = FYL(J) - FYIJ
                FZL(J) = FZL(J) - FZIJ
@@ -512,9 +479,6 @@ do hh=num_vs+1,natoms !Do 210
          END IF     ! endif   IF( TIJ .NE. 0) THEN
       END DO !DO 209
 
-      !FX(I) = FX(I) + FXI
-      !FY(I) = FY(I) + FYI
-      !FZ(I) = FZ(I) + FZI
       FXL(I) = FXL(I) + FXI
       FYL(I) = FYL(I) + FYI
       FZL(I) = FZL(I) + FZI
@@ -529,25 +493,21 @@ do A=1,NATOMS
    FY(A) = FY(A) + FYL(A)
    FZ(A) = FZ(A) + FZL(A)
 END DO
-
-
 !$OMP END PARALLEL
 
 !###############################################################################
 !###############################################################################
 
 !	SAVE THE NON-BONDED PART OF FORCE
-	DO I=1, NATOMS
-	
-	FXNB(I) = FX(I) + VFXNB(I)
-	FYNB(I) = FY(I) + VFYNB(I)
-	FZNB(I) = FZ(I) + VFZNB(I)
-
-	END DO	
+DO I=1, NATOMS
+   FXNB(I) = FX(I) + VFXNB(I)
+   FYNB(I) = FY(I) + VFYNB(I)
+   FZNB(I) = FZ(I) + VFZNB(I)
+END DO
 
 !$OMP PARALLEL DEFAULT(NONE)&
-!$OMP& SHARED(A,num_bead,num_vs,indx_atm,init_numbcomp,vitype,virtual_center,INDEX_AB,POINT,RX,RY,RZ)&
-!$OMP& SHARED(masscoeff,NATOMS,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
+!$OMP& SHARED(A,num_bead,num_vs,VIRT_ATM_IND,VIRT_NUMATOMS,vitype,VIRT_CENTER,INDEX_AB,POINT,RX,RY,RZ)&
+!$OMP& SHARED(VIRT_MASSCOEFF,NATOMS,ITYPE,LIST,TYPE_LABEL,INBONDT,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ)&
 !$OMP& SHARED(FCUTA,FCUTB,BINNB,NDATNB,MASS,INVTOTBMASS,RNBOND,NBOND_FORCE,NBOND_POT,timestepcheck)&
 !$OMP& SHARED(SX,SY,SZ,NBONDS,JBOND,IBONDT,typeBond,BINB,BINA,NDATB,RCUT,BOND_FORCE,BOND_POT,RBOND)&
 !$OMP& SHARED(NIJK,JANGLEIJK,IANGT,R2D,BEND_FORCE,BEND_POT,ANGLE,NIJKL)&
@@ -568,50 +528,44 @@ END DO
 !$OMP& REDUCTION(+:FX,FY,FZ)
 
 DO I=1,NATOMS
-   FXL(I) = 0.0
-   FYL(I) = 0.0
-   FZL(I) = 0.0
+   FXL(I) = 0.0D0
+   FYL(I) = 0.0D0
+   FZL(I) = 0.0D0
 END DO
 
 !$OMP DO SCHEDULE(STATIC,1)
-      DO  I = 1, NATOMS
-
-      RXI = SX(I)
-      RYI = SY(I)
-      RZI = SZ(I)
-      !FXI = FX(I)
-      !FYI = FY(I)
-      !FZI = FZ(I)
-       FXI = 0.0 
-       FYI = 0.0
-       FZI = 0.0 
-	
-      TI = ITYPE(I)
+DO  I = 1, NATOMS
+         
+   RXI = SX(I)
+   RYI = SY(I)
+   RZI = SZ(I)
+   
+   FXI = 0.0D0 
+   FYI = 0.0D0
+   FZI = 0.0D0
+   
+   TI = ITYPE(I)
 
 !	*******************************************************************************************
 !	*********************CALCULATE THE BONDED FORCE AND POTENTIAL******************************
-!      CALL HFPBOND (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-      INCLUDE 'HFPBOND.inc' 
+   INCLUDE 'HFPBOND.inc' 
 
 !	*******************************************************************************************
 !	*************************CALCULATE THE ANGLE FORCE AND POTENTIAL***************************
-!      CALL HFPANGLE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-      INCLUDE 'HFPANGLE.inc' 
+   INCLUDE 'HFPANGLE.inc' 
 
 !	*******************************************************************************************
 !	**********************CALCULATE THE TORSION FORCE AND POTENTIAL****************************
-!      CALL HFPTOR (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
-       INCLUDE 'HFPTOR.inc' 
+   INCLUDE 'HFPTOR.inc' 
 
 !	*******************************************************************************************
 !	**********************CALCULATE THE IMPROPER TORSION FORCE AND POTENTIAL********************
 !     CALL FPOUTPLANE (I, RXI, RYI, RZI, FXI, FYI, FZI, TI)
 
-      FXL(I) = FXL(I) + FXI
-      FYL(I) = FYL(I) + FYI
-      FZL(I) = FZL(I) + FZI
-End do 
-
+   FXL(I) = FXL(I) + FXI
+   FYL(I) = FYL(I) + FYI
+   FZL(I) = FZL(I) + FZI
+END DO
 !$OMP END DO 
 
 !Collate forces again
@@ -623,10 +577,7 @@ END DO
 
 !$OMP END PARALLEL
 
-
-
 DO I = 1, NATOMS
-
    PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
    PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
    PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
@@ -634,7 +585,6 @@ DO I = 1, NATOMS
    PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
    PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
    PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
-   
 END DO
 
 RETURN

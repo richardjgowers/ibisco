@@ -37,7 +37,7 @@ INTEGER:: NUMCELL, MAPSIZ, MAXNUMCELL, MAXMAPSIZ
 INTEGER:: IRAV, NRAV, LIMRAV, IAVP, LIMAVP
 INTEGER:: NCELLX, NCELLY, NCELLZ
 INTEGER :: SLIDE,SLIDE2,AVT
-INTEGER :: NB
+
 PARAMETER ( MAXINPUT = 200000, NDATA = 20000 )
 PARAMETER ( LIMRAV = 100, LIMAVP = 10)
 !       PARAMETER ( SLIDE2 = SLIDE/2 )
@@ -52,7 +52,7 @@ INTEGER, POINTER :: POINT(:), LIST(:)
 INTEGER, POINTER :: VIRT_POINT(:), VLIST(:), VLIST_SEC(:),VIRT_POINT_SEC(:)
 INTEGER, POINTER :: CELL (:), NCELL(:), INDX(:, :), MAP(:),LCLIST(:),HEAD(:)
 INTEGER, POINTER :: VLCLIST(:),VHEAD(:), VCELL(:), INDEX_VSITE(:), VITYPE(:)
-INTEGER, POINTER :: INDX_ATM(:,:),NUMATOM(:) 
+
 INTEGER, POINTER :: NATM(:), ITYPE(:), JBOND(:,:)
 INTEGER :: NONBOND
 INTEGER, POINTER :: NBONDS(:), NIJK(:), NIJKL(:), NOOPIJKL(:)
@@ -65,7 +65,7 @@ INTEGER, POINTER :: NDATB(:),NDATAN(:),NDATT(:),NDATNB(:), NDATO(:)
 REAL(KIND=RKIND) :: RLISTIBR,RLISTIBRSQ,RCUTIBR
 REAL*8 :: KB, NA
 PARAMETER ( NA = 6.0221367D+23 ,KB = 1.380658D-23)
-real(kind=rkind),allocatable :: masscoeff(:,:) !Holds the mass fraction of each atom within a virtual site
+
 REAL*8 :: MMOLY, MASSSCALE, RSCALE, ESCALE,VISCOSITY,RVISCOSITY
 REAL*8 :: TEMP0, DT0, TAUT0, TAUP0, PRESSURE0, RCUT, INITIME,RCUTDPD
 REAL*8 :: MKTEMP, RLIST, VOLUME,RLISTSQ
@@ -120,8 +120,11 @@ REAL*8, POINTER ::  VXO(:),  VYO(:), VZO(:)
 
 !     Variables for Hybrid Description
 INTEGER :: NUM_BEAD = 0,timestepcheck,nonbondvirt, NUM_VS = 0, NUM_BA=0
+INTEGER :: NB
 integer :: contactB=0, contactA=0
-INTEGER,POINTER :: INDEX_AB(:),virtual_center(:),init_numbcomp(:),virtNmol(:)
+INTEGER,POINTER :: INDEX_AB(:),virtual_center(:),virtNmol(:)
+INTEGER, POINTER :: VIRT_NUMATOMS(:), VIRT_CENTER(:), VIRT_VS_IND(:)
+REAL(KIND=RKIND), POINTER :: VIRT_MASS(:), VIRT_INVMASS(:), VIRT_MASSCOEFF(:,:)
 real(kind=rkind) :: FCUTA,FCUTB
 real(kind=rkind) :: VBOND_MIX, VANGLE_MIX, VTOR_MIX, VOOP_MIX, VNBOND_MIX
 real(kind=rkind) :: VNBOND_CG, VBOND_CG, VANGLE_CG, VTOR_CG, VOOP_CG
@@ -136,7 +139,8 @@ REAL(kind=rkind), POINTER :: STVBOND_At(:), STVNBOND_At(:), STVTOR_At(:), STVOOP
 REAL(kind=rkind), POINTER :: STVANGLE_At(:), STV_At(:)
  character(len=18) :: name_file_virt
  character(len=7),pointer  :: name_mol(:) 
- character(len=2),dimension(18) :: name_label='NU'
+ character(len=2),dimension(18) :: name_label='NU'  
+
 
 #ifdef DEBUG_OOP
 !     Variables for Testing the OOP with the Atomistic PolyStyrene

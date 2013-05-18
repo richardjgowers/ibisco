@@ -2,7 +2,6 @@
 
 VJBEG = VIRT_POINT(I)
 VJEND = VIRT_POINT(I+1) - 1
-
 !       ** CHECK THAT ATOM I HAS NEIGHBOURS **
 
       IF( VJBEG .LE. VJEND ) THEN
@@ -64,49 +63,6 @@ VJEND = VIRT_POINT(I+1) - 1
                   FXVL(J) = FXVL(J) - FXIJ
                   FYVL(J) = FYVL(J) - FYIJ
                   FZVL(J) = FZVL(J) - FZIJ
-
-!*****************************************************************************************************************
-!     The force is weighted on the weight of each single atoms in the bead
-
-!                  DO H = 1,init_numbcomp(j)
-!                     K = COMPCOM(J,H)
-!     FXIJa = FXIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-!     FYIJa = FYIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-!     FZIJa = FZIJ*MASS(ITYPE(COMPCOM(J,H)))*INVTOTBMASS(J)
-
-!     FX(COMPCOM(J,H)) = FX(COMPCOM(J,H)) - FXIJa
-!     FY(COMPCOM(J,H)) = FY(COMPCOM(J,H)) - FYIJa
-!     FZ(COMPCOM(J,H)) = FZ(COMPCOM(J,H)) - FZIJa
-
-!                     FXL(K) = FXL(K) - FXIJ*masscoeff(J,H)
-!                     FYL(K) = FYL(K) - FYIJ*masscoeff(J,H)
-!                     FZL(K) = FZL(K) - FZIJ*masscoeff(J,H) 
-
-!     VFXNB(COMPCOM(J,H)) = FX(COMPCOM(J,H))
-!     VFYNB(COMPCOM(J,H)) = FY(COMPCOM(J,H))
-!     VFZNB(COMPCOM(J,H)) = FZ(COMPCOM(J,H))
-
-
-!     RXIJ = RXI - RX(COMPCOM(J,H))
-!     RYIJ = RYI - RY(COMPCOM(J,H))
-!     RZIJ = RZI - RZ(COMPCOM(J,H))
-
-!     RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-!     RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-!     RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-
-!     ADD THE NON-BONDED PART OF PRESSURE
-
-!     PT11 = PT11 + FXIJa * RXIJ
-!     PT22 = PT22 + FYIJa * RYIJ
-!     PT33 = PT33 + FZIJa * RZIJ
-                     
-!     PT12 = PT12 + FYIJa * RXIJ
-!     PT13 = PT13 + FZIJa * RXIJ
-!     PT23 = PT23 + FZIJa * RYIJ
-
-
-!                  END DO !Distribute force within VS
 
                END IF !If RIJ lt RCUT
 	    END IF !If TIJ ne 0

@@ -1,18 +1,15 @@
 ! Debugging
 #define DEBUG_OOP .TRUE.! Select to include the debugging stuff of the OOP
-
-
-
 !    *******************************************************************
 
-      PROGRAM IBISCO
+  PROGRAM IBISCO
 
-      USE MODULEPARSING
+    USE MODULEPARSING
 
-      USE VAR
-      USE RNEMD
+    USE VAR
+    USE RNEMD
 
-      IMPLICIT NONE
+    IMPLICIT NONE
 
 
 !      real etime          ! Declare the type of etime()
@@ -24,167 +21,135 @@
 !              character(5)  :: zone
 !              integer,dimension(8) :: values
 
-      INTEGER :: I,J,H
-      integer :: temp_step
+    INTEGER :: I,J,H
+    integer :: temp_step
 
-      REAL :: R2INIS,dummy,sumtotBmass
+    REAL :: R2INIS,dummy,sumtotBmass
 
 ! character(len=2) ::writetype1 
 
 
   
-      WRITE(*,'(//  '' COARSE GRAINING SIMULATION  '')')
-      OPEN ( 115 , FILE = 's-md.out')
-      OPEN ( 116 , FILE = 's-md.tp')
-      OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
-      WRITE( 115, *)'IBIsCO Revision 22:'
-      OPEN (1, FILE='ERROR')
-      WRITE(*,*)
-      ISTOP = 0
+    WRITE(*,'(//  '' COARSE GRAINING SIMULATION  '')')
+    OPEN ( 115 , FILE = 's-md.out')
+    OPEN ( 116 , FILE = 's-md.tp')
+    OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
+    WRITE( 115, *)'IBIsCO Revision 22:'
+    OPEN (1, FILE='ERROR')
+    WRITE(*,*)
+    ISTOP = 0
 
-      !DEFINE REDUSED UNITS
-      CALL UNIT ()
+    !DEFINE REDUSED UNITS
+    CALL UNIT ()
 
-      !READ DATA.NEW FILE
-      CALL RDCONTROL ()
-      RLISTSQ = RLIST**2
-      RLISTIBRSQ = RLISTIBR**2
-      IF (ISTOP == 1) STOP
+    !READ DATA.NEW FILE
+    CALL RDCONTROL ()
+    RLISTSQ = RLIST**2
+    RLISTIBRSQ = RLISTIBR**2
+    IF (ISTOP == 1) STOP
 
-      IF (PPF_INPUT.EQ.1) THEN
-         RDEN1 = 0.D0
-         RDEN2 = 0.D0
-         RV_AVE1 = 0.D0
-         RV_AVE2 = 0.D0
+    IF (PPF_INPUT.EQ.1) THEN
+       RDEN1 = 0.D0
+       RDEN2 = 0.D0
+       RV_AVE1 = 0.D0
+       RV_AVE2 = 0.D0
 
-         RVXPRO = 0.d0
-         RDENSITY = 0.d0
-         RTEEMP = 0.d0
-         RPZX = 0.d0
+       RVXPRO = 0.d0
+       RDENSITY = 0.d0
+       RTEEMP = 0.d0
+       RPZX = 0.d0
 
-         OPEN ( 173 , FILE = 'Visco_PPF.dat')
-         OPEN ( 183 , FILE = 'VGr_Vis.dat' )
-         OPEN ( 193 , FILE = 'R_PPF.pro')
-         OPEN ( 139 , FILE = 'C_PPF.pro') 
-         WRITE(173,*) 'Tsteps, Time(s),C_viscosity(cP),R_viscosity(cP)'
-         write(139,*) '1_Binindex, 2_Bin(nm),3_C_velocity(m/s),', &
-              '4_C_Density(kg/m^3),5_C_Temp(K),6_C_stressZX(kPa)'
-         write(193,*) '1_Binindex, 2_Bin(nm),3_R_velocity(m/s),', &
-              '4_R_Density(kg/m^3),5_R_Temp(K),6_R_stressZX(kPa)'
-         write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)),',&
-              '4_RV_Grad(s^(-1)), 5_CPxz(kPa), 6_RPxz(kPa), 7_C_Visc(cP), 8_R_Visc(cP)'
+       OPEN ( 173 , FILE = 'Visco_PPF.dat')
+       OPEN ( 183 , FILE = 'VGr_Vis.dat' )
+       OPEN ( 193 , FILE = 'R_PPF.pro')
+       OPEN ( 139 , FILE = 'C_PPF.pro') 
+       WRITE(173,*) 'Tsteps, Time(s),C_viscosity(cP),R_viscosity(cP)'
+       write(139,*) '1_Binindex, 2_Bin(nm),3_C_velocity(m/s),', &
+            '4_C_Density(kg/m^3),5_C_Temp(K),6_C_stressZX(kPa)'
+       write(193,*) '1_Binindex, 2_Bin(nm),3_R_velocity(m/s),', &
+            '4_R_Density(kg/m^3),5_R_Temp(K),6_R_stressZX(kPa)'
+       write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)),',&
+            '4_RV_Grad(s^(-1)), 5_CPxz(kPa), 6_RPxz(kPa), 7_C_Visc(cP), 8_R_Visc(cP)'
 
-         !       write(139,*) '1_Binindex, 2_Bin,3_C_velocity,4_C_Density,5_C_Temp,6_C_stressZX'
-         !       write(193,*) '1_Binindex, 2_Bin,3_R_velocity,4_R_Density,5_R_Temp,6_R_stressZX'
-         !       write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)), 4_RV_Grad(s^(-1)), 5_CPxz(Pa), 6_RPxz(Pa), 7_C_Visc(cP), 8_R_Visc(cP)'
-      ENDIF
+       !       write(139,*) '1_Binindex, 2_Bin,3_C_velocity,4_C_Density,5_C_Temp,6_C_stressZX'
+       !       write(193,*) '1_Binindex, 2_Bin,3_R_velocity,4_R_Density,5_R_Temp,6_R_stressZX'
+       !       write(183,*) '1_Binindex, 2_bin(nm), 3_CV_Grad(s^(-1)), 4_RV_Grad(s^(-1)), 5_CPxz(Pa), 6_RPxz(Pa), 7_C_Visc(cP), 8_R_Visc(cP)'
+    ENDIF
 
-      VVCONST = 0.5d0
-      VVCONST0 = 0.65d0
-      !       if (LAINPUT.EQ.1) THEN
-      dummy = R2INIS(iseed)
-      !       ENDIF
+    VVCONST = 0.5d0
+    VVCONST0 = 0.65d0
+    !       if (LAINPUT.EQ.1) THEN
+    dummy = R2INIS(iseed)
+    !       ENDIF
 
-      rfac  = dsqrt(3.d0)     
+    rfac  = dsqrt(3.d0)     
 
-!     ALLOCATE SOME VARIABLES
-      CALL ALLOCATEVAR ()
+    !     ALLOCATE SOME VARIABLES
+    CALL ALLOCATEVAR ()
 
-      !READ PARAM FILE
-      CALL RDINTERACT  ()
-      IF (ISTOP == 1) STOP
+    !READ PARAM FILE
+    CALL RDINTERACT  ()
+    IF (ISTOP == 1) STOP
 
-!      if(IBRDESCR .EQ. 0) THEN
-!        name_file_virt='virtual'
-!      end if
+    NVIRTA = 0 !By default number of virtual sites is 0
 
 
 
+    !Read coordinate file
+    CALL  RDCOOR  ()
+    IF (ISTOP == 1) STOP
+
+    !Read virtual file
+    IF(IBRDESCR .EQ. 0) THEN
+       CALL RDVIRTUAL()
+    END IF
+
+    !     SHIFT THE ATOMS INSIDE THE BOX
+    CALL SHIFT ()
+
+    ! Calculate centers of VS, either COM or adopt an atom's coords
+    CALL VIRTUAL_DEF()
 
 
-!      IF (IBRDESCR .EQ. 0) THEN   
-!        if(virtsite .eq. 1)then         
-!            CALL VIRTUAL_SITE()
-!        end if
-!        IF(ISTOP .EQ. 1) STOP
-!      END IF
-!     STORE THE POSITION OF THE VIRTUAL SITE
+    TIN = TEMP
+    TFAC = DSQRT(TIN)
 
-      NVIRTA = 0 !By default NVIRTA is 0
+    gamma = 0.5D0*sigma**2/TIN
 
-      IF(IBRDESCR .EQ. 0) THEN
-         CALL RDVIRTUAL()
-      END IF
+    !Decide which type of neighbour list to use
+    IF ((BOXX <= 3.0D0*RLIST).OR.(BOXY <= 3.0D0*RLIST).OR. &
+         (BOXZ <= 3.0D0*RLIST)) THEN
+       NEIGHBORLIST = 'NEIGHBOR_NOLIST'
+    ELSE
+       NEIGHBORLIST = 'NEIGHBOR_WITHLIST'
+    END IF
 
-!      READ CONFIG.NEW FILE (INITIAL VELOCITIES AND CONFIGURATIONS)
-      CALL  RDCOOR  ()
-      IF (ISTOP == 1) STOP
+    DO J = 1, NATOMS
+       BEADMASS(J) = MASS(ITYPE(J))
+    ENDDO
 
-!     SHIFT THE ATOMS INSIDE THE BOX
-      CALL SHIFT ()
+    !MAKE TABLE FORCES
+    CALL FTABLE ()
 
-!Calculate centers of VS
-      CALL VIRTUAL_DEF()
+    !     GIVE THE VELOCITIES IF THE INITIAL TIME IS ZERO
+    IF (RESTART == 1) THEN
+       CALL COMVEL ()
+       CALL SCALEV ()
+    END IF
 
-!Calculate mass coeffs
-DO I=1,NVIRTA
-   sumtotBmass = 0.0D0
-   DO J=1,init_numbcomp(I)
-      sumtotBmass = sumtotBmass + mass(itype(indx_atm(I,J)))
-   END DO
-   DO J=1,init_numbcomp(I)
-      masscoeff(I,J) = MASS(ITYPE(INDX_ATM(I,J))) / sumtotBmass
-   END DO
-END DO
+    EK = 0.0D0
+    VNBOND = 0.0D0
+    VBOND  = 0.0D0
+    VANGLE = 0.0D0
+    VTOR   = 0.0D0
+    VOOP   = 0.0D0
+    TOTMASS = 0.0D0
 
-!      IF (IBRDESCR .EQ. 0) THEN   
-!        if(virtsite .eq. 0)then         
-!            CALL VIRTUAL_SITE_COM()
-!            IF(ISTOP .EQ. 1) STOP
-
-!        else
-
-!        end if
-!      END IF
-
-      TIN = TEMP
-      TFAC = DSQRT(TIN)
-
-      gamma = 0.5D0*sigma**2/TIN
-
-      IF ((BOXX <= 3.0D0*RLIST).OR.(BOXY <= 3.0D0*RLIST).OR. &
-      (BOXZ <= 3.0D0*RLIST)) THEN
-      NEIGHBORLIST = 'NEIGHBOR_NOLIST'
-      ELSE
-      NEIGHBORLIST = 'NEIGHBOR_WITHLIST'
-      END IF
-
-      DO J = 1, NATOMS
-            BEADMASS(J) = MASS(ITYPE(J))
-      ENDDO
-
-      !MAKE TABLE FORCES
-      CALL FTABLE ()
-
-      !     GIVE THE VELOCITIES IF THE INITIAL TIME IS ZERO
-      IF (RESTART == 1) THEN
-            CALL COMVEL ()
-            CALL SCALEV ()
-      END IF
-
-      EK = 0.0D0
-      VNBOND = 0.0D0
-      VBOND  = 0.0D0
-      VANGLE = 0.0D0
-      VTOR   = 0.0D0
-      VOOP   = 0.0D0
-      TOTMASS = 0.0D0
-
-!     CALCULATE THE INITIAL TEMPERATURE AND KINETIC ENERGY
-      DO 100 I = 1, NATOMS
-            EK = EK + BEADMASS(i)*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
-            TOTMASS = TOTMASS + MASS(ITYPE(I))
-      100 CONTINUE
+    !     CALCULATE THE INITIAL TEMPERATURE AND KINETIC ENERGY
+    DO I = 1, NATOMS
+       EK = EK + BEADMASS(i)*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+       TOTMASS = TOTMASS + MASS(ITYPE(I))
+    END DO
 
       EK = 0.5D0 * EK
       TEMP = EK * MKTEMP
