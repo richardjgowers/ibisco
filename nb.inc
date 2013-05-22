@@ -8,9 +8,9 @@ DO I=1,NITEMS
       RYI = RY(I)
       RZI = RZ(I)
 
-      FXI = 0.0
-      FYI = 0.0
-      FZI = 0.0
+      FXI = 0.0D0
+      FYI = 0.0D0
+      FZI = 0.0D0
 
       TI = ITYPE(I)
       DO JNAB = JBEG, JEND

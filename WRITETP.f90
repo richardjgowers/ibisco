@@ -17,7 +17,7 @@
 
       DO I = 1, N - 1
             DO J = 1 + I, N
-                  CALL NON_BOND_ARRAY(I,J)
+!                  CALL NON_BOND_ARRAY(I,J) !FIX THIS
                   IF (NONBOND == 0) NUMMDNB = NUMMDNB + 1
             END DO
       END DO
@@ -77,7 +77,7 @@
             DO I = 1, N - 1
                   DO J = I + 1, N
 
-                        CALL NON_BOND_ARRAY(I,J)
+!                        CALL NON_BOND_ARRAY(I,J) !FIX THIS
                         IF (NONBOND == 0) THEN
                               M = M + 1
                               WRITE(116,9054)M, I, J, 0, 0, 0, 0

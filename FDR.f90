@@ -12,7 +12,7 @@
 !        CM2 = MASS(ITYPE(J))
 !        MW = CM1*CM2/(CM1+CM2)
          RIJINV = 1.D0/RIJ
-         OMMEGA = 1.D0-RIJ/RCUT    
+         OMMEGA = 1.D0-RIJ/RCUT_ATOM    
      
          EXIJ = RXIJ*RIJINV
          EYIJ = RYIJ*RIJINV

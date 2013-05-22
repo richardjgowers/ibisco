@@ -35,19 +35,19 @@ SUBROUTINE MAPS (MAP,MAPSIZE,NCELLX,NCELLY,NCELLZ)
 
            IMAP = ( ICELL ( IX, IY, IZ ,NCELLX, NCELLY, NCELLZ  ) - 1 ) * 13
 
-           MAP( IMAP + 1  ) = ICELL( IX + 1, IY    , IZ     )
-           MAP( IMAP + 2  ) = ICELL( IX + 1, IY + 1, IZ     )
-           MAP( IMAP + 3  ) = ICELL( IX    , IY + 1, IZ     )
-           MAP( IMAP + 4  ) = ICELL( IX - 1, IY + 1, IZ     )
-           MAP( IMAP + 5  ) = ICELL( IX + 1, IY    , IZ - 1 )
-           MAP( IMAP + 6  ) = ICELL( IX + 1, IY + 1, IZ - 1 )
-           MAP( IMAP + 7  ) = ICELL( IX    , IY + 1, IZ - 1 )
-           MAP( IMAP + 8  ) = ICELL( IX - 1, IY + 1, IZ - 1 )
-           MAP( IMAP + 9  ) = ICELL( IX + 1, IY    , IZ + 1 )
-           MAP( IMAP + 10 ) = ICELL( IX + 1, IY + 1, IZ + 1 )
-           MAP( IMAP + 11 ) = ICELL( IX    , IY + 1, IZ + 1 )
-           MAP( IMAP + 12 ) = ICELL( IX - 1, IY + 1, IZ + 1 )
-           MAP( IMAP + 13 ) = ICELL( IX    , IY    , IZ + 1 )
+           MAP( IMAP + 1  ) = ICELL( IX + 1, IY    , IZ     ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 2  ) = ICELL( IX + 1, IY + 1, IZ     ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 3  ) = ICELL( IX    , IY + 1, IZ     ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 4  ) = ICELL( IX - 1, IY + 1, IZ     ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 5  ) = ICELL( IX + 1, IY    , IZ - 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 6  ) = ICELL( IX + 1, IY + 1, IZ - 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 7  ) = ICELL( IX    , IY + 1, IZ - 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 8  ) = ICELL( IX - 1, IY + 1, IZ - 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 9  ) = ICELL( IX + 1, IY    , IZ + 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 10 ) = ICELL( IX + 1, IY + 1, IZ + 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 11 ) = ICELL( IX    , IY + 1, IZ + 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 12 ) = ICELL( IX - 1, IY + 1, IZ + 1 ,NCELLX, NCELLY, NCELLZ  )
+           MAP( IMAP + 13 ) = ICELL( IX    , IY    , IZ + 1 ,NCELLX, NCELLY, NCELLZ  )
 
         END DO! 30            CONTINUE
 

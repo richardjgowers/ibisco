@@ -9,7 +9,7 @@
 !    *******************************************************************
 !	MAKE TABLE FOR STRETCHING POTENTIAL AND FORCE BY BOLTZMAN INVERSION
 
-	BIN = RCUT / NDATA
+	BIN = RCUT_ATOM / NDATA
 	BINB = BIN
 	BINBINV  = 1.0/BIN
 	R = 0

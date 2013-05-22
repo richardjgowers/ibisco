@@ -7,6 +7,7 @@
 !      INTEGER :: I,J,K,L,M,KK,TM
       INTEGER :: I,J,TM
       REAL*8            PRESS, PTOT, ETOT, T, TREAL
+      REAL(KIND=RKIND) :: smallnumber
       REAL*4, POINTER :: NSX(:), NSY(:), NSZ(:), NVX(:), NVY(:), NVZ(:)
       INTEGER*4 nrec
       CHARACTER(len=3):: WRITETYPE
@@ -24,17 +25,19 @@
       ALLOCATE(NVZ(NATOMS))
 		
 !	CONVERT TO 4-BYTE PRECISION (COORDINATES AND VELOCITES ONLY)
-      DO 120 J = 1, NATOMS
-	
-            NSX(J) = SX(J)
-            NSY(J) = SY(J)
-            NSZ(J) = SZ(J)
+      smallnumber = 1.0 / 1.0D+12 / TIMESCALE
 
-            NVX(J) = VX(J) / TIMESCALE / 1.0D+12      !nanometer/ps
-            NVY(J) = VY(J) / TIMESCALE / 1.0D+12      !nanometer/ps
-            NVZ(J) = VZ(J) / TIMESCALE / 1.0D+12      !nanometer/ps
+      DO J = 1, NATOMS
 
-120   CONTINUE
+         NSX(J) = SX(J)
+         NSY(J) = SY(J)
+         NSZ(J) = SZ(J)
+
+         NVX(J) = VX(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+         NVY(J) = VY(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+         NVZ(J) = VZ(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+
+      END DO
 	
 !	write header record (together with first frame)
       IF (NFRAME == 1) THEN
@@ -57,7 +60,7 @@
                   PT12*PSCALE, PT22*PSCALE,     &
                   PT13*PSCALE, PT23*PSCALE, PT33*PSCALE
 
-      PTOT = VNBOND + VBOND + VANGLE + VTOR
+      PTOT = VNBOND_ATOM + VNBOND_BEAD + VBOND + VANGLE + VTOR
       ETOT = PTOT + EK
       T = EK * MKTEMP
 !	... energy and friends
@@ -94,25 +97,6 @@
 9050    FORMAT (1X,A8,1X,3 (G21.14,1X))
       CLOSE (114)
 
-!if(timestepcheck .gt. 4000 .and. timestepcheck .lt. 7000) then
-!      WRITE(4000,*)NATOMS
-!      WRITE(4000,*) 't'
-!      DO I = 1, NATOMS
-!            IF(IBRDESCR .EQ. 0) THEN
-!                  IF(TYPE_LABEL(I) .EQ. 1) THEN
-!                        WRITETYPE = 'C'
-!                        WRITE(4000,9040)WRITETYPE, NSX(I)*10, NSY(I)*10, NSZ(I)*10
-!                  ELSE
-!                        WRITETYPE = 'O'
-!                        WRITE(4000,9040)WRITETYPE, NSX(I)*10, NSY(I)*10, NSZ(I)*10
-!                  END IF
-!            ELSE
-!                  WRITE(4000,9050)LABEL(ITYPE(I)), NSX(I), NSY(I), NSZ(I)
-!            END IF
-!      END DO
-!end if
-
-
       DEALLOCATE(NSX)
       DEALLOCATE(NSY)
       DEALLOCATE(NSZ)
@@ -122,6 +106,4 @@
 
       RETURN
 
-      END
-
-!	*********************************************************************************************
+   END 

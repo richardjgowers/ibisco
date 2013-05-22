@@ -110,7 +110,7 @@ DO I=1,NSTEP
                         END IF
                   END IF
 
-end do
+               end do
       
       371 FORMAT (I10,3(1X,1E12.5))
       RETURN

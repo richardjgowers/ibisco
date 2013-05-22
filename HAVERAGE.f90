@@ -4,7 +4,7 @@ SUBROUTINE HAVERAGE (TM)
   IMPLICIT NONE
   !      INTEGER :: I, J, K, L, M, KK, TM
   INTEGER :: I, J, L, KK, TM
-  REAL*8 :: TREAL, T
+  REAL(KIND=RKIND) :: TREAL, T
   !       *******************************************************************
   !       ********     STORING AVERAGE DATA AND RESTART FILE      ***********
 

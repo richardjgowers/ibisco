@@ -25,7 +25,6 @@ REAL(KIND=RKIND) :: FXIJK, FYIJK, FZIJK
  REAL(KIND=RKIND) :: FIJKL,VIJKL
  REAL(KIND=RKIND) :: FX1, FY1, FZ1, FX4, FY4, FZ4, FX12, FY12, FZ12
 
-write(*,*) 'Into force'
 !      REAL,PARAMETER :: hrij = 0.4
 DO I = 1, NATOMS
            FX(I) = 0.0D0

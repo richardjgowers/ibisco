@@ -5,12 +5,12 @@ USE VAR
 IMPLICIT NONE
 
 INTEGER :: iost, I, J, K, NUMATOM, TI, TJ
-INTEGER, PARAMETER :: MAX_ATOMS = 15 !Max number of atoms within a VS
+INTEGER, PARAMETER :: MAX_ATOMS = 15 !Temp max number of atoms within a VS
 INTEGER :: ACTUAL_MAX
 REAL(KIND=RKIND) :: SUMTOTX, SUMTOTY, SUMTOTZ, SUMTOTBMASS
 REAL(KIND=RKIND) :: RPX, RPY, RPZ, SPX, SPY, SPZ
 REAL(KIND=RKIND), PARAMETER :: MASSTOL = 0.0001
-INTEGER, POINTER :: INDX_ATM(:,:)
+INTEGER, POINTER :: INDX_ATM(:,:) !Temp array for filling in index of atoms before max VIRT_NUMATOMS is known
 INTEGER :: PP=0, JP, NOBOUND
 
 
@@ -51,8 +51,6 @@ ALLOCATE(VIRT_POINT_SEC(NVIRTA+1))
 ALLOCATE(VCELL(NVIRTA))
 ALLOCATE(VLCLIST(NVIRTA))
 
-
-
 indx_atm = 0
 VIRT_VS_IND = 0
 
@@ -60,7 +58,7 @@ VIRT_VS_IND = 0
 VIRT_NUMATOMS = 0
 DO I=1,NVIRTA
    READ(10,*,iostat=iost) K, VITYPE(I), NUMATOM, VIRT_CENTER(I)
-
+   ITYPE(NATOMS + I) = VITYPE(I)
    IF(iost .ne. 0) THEN
       WRITE(*,*) 'ERROR READING VIRTUAL, TOO SHORT'
       WRITE(1,*) 'ERROR READING VIRTUAL, TOO SHORT'
@@ -86,9 +84,6 @@ DO I=1,NVIRTA
       RETURN
    END IF
 END DO
-
-!Populates some information for neighbour list creation
-include 'virtual_rdcoor.inc'
 
 !Transfer atom index info into smallest array possible
 ACTUAL_MAX = 0

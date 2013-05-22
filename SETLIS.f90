@@ -446,40 +446,40 @@ SUBROUTINE SETLIS()
 
                  ! Find the highest connectivity
 
-                 if(ibrdescr .eq. 0)then
-                    contactA = 0
-                    contactB = 0
-                    tmp=0
-                    do i=1,natoms-1 
-                       do j=i+1,natoms
-                          if(type_label(i) .eq. 1 .and. type_label(j) .eq. 1)then
-                             call non_bond_array(i,j)
-                             if(nonbond .ne. 1)then
-                                tmp = abs(j-i)+1
-                                if(contactA .lt. tmp)contactA=tmp
-                             end if
-                          elseif(type_label(i) .eq. 2 .and. type_label(j) .eq. 2)then
-                             call non_bond_array_bead(i,j)
-                             if(nonbond .ne. 1)then
-                                tmp = abs(j-i)+1
-                                if(contactB .lt. tmp)contactB=tmp
-                             end if
-                          end if
-                       end do
-                    end do
-                 else
-                    contactA = 0
-                    tmp=0
-                    do i=1,natoms 
-                       do j=i+1,natoms
-                          call non_bond_array(i,j)
-                          if(nonbond .ne. 1)then
-                             tmp = abs(j-i)
-                             if(contactA .lt. tmp)contactA=tmp+1
-                          end if
-                       end do
-                    end do
-                 end if
+!                 if(ibrdescr .eq. 0)then
+!                    contactA = 0
+!                    contactB = 0
+!                    tmp=0
+!                    do i=1,natoms-1 
+!                       do j=i+1,natoms
+!                          if(type_label(i) .eq. 1 .and. type_label(j) .eq. 1)then
+!                             call non_bond_array(i,j)
+!                             if(nonbond .ne. 1)then
+!                                tmp = abs(j-i)+1
+!                                if(contactA .lt. tmp)contactA=tmp
+!                             end if
+!                          elseif(type_label(i) .eq. 2 .and. type_label(j) .eq. 2)then
+!                             call non_bond_array_bead(i,j)
+!                             if(nonbond .ne. 1)then
+!                                tmp = abs(j-i)+1
+!                                if(contactB .lt. tmp)contactB=tmp
+!                             end if
+!                          end if
+!                       end do
+!                    end do
+!                 else
+!                    contactA = 0
+!                    tmp=0
+!                    do i=1,natoms 
+!                       do j=i+1,natoms
+!                          call non_bond_array(i,j)
+!                          if(nonbond .ne. 1)then
+!                             tmp = abs(j-i)
+!                             if(contactA .lt. tmp)contactA=tmp+1
+!                          end if
+!                       end do
+!                    end do
+!                 end if
 
 
                  RETURN

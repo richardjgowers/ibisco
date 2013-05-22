@@ -1,88 +1,86 @@
+SUBROUTINE SCALEBP (TM)
 
-      SUBROUTINE SCALEBP (TM)
+  USE VAR
+  IMPLICIT NONE
+  INTEGER :: I, TM
+  REAL(KIND=RKIND) :: P, AVP
+  REAL(KIND=RKIND) :: MIUX, MIUY, MIUZ
+  !      REAL*8 :: DBX, DBY, DBZ, NBOXX, NBOXY, NBOXZ, MIUX, MIUY, MIUZ
+  !      REAL*8 :: PSCALEX, PSCALEY, PSCALEZ, P, AVP
+  !       ******************************************************************************
+  !	***** CALCULATE THE NEW VOLUME AND SCALE THE POSITIONS IN NPT ENSEMBLE	******
 
-      USE VAR
-      IMPLICIT NONE
-      INTEGER :: I, TM
-      REAL*8 :: P, AVP
-      REAL*8 :: MIUX, MIUY, MIUZ
-!      REAL*8 :: DBX, DBY, DBZ, NBOXX, NBOXY, NBOXZ, MIUX, MIUY, MIUZ
-!      REAL*8 :: PSCALEX, PSCALEY, PSCALEZ, P, AVP
-!       ******************************************************************************
-!	***** CALCULATE THE NEW VOLUME AND SCALE THE POSITIONS IN NPT ENSEMBLE	******
+  !	CALCULATE AVERAGE
+  IAVP = IAVP + 1
+  IF (IAVP .GT. LIMAVP) IAVP = IAVP - LIMAVP
 
-!	CALCULATE AVERAGE
-      IAVP = IAVP + 1
-            IF (IAVP .GT. LIMAVP) IAVP = IAVP - LIMAVP
+  SP(IAVP) = (PT11 + PT22 + PT33)/3.0d0
 
-      SP(IAVP) = (PT11 + PT22 + PT33)/3.0d0
+  IF (MOD(TM, LIMAVP) == 0) THEN
+     AVP = 0.0D0
+     DO I = 1, LIMAVP
+        AVP = AVP + SP(I)
+     END DO
 
-      IF (MOD(TM, LIMAVP) == 0) THEN
-            AVP = 0.0D0
-            DO I = 1, LIMAVP
-                  AVP = AVP + SP(I)
-            END DO
- 
-      P = AVP / LIMAVP
+     P = AVP / LIMAVP
 
-      MIUX = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
-      MIUY = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
-      MIUZ = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
-	
-      BOXX = BOXX * MIUX
-      BOXY = BOXY * MIUY
-      BOXZ = BOXZ * MIUZ
+     MIUX = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
+     MIUY = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
+     MIUZ = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
 
-      DO I = 1, NATOMS
+     BOXX = BOXX * MIUX
+     BOXY = BOXY * MIUY
+     BOXZ = BOXZ * MIUZ
 
-            SX(I) = SX(I)*MIUX
-            SY(I) = SY(I)*MIUY
-            SZ(I) = SZ(I)*MIUZ
+     DO I = 1, NATOMS
 
-      END DO
+        SX(I) = SX(I)*MIUX
+        SY(I) = SY(I)*MIUY
+        SZ(I) = SZ(I)*MIUZ
 
-      BOXXINV = 1.0D0 / BOXX
-      BOXYINV = 1.0D0 / BOXY
-      BOXZINV = 1.0D0 / BOXZ
+     END DO
 
-      BOXX2 = BOXX / 2.0D0
-      BOXY2 = BOXY / 2.0D0
-      BOXZ2 = BOXZ / 2.0D0
+     BOXXINV = 1.0D0 / BOXX
+     BOXYINV = 1.0D0 / BOXY
+     BOXZINV = 1.0D0 / BOXZ
 
-!	P = (PT11 + PT22 + PT33)/3.0d0
-	
-!	DBX = 2.0D0*(P-PRESSURE)*PFAC
-!	DBY = 2.0D0*(P-PRESSURE)*PFAC
-!	DBZ = 2.0D0*(P-PRESSURE)*PFAC
-	
-!	NBOXX = BOXX + DBX
-!	NBOXY = BOXY + DBY
-!	NBOXZ = BOXZ + DBZ
+     BOXX2 = BOXX / 2.0D0
+     BOXY2 = BOXY / 2.0D0
+     BOXZ2 = BOXZ / 2.0D0
 
-!	PSCALEX = 1.0D0 + DBX/BOXX
-!	PSCALEY = 1.0D0 + DBY/BOXY
-!	PSCALEZ = 1.0D0 + DBZ/BOXZ
+     !	P = (PT11 + PT22 + PT33)/3.0d0
 
-!	DO I = 1, NATOMS
+     !	DBX = 2.0D0*(P-PRESSURE)*PFAC
+     !	DBY = 2.0D0*(P-PRESSURE)*PFAC
+     !	DBZ = 2.0D0*(P-PRESSURE)*PFAC
 
-!		SX(I) = SX(I)*PSCALEX
-!		SY(I) = SY(I)*PSCALEY
-!		SZ(I) = SZ(I)*PSCALEZ
-!	END DO
+     !	NBOXX = BOXX + DBX
+     !	NBOXY = BOXY + DBY
+     !	NBOXZ = BOXZ + DBZ
 
-!	BOXX = NBOXX
-!	BOXY = NBOXY
-!	BOXZ = NBOXZ
-!	BOXXINV = 1.0D0 / BOXX
-!	BOXYINV = 1.0D0 / BOXY
-!	BOXZINV = 1.0D0 / BOXZ
+     !	PSCALEX = 1.0D0 + DBX/BOXX
+     !	PSCALEY = 1.0D0 + DBY/BOXY
+     !	PSCALEZ = 1.0D0 + DBZ/BOXZ
 
-!	BOXX2 = BOXX / 2.0D0
-!	BOXY2 = BOXY / 2.0D0
-!	BOXZ2 = BOXZ / 2.0D0
+     !	DO I = 1, NATOMS
 
-      END IF 
+     !		SX(I) = SX(I)*PSCALEX
+     !		SY(I) = SY(I)*PSCALEY
+     !		SZ(I) = SZ(I)*PSCALEZ
+     !	END DO
 
-      RETURN
-      END
-!	*********************************************************************************************
+     !	BOXX = NBOXX
+     !	BOXY = NBOXY
+     !	BOXZ = NBOXZ
+     !	BOXXINV = 1.0D0 / BOXX
+     !	BOXYINV = 1.0D0 / BOXY
+     !	BOXZINV = 1.0D0 / BOXZ
+
+     !	BOXX2 = BOXX / 2.0D0
+     !	BOXY2 = BOXY / 2.0D0
+     !	BOXZ2 = BOXZ / 2.0D0
+
+  END IF
+
+  RETURN
+END SUBROUTINE SCALEBP

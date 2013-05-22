@@ -210,11 +210,12 @@ SUBROUTINE RDCONTROL ()
   DO WHILE (.TRUE.)
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
-     IF (STRNGS(1) == 'hybrid_description') THEN
-        READ (STRNGS(2),*) TEXT
-        IF ((TEXT(1:1) == 'Y').OR.((TEXT(1:1) == 'y'))) THEN
+     IF (STRNGS(1) == 'virtual_sites') THEN
+        READ (STRNGS(2),*) NVIRTA
+        NITEMS = NATOMS + NVIRTA
+        IF(NVIRTA .gt. 0) THEN
            IBRDESCR = 0
-        ELSE IF ((TEXT(1:1) == 'N').OR.((TEXT(1:1) == 'n'))) THEN
+        ELSE
            IBRDESCR = 1
         END IF
         EXIT
@@ -225,46 +226,14 @@ SUBROUTINE RDCONTROL ()
   !*********************************************************************************************
   !*********************************************************************************************
 
-  VIRTSITE = 10
-  REWIND (2)
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)',IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'virtual_site') THEN
-        READ (STRNGS(2),*) TEXT
-        IF ((TEXT(1:1) == 'F').OR.((TEXT(1:1) == 'f'))) VIRTSITE = 0
-        IF ((TEXT(1:1) == 'A').OR.((TEXT(1:1) == 'a'))) VIRTSITE = 1
-        EXIT
-     END IF
-     IF (IOS2 /= 0) EXIT
-  END DO
-
-  IF (IBRDESCR .EQ. 10 .AND.(VIRTSITE.EQ. 0 .OR. VIRTSITE .EQ. 1)) THEN
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //hybrid_description// is missing in //control// file***********'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //hybrid_description// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-
-  IF ((IBRDESCR .NE. 1) .AND. (VIRTSITE.EQ. 10)) THEN
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //virtual_site// is missing in //control// file***********'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //virtual_site// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-
-  !*********************************************************************************************
-
   ALARM = 10
   REWIND (2)
   DO WHILE (.TRUE.)
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
      IF (STRNGS(1) == 'bead_cutoff') THEN
-        READ (STRNGS(2),*) RCUTIBR
+        READ (STRNGS(2),*) RCUT_BEAD
+        RCUTSQ_BEAD = RCUT_BEAD * RCUT_BEAD
         ALARM = 0
         EXIT
      END IF
@@ -289,7 +258,7 @@ SUBROUTINE RDCONTROL ()
         READ (STRNGS(2),*) RLIST_BEAD
         ALARM = 0
 
-        IF ( RLIST_BEAD < RCUTIBR ) THEN 
+        IF ( RLIST_BEAD < RCUT_BEAD ) THEN 
            WRITE (1,*)	&
 		' **** FATAL ERROR! Neighbour list cutoff must be a bit larger than the cutoff. ****'
            WRITE (*,*)	&
@@ -317,10 +286,10 @@ SUBROUTINE RDCONTROL ()
         READ (2, '(A80)',IOSTAT=IOS2) LINE
         CALL PARSE ()
         IF (STRNGS(1) == 'non_bonded_bead') THEN
-           READ (STRNGS(2),*) NONBEXCBEAD
+           READ (STRNGS(2),*) NONBEXC_BEAD
            ALARM = 0
 
-           IF ((NONBEXCBEAD .NE. 4).AND.(NONBEXCBEAD .NE. 5)) THEN
+           IF ((NONBEXC_BEAD .NE. 4).AND.(NONBEXC_BEAD .NE. 5)) THEN
               WRITE (1,*) ' '
               WRITE (1,*) &
                    ' **** FATAL ERROR! FATAL ERROR! ****'
@@ -385,14 +354,14 @@ SUBROUTINE RDCONTROL ()
 
      IF (IOS2 /= 0) EXIT
   END DO
-  IF ((ALARM .NE. 0) .AND. (IBRDESCR .NE. 1) .AND. (VIRTSITE .EQ. 0)) THEN
+  IF ((ALARM .NE. 0) .AND. (IBRDESCR .NE. 1)) THEN
      WRITE (1,*) &
           '*********FATAL ERROR: KEYWORD //com_update// is missing in //control// file***********'
      WRITE(*,*) &
           '*********FATAL ERROR: KEYWORD //com_update// is missing in //control// file***********'
      ISTOP=1
   ENDIF
-  IF (nupdate .le. vupdate .and. (IBRDESCR .eq. 0) .AND. (VIRTSITE .EQ. 0)) THEN
+  IF (nupdate .le. vupdate .and. (IBRDESCR .eq. 0)) THEN
      WRITE (1,*) &
           '*********FATAL ERROR: Neighbour list update must be grater than COM update ***********'
      WRITE(*,*) 
@@ -554,7 +523,8 @@ SUBROUTINE RDCONTROL ()
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
      IF (STRNGS(1) == 'cutoff') THEN
-        READ (STRNGS(2),*) RCUT
+        READ (STRNGS(2),*) RCUT_ATOM
+        RCUTSQ_ATOM = RCUT_ATOM * RCUT_ATOM
         ALARM = 0
         EXIT
      END IF
@@ -563,9 +533,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Cutoff// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //cutoff// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Cutoff// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //cutoff// is missing in //control// file***********'
      ISTOP=1
   ENDIF
   !************************************************************************************************************
@@ -577,8 +547,8 @@ SUBROUTINE RDCONTROL ()
      IF (STRNGS(1) == 'neighbour_list_cutoff') THEN
         READ (STRNGS(2),*) RLIST_ATOM
         ALARM = 0
-
-        IF ( RLIST_ATOM < RCUT ) THEN 
+        RLISTSQ_ATOM = RLIST_ATOM * RLIST_ATOM
+        IF ( RLIST_ATOM < RCUT_ATOM ) THEN 
            WRITE (1,*)	&
 		' **** FATAL ERROR! Neighbour list cutoff must be a bit larger than the cutoff. ****'
            WRITE (*,*)	&
@@ -593,9 +563,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Neighbour_list_cutoff// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //neighbour_list_cutoff// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Neighbour_list_cutoff// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //neighbour_list_cutoff// is missing in //control// file***********'
      ISTOP=1
   ENDIF
 
@@ -616,9 +586,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Nsampling// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //sampling// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Nsampling// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //sampling// is missing in //control// file***********'
      ISTOP=1
   ENDIF
   ALARM = 10
@@ -636,9 +606,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Ntrajectory// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //trajectory// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Ntrajectory// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //trajectory// is missing in //control// file***********'
      ISTOP=1
   ENDIF
   ALARM = 10
@@ -656,9 +626,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Halt_Drift// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //halt_Drift// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Halt_Drift// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //halt_Drift// is missing in //control// file***********'
      ISTOP=1
   ENDIF
   ALARM = 10
@@ -676,9 +646,9 @@ SUBROUTINE RDCONTROL ()
   END DO
   IF (ALARM.NE.0) THEN
      WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Naverage// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //rolling_averages// is missing in //control// file***********'
      WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Naverage// is missing in //control// file***********'
+          '*********FATAL ERROR: KEYWORD //rolling_averages// is missing in //control// file***********'
      ISTOP=1
   ENDIF
 
@@ -688,20 +658,20 @@ SUBROUTINE RDCONTROL ()
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
      IF (STRNGS(1) == 'non_bonded') THEN
-        READ (STRNGS(2),*) NONBEXC
+        READ (STRNGS(2),*) NONBEXC_ATOM
         ALARM = 0
 
-        IF ((NONBEXC .NE. 4).AND.(NONBEXC .NE. 5)) THEN
+        IF ((NONBEXC_ATOM .NE. 4).AND.(NONBEXC_ATOM .NE. 5)) THEN
            WRITE (1,*) ' '
            WRITE (1,*) &
                 ' **** FATAL ERROR! FATAL ERROR! ****'
            WRITE (1,*) ' Invalid non-bonded interactions '
-           WRITE (1,*) ' **** Check DATA file ****'
+           WRITE (1,*) ' **** Check control file ****'
            WRITE (*,*) ' '
            WRITE (*,*) &
                 ' **** FATAL ERROR! FATAL ERROR! ****'
            WRITE (*,*) ' Invalid non-bonded interactions '
-           WRITE (*,*) ' **** Check DATA file ****'
+           WRITE (*,*) ' **** Check control file ****'
            ISTOP = 1
            RETURN
         END IF
@@ -788,7 +758,7 @@ SUBROUTINE RDCONTROL ()
   ALARM = 10
   REWIND (2)
 
-  RCUTDPD = RCUT
+  RCUTDPD = RCUT_ATOM
   DO WHILE (.TRUE.)
      READ (2, '(A80)', IOSTAT=IOS2) LINE
      CALL PARSE ()

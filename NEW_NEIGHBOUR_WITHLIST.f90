@@ -1,22 +1,20 @@
-SUBROUTINE NEW_NEIGHBOR_WITHLIST (INDEX_LIST,SIZEINDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
-     , MAP, SIZEMAP)
+SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
+     , MAP, SIZEMAP, HEAD, MAXNUMCELL)
 
   USE VAR
 
   IMPLICIT	NONE
 
-  INTEGER, INTENT(IN) :: N
-  INTEGER, INTENT(IN) :: INDEX_LIST(N), CELL(N), LCLIST(N), MAXNAB, SIZEMAP, MAP(SIZEMAP)
-  REAL(KIND=RKIND), INTENT(IN) :: RLIST
+  INTEGER, INTENT(IN) :: N, MAXNUMCELL, MAXNAB
+  INTEGER, INTENT(IN) :: INDEX_LIST(N), CELL(N), LCLIST(N), SIZEMAP, MAP(SIZEMAP), HEAD(MAXNUMCELL)
   INTEGER, INTENT(INOUT) :: POINT(N+1), LIST(MAXNAB)
-
-  INTEGER :: A, I, J, NLIST, JCELL0, NABOR
+  INTEGER :: A, B, C, I, J, NLIST, JCELL, JCELL0, NABOR
+  REAL(KIND=RKIND), INTENT(IN) :: RLIST
+  REAL(KIND=RKIND) :: RXI, RYI, RZI
+  REAL(KIND=RKIND) :: RIJSQ
+  REAL(KIND=RKIND) :: RXIJ, RYIJ, RZIJ
   REAL(KIND=RKIND) :: RLISTSQ
 
-  INTEGER :: NLIST, JCELL
-  REAL*8 :: RXI, RYI, RZI
-  REAL*8 :: RIJSQ
-  REAL*8 :: RXIJ, RYIJ, RZIJ
 
   RLISTSQ = RLIST * RLIST
 
@@ -35,7 +33,16 @@ SUBROUTINE NEW_NEIGHBOR_WITHLIST (INDEX_LIST,SIZEINDEX_LIST,POINT,CELL,LCLIST,N,
      DO
         IF(J .eq. 0) EXIT
         !           if(abs(ip-jp) .le. contactA)then
-        CALL NON_BOND_ARRAY(I,J)
+        NONBOND=1
+        IF(CONNECTIONS(I) .gt. 0) THEN !If I has connections:
+           DO B=1,CONNECTIONS(I)
+              C = CONNECTED_TO(I,B)
+              IF(J .eq. C) THEN !If J is C then they are connected
+                 NONBOND=0 
+                 EXIT
+              END IF
+           END DO
+        END IF
         !           else
         !              NONBOND=1
         !           end if
@@ -67,10 +74,20 @@ SUBROUTINE NEW_NEIGHBOR_WITHLIST (INDEX_LIST,SIZEINDEX_LIST,POINT,CELL,LCLIST,N,
         DO
            IF(J .eq. 0) EXIT
            !              if(abs(ip-jp) .le. contactA)then
-           CALL NON_BOND_ARRAY(I,J)
            !              else
            !                 NONBOND=1
            !              end if
+
+           NONBOND=1
+           IF(CONNECTIONS(I) .gt. 0) THEN !If I has connections:
+              DO B=1,CONNECTIONS(I)
+                 C = CONNECTED_TO(I,B)
+                 IF(J .eq. C) THEN !If J is C then they are connected
+                    NONBOND=0 
+                    EXIT
+                 END IF
+              END DO
+           END IF
 
            IF (NONBOND.EQ.1) THEN
               RXIJ = RXI - RX(J)
@@ -97,5 +114,5 @@ SUBROUTINE NEW_NEIGHBOR_WITHLIST (INDEX_LIST,SIZEINDEX_LIST,POINT,CELL,LCLIST,N,
   POINT(N+1) = NLIST + 1
 
   RETURN
-END SUBROUTINE NEW_NEIGHBOR_WITHLIST
+END SUBROUTINE NEW_NEIGHBOUR_WITHLIST
 

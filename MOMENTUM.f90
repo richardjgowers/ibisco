@@ -1,42 +1,39 @@
+SUBROUTINE MOMENTUM ()
 
-      SUBROUTINE MOMENTUM ()
+  USE VAR
+  IMPLICIT NONE
 
-      USE VAR
-      IMPLICIT NONE
+  INTEGER :: I, TI
+  REAL(KIND=RKIND) :: SUMX, SUMY, SUMZ, REG_MASS, INV_MASS
 
-      INTEGER :: I
-      REAL*8 :: SUMX, SUMY, SUMZ
-!       ******************************************************************
-!	***********	RESET THE NET MOMENTUM TO ZERO    ****************
+  !       ******************************************************************
+  !	***********	RESET THE NET MOMENTUM TO ZERO    ****************
+  !	CALCULATE THE TOTAL MOMENTUM FOR EACH DIRECTION
 
-!	CALCULATE THE TOTAL MOMENTUM FOR EACH DIRECTION
+  SUMX = 0.0D0
+  SUMY = 0.0D0
+  SUMZ = 0.0D0
 
-      SUMX = 0.0D0
-      SUMY = 0.0D0
-      SUMZ = 0.0D0
+  DO I = 1, NATOMS
+     TI = ITYPE(I)
+     REG_MASS = MASS(TI)
+     SUMX = SUMX + VX(I) * REG_MASS
+     SUMY = SUMY + VY(I) * REG_MASS
+     SUMZ = SUMZ + VZ(I) * REG_MASS
+  END DO
 
-        DO 205 I = 1, NATOMS
-            CM = BEADMASS(I)
-            SUMX = SUMX + VX(I) * CM
-            SUMY = SUMY + VY(I) * CM
-            SUMZ = SUMZ + VZ(I) * CM
-205     CONTINUE
+  SUMX = SUMX/REAL (NATOMS)
+  SUMY = SUMY/REAL (NATOMS)
+  SUMZ = SUMZ/REAL (NATOMS)
 
-      SUMX = SUMX/REAL (NATOMS)
-      SUMY = SUMY/REAL (NATOMS)
-      SUMZ = SUMZ/REAL (NATOMS)
+  !	CHANGE THE VELOCITES SUCH THAT TOTAL MOMENTUM IN EACH DIRECTION IS SETED TO ZERO
+  DO I = 1, NATOMS
+     TI = ITYPE(I)
+     INV_MASS = INVMASS(TI)
+     VX(I) = VX(I) - SUMX*INV_MASS
+     VY(I) = VY(I) - SUMY*INV_MASS
+     VZ(I) = VZ(I) - SUMZ*INV_MASS
+  END DO
 
-!	CHANGE THE VELOCITES SUCH THAT TOTAL MOMENTUM IN EACH DIRECTION IS SETED TO ZERO
-        DO 300 I = 1, NATOMS
-
-            CM = BEADMASS(I)
-            VX(I) = VX(I) - SUMX/CM
-            VY(I) = VY(I) - SUMY/CM
-            VZ(I) = VZ(I) - SUMZ/CM
-
-300     CONTINUE
-
-      RETURN
-      END
-
-!	*********************************************************************************************
+  RETURN
+END SUBROUTINE MOMENTUM
