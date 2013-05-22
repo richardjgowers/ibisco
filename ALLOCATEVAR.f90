@@ -60,9 +60,9 @@
             PT13 = 0.0D0
             PT23 = 0.0D0
 
-            ALLOCATE(RX(NATOMS))
-            ALLOCATE(RY(NATOMS))
-            ALLOCATE(RZ(NATOMS))
+!            ALLOCATE(RX(NATOMS))
+!            ALLOCATE(RY(NATOMS))
+!            ALLOCATE(RZ(NATOMS))
 
             ALLOCATE(SX(NATOMS))
             ALLOCATE(SY(NATOMS))
@@ -112,18 +112,11 @@
 !	ALLOCATE(LTORIJKL(NATOMS,NATOMS-1))
 
 !hjqian	        ALLOCATE(NONBOND(NATOMS,NATOMS))
-            MAXNAB = 1000 * NATOMS
 
-            ALLOCATE(POINT(NATOMS+1))
-            ALLOCATE(LIST(MAXNAB))
-            ALLOCATE(VIRT_POINT(NATOMS+1))
-            ALLOCATE(VLIST(MAXNAB))
-            if(virtsite .eq. 0)then
-                ALLOCATE(VLIST_SEC(MAXNAB))
-            end if
-            ALLOCATE(FX(NATOMS))
-            ALLOCATE(FY(NATOMS))
-            ALLOCATE(FZ(NATOMS))
+            
+!            ALLOCATE(FX(NATOMS))
+!            ALLOCATE(FY(NATOMS))
+!            ALLOCATE(FZ(NATOMS))
 
             ALLOCATE(FXNB(NATOMS))
             ALLOCATE(FYNB(NATOMS))

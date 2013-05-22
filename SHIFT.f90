@@ -31,7 +31,6 @@
 !$OMP PARALLEL DO SCHEDULE(STATIC,1) NUM_THREADS(7) DEFAULT(SHARED)&
 !$OMP& private(SPX,SPY,SPZ)
 DO I = 1, NATOMS
-
 		IF ((SX(I)> BOXX2).OR.(SX(I) < -BOXX2).OR.(SY(I)> BOXY2) &
 		.OR.(SY(I)< -BOXY2).OR.(SZ(I)> BOXZ2).OR.(SZ(I)<-BOXZ2)) THEN
 
@@ -52,10 +51,9 @@ DO I = 1, NATOMS
 		RY(I) = SY(I)
 		RZ(I) = SZ(I)
 		END IF 
-
-
-	END DO
+END DO
 !$OMP END PARALLEL DO
+
 !  t2=omp_get_wtime()
 !  tick=omp_get_wtick()
 

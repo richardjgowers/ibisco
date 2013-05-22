@@ -286,10 +286,10 @@ SUBROUTINE RDCONTROL ()
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
      IF (STRNGS(1) == 'bead_neighbour_list_cutoff') THEN
-        READ (STRNGS(2),*) RLISTIBR
+        READ (STRNGS(2),*) RLIST_BEAD
         ALARM = 0
 
-        IF ( RLISTIBR < RCUTIBR ) THEN 
+        IF ( RLIST_BEAD < RCUTIBR ) THEN 
            WRITE (1,*)	&
 		' **** FATAL ERROR! Neighbour list cutoff must be a bit larger than the cutoff. ****'
            WRITE (*,*)	&
@@ -575,10 +575,10 @@ SUBROUTINE RDCONTROL ()
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
      IF (STRNGS(1) == 'neighbour_list_cutoff') THEN
-        READ (STRNGS(2),*) RLIST
+        READ (STRNGS(2),*) RLIST_ATOM
         ALARM = 0
 
-        IF ( RLIST < RCUT ) THEN 
+        IF ( RLIST_ATOM < RCUT ) THEN 
            WRITE (1,*)	&
 		' **** FATAL ERROR! Neighbour list cutoff must be a bit larger than the cutoff. ****'
            WRITE (*,*)	&

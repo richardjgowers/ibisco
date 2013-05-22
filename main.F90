@@ -91,24 +91,36 @@
     CALL RDINTERACT  ()
     IF (ISTOP == 1) STOP
 
-    NVIRTA = 0 !By default number of virtual sites is 0
-
-
-
     !Read coordinate file
     CALL  RDCOOR  ()
     IF (ISTOP == 1) STOP
 
-    !Read virtual file
-    IF(IBRDESCR .EQ. 0) THEN
+    NVIRTA = 0 !By default number of virtual sites is 0
+    NCOARSE = 0
+    IF(IBRDESCR .EQ. 0) THEN	
+       !Read virtual file			
        CALL RDVIRTUAL()
+
+       IF(ISTOP .eq. 1) STOP 'Failed at RDVIRTUAL'
+       !Make linked lists of atoms or bead/VS
+       CALL MAKE_LISTS()
+
+       IF(ISTOP .eq. 1) STOP 'Failed at MAKE_LISTS'
     END IF
+
+    !Allocate size of force (F) and shifted position (R) arrays
+    CALL ALLOCATEVAR2()
+
+    ! Calculate centers of VS, either COM or adopt an atom's coords
+    CALL VIRTUAL_DEF()
 
     !     SHIFT THE ATOMS INSIDE THE BOX
     CALL SHIFT ()
 
-    ! Calculate centers of VS, either COM or adopt an atom's coords
-    CALL VIRTUAL_DEF()
+    
+
+
+
 
 
     TIN = TEMP
@@ -124,7 +136,7 @@
        NEIGHBORLIST = 'NEIGHBOR_WITHLIST'
     END IF
 
-    DO J = 1, NATOMS
+    DO J = 1, NATOMS !FIX THIS
        BEADMASS(J) = MASS(ITYPE(J))
     ENDDO
 
@@ -196,30 +208,60 @@
             CALL ANGLETABLE ()
       END IF
 
-!     SETS UP A LIST OF THE TWENTY SIX NEIGHBOURING
-!     CELLS OF EACH OF THE SMALL CELLS IN THE CENTRAL BOX.
-
-      NCELLX = INT(BOXX/RLIST)
-      NCELLY = INT(BOXY/RLIST)
-      NCELLZ = INT(BOXZ/RLIST)
-
-      NUMCELL = NCELLX * NCELLY * NCELLZ 
-      MAPSIZ = 13 * NUMCELL 
-
-      MAXNUMCELL = NUMCELL * 10
-      MAXMAPSIZ = MAPSIZ * 10
-
-      ALLOCATE (MAP(MAXMAPSIZ))
-      ALLOCATE (CELL(NATOMS))
-      ALLOCATE (HEAD(MAXNUMCELL))
-      ALLOCATE (LCLIST(NATOMS))
-      ALLOCATE (NCELL(MAXNUMCELL))
-      ALLOCATE (INDX(MAXNUMCELL, NATOMS))
-      ALLOCATE (VHEAD(MAXNUMCELL))
-
-      CALL MAPS () 
 
 
+      CALL MAPS (MAP_ATOM,MAPSIZE_ATOM &
+           , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
+      CALL LINKS (HEAD_ATOM,MAXNUMCELL_ATOM,ATOM,NUMATOMS,CELL_ATOM &
+           , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM, LCLIST_ATOM)
+
+      IF(IBRDESCR .eq. 0) THEN
+      CALL MAPS (MAP_BEAD,MAPSIZE_BEAD &
+           , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD) 
+      CALL LINKS (HEAD_BEAD,MAXNUMCELL_BEAD,BEAD,NUMBEADS,CELL_BEAD &
+           , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD, LCLIST_BEAD)
+      END IF
+
+
+!Start of update neighbour list chain
+
+      IF (ENSEMBLE == 2) THEN !If NPT
+         !		SETS UP A LIST OF 13 NEIGHBOURING
+         !		CELLS OF EACH OF THE SMALL CELLS IN THE CENTRAL BOX.
+         NCELLX_ATOM = BOXX / RLIST_ATOM
+         NCELLY_ATOM = BOXY / RLIST_ATOM
+         NCELLZ_ATOM = BOXZ / RLIST_ATOM
+
+         NUMCELL_ATOM = NCELLX_ATOM * NCELLY_ATOM * NCELLZ_ATOM 
+
+         CALL MAPS (MAP_ATOM,MAPSIZE_ATOM &
+              , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
+                  
+
+         IF(IBRDESCR .eq. 0) THEN
+            
+            NCELLX_BEAD = BOXX / RLIST_BEAD
+            NCELLY_BEAD = BOXY / RLIST_BEAD
+            NCELLZ_BEAD = BOXZ / RLIST_BEAD
+            
+            NUMCELL_BEAD = NCELLX_BEAD * NCELLY_BEAD * NCELLZ_BEAD 
+
+            CALL MAPS (MAP_BEAD,MAPSIZE_BEAD &
+                 , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD) 
+         END IF
+
+
+      END IF
+      
+      CALL LINKS (HEAD_ATOM,MAXNUMCELL_ATOM,ATOM,NUMATOMS,CELL_ATOM &
+           , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM, LCLIST_ATOM)
+
+      CALL LINKS (HEAD_BEAD,MAXNUMCELL_BEAD,BEAD,NUMBEADS,CELL_BEAD &
+           , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD, LCLIST_BEAD)
+
+
+      CALL NEW_NEIGHBOUR_WITHLIST(ATOM,POINT_ATOM,CELL_ATOM,LCLIST_ATOM,NUMATOMS,RLIST_ATOM &
+           , LIST_ATOM, MAXNAB_ATOM, MAP_ATOM, MAXMAPSIZE_ATOM)
 
 
 !       MAKEING THE NEIGHBOUR LIST

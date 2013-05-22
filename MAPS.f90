@@ -16,72 +16,56 @@
 
 
 
-      SUBROUTINE MAPS ()
+SUBROUTINE MAPS (MAP,MAPSIZE,NCELLX,NCELLY,NCELLZ)
 
-      USE VAR
+  IMPLICIT NONE
 
-      IMPLICIT NONE
+  INTEGER, INTENT(IN) :: NCELLX, NCELLY, NCELLZ,MAPSIZE
+  INTEGER, INTENT(INOUT) :: MAP(MAPSIZE)
+  INTEGER :: IX, IY, IZ, IMAP, ICELL
+  !       *******************************************************************
 
-      INTEGER :: IX, IY, IZ, IMAP, ICELL
-!       *******************************************************************
+  !    ** FIND THE NEAREST NEIGHBOURS OF EACH CELL **
 
-!    ** FIND THE NEAREST NEIGHBOURS OF EACH CELL **
-	
-        DO 50 IX = 1, NCELLX
+  DO IX = 1, NCELLX !50
 
-           DO 40 IY = 1, NCELLY
+     DO IY = 1, NCELLY !40
 
-              DO 30 IZ = 1, NCELLZ
+        DO IZ = 1, NCELLZ !30
 
-                 IMAP = ( ICELL ( IX, IY, IZ ) - 1 ) * 13
-		
-                 MAP( IMAP + 1  ) = ICELL( IX + 1, IY    , IZ     )
-                 MAP( IMAP + 2  ) = ICELL( IX + 1, IY + 1, IZ     )
-                 MAP( IMAP + 3  ) = ICELL( IX    , IY + 1, IZ     )
-                 MAP( IMAP + 4  ) = ICELL( IX - 1, IY + 1, IZ     )
-                 MAP( IMAP + 5  ) = ICELL( IX + 1, IY    , IZ - 1 )
-                 MAP( IMAP + 6  ) = ICELL( IX + 1, IY + 1, IZ - 1 )
-                 MAP( IMAP + 7  ) = ICELL( IX    , IY + 1, IZ - 1 )
-                 MAP( IMAP + 8  ) = ICELL( IX - 1, IY + 1, IZ - 1 )
-                 MAP( IMAP + 9  ) = ICELL( IX + 1, IY    , IZ + 1 )
-                 MAP( IMAP + 10 ) = ICELL( IX + 1, IY + 1, IZ + 1 )
-                 MAP( IMAP + 11 ) = ICELL( IX    , IY + 1, IZ + 1 )
-                 MAP( IMAP + 12 ) = ICELL( IX - 1, IY + 1, IZ + 1 )
-                 MAP( IMAP + 13 ) = ICELL( IX    , IY    , IZ + 1 )
+           IMAP = ( ICELL ( IX, IY, IZ ,NCELLX, NCELLY, NCELLZ  ) - 1 ) * 13
 
-!write(1000,*)'Num Cella = ',ICELL ( IX, IY, IZ )
-!	    write(1000,*)     MAP( IMAP + 1  )	
-!	    write(1000,*)     MAP( IMAP + 2  )
- !           write(1000,*)     MAP( IMAP + 3  )
-  !          write(1000,*)     MAP( IMAP + 4  ) 
-   !         write(1000,*)     MAP( IMAP + 5  )
-    !        write(1000,*)     MAP( IMAP + 6  ) 
-     !       write(1000,*)     MAP( IMAP + 7  )
-      !      write(1000,*)     MAP( IMAP + 8  )
-       !     write(1000,*)     MAP( IMAP + 9  )
-        !    write(1000,*)     MAP( IMAP + 10 )
-         !   write(1000,*)     MAP( IMAP + 11 )
-         !   write(1000,*)     MAP( IMAP + 12 ) 
-          !  write(1000,*)     MAP( IMAP + 13 )
-!write(1000,*)
-!write(1000,*)
+           MAP( IMAP + 1  ) = ICELL( IX + 1, IY    , IZ     )
+           MAP( IMAP + 2  ) = ICELL( IX + 1, IY + 1, IZ     )
+           MAP( IMAP + 3  ) = ICELL( IX    , IY + 1, IZ     )
+           MAP( IMAP + 4  ) = ICELL( IX - 1, IY + 1, IZ     )
+           MAP( IMAP + 5  ) = ICELL( IX + 1, IY    , IZ - 1 )
+           MAP( IMAP + 6  ) = ICELL( IX + 1, IY + 1, IZ - 1 )
+           MAP( IMAP + 7  ) = ICELL( IX    , IY + 1, IZ - 1 )
+           MAP( IMAP + 8  ) = ICELL( IX - 1, IY + 1, IZ - 1 )
+           MAP( IMAP + 9  ) = ICELL( IX + 1, IY    , IZ + 1 )
+           MAP( IMAP + 10 ) = ICELL( IX + 1, IY + 1, IZ + 1 )
+           MAP( IMAP + 11 ) = ICELL( IX    , IY + 1, IZ + 1 )
+           MAP( IMAP + 12 ) = ICELL( IX - 1, IY + 1, IZ + 1 )
+           MAP( IMAP + 13 ) = ICELL( IX    , IY    , IZ + 1 )
 
-30            CONTINUE
+        END DO! 30            CONTINUE
 
-40         CONTINUE
+     END DO! 40         CONTINUE
 
-50      CONTINUE
+  END DO!50      CONTINUE
 
         RETURN
         END
 
 !       *******************************************************************
 !    ** STATEMENT FUNCTION TO GIVE CELL INDEX **
-      FUNCTION ICELL ( IX, IY, IZ )
+      FUNCTION ICELL ( IX, IY, IZ,NCELLX, NCELLY, NCELLZ )
 
-      USE VAR
+!      USE VAR
       IMPLICIT NONE
-
+      
+      INTEGER, INTENT(IN) :: NCELLX, NCELLY, NCELLZ
       INTEGER :: IX, IY, IZ, ICELL
 !       *******************************************************************
 

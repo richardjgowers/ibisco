@@ -9,6 +9,7 @@ INTEGER, PARAMETER :: MAX_ATOMS = 15 !Max number of atoms within a VS
 INTEGER :: ACTUAL_MAX
 REAL(KIND=RKIND) :: SUMTOTX, SUMTOTY, SUMTOTZ, SUMTOTBMASS
 REAL(KIND=RKIND) :: RPX, RPY, RPZ, SPX, SPY, SPZ
+REAL(KIND=RKIND), PARAMETER :: MASSTOL = 0.0001
 INTEGER, POINTER :: INDX_ATM(:,:)
 INTEGER :: PP=0, JP, NOBOUND
 
@@ -122,8 +123,9 @@ DO I=1,NVIRTA
    IF(VIRT_MASS(TI) .eq. 0) THEN
       VIRT_MASS(TI) = sumtotBmass
       VIRT_INVMASS(TI) = 1.0D0 / sumtotBmass
-   ELSE IF(VIRT_MASS(TI) .ne. sumtotBmass) THEN
+   ELSE IF(ABS(VIRT_MASS(TI) - sumtotBmass) .gt. MASSTOL) THEN
       WRITE(*,*) 'Disagreement in VS mass, check virtual file'
+      WRITE(*,*) sumtotBmass, VIRT_MASS(TI)
       ISTOP = 1
       RETURN
    END IF
