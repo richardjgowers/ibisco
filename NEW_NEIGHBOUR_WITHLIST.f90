@@ -58,11 +58,13 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
            RZIJ = RZIJ - ANINT(RZIJ*BOXZINV)*BOXZ
            RIJSQ = RXIJ**2 + RYIJ**2 + RZIJ**2
 
-!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)i,j,jcell, RIJSQ,RLISTSQ,RLIST
-
            IF (RIJSQ.LT.RLISTSQ) THEN
- !             if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)'giao'
-              NLIST = NLIST + 1
+if (i .gt. natoms) THEN
+   write(222,*)J,VIRT_CENTER(I-NATOMS),rijsq 
+ELSE IF(j .gt. natoms) THEN
+   write(222,*)i,VIRT_CENTER(J-NATOMS),rijsq 
+END IF   
+           NLIST = NLIST + 1
               LIST(NLIST) = J
               IF (NLIST.EQ.MAXNAB) STOP 'LIST TOO SMALL'
            ENDIF
@@ -75,6 +77,8 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
      DO NABOR = 1,13
         JCELL = MAP(JCELL0+NABOR)
         J = HEAD(JCELL)
+
+        IF(J .eq. 422) WRITE(*,*) 'ciao'
         DO
            IF(J .eq. 0) EXIT
            !              if(abs(ip-jp) .le. contactA)then
@@ -101,12 +105,15 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
               RXIJ = RXIJ - ANINT(RXIJ*BOXXINV)*BOXX
               RYIJ = RYIJ - ANINT(RYIJ*BOXYINV)*BOXY
               RZIJ = RZIJ - ANINT(RZIJ*BOXZINV)*BOXZ
-              RIJSQ = RXIJ**2 + RYIJ**2 + RZIJ**2
-!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)i,j,jcell, RIJSQ,RLISTSQ,RLIST
-
+3              RIJSQ = RXIJ**2 + RYIJ**2 + RZIJ**2
 
               IF (RIJSQ.LT.RLISTSQ) THEN
-!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)'giao'
+if (i .gt. natoms) THEN
+   write(222,*)J,VIRT_CENTER(I-NATOMS),rijsq 
+ELSE IF(j .gt. natoms) THEN
+   write(222,*)i,VIRT_CENTER(J-NATOMS),rijsq 
+END IF   
+
                  NLIST = NLIST + 1
                  LIST(NLIST) = J
                  IF (NLIST.EQ.MAXNAB) STOP 'LIST TOO SMALL'
@@ -118,8 +125,6 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
 
   END DO
   POINT(N+1) = NLIST + 1
-
-  WRITE(*,*) POINT(1), POINT(2), POINT(3)
 
   RETURN
 END SUBROUTINE NEW_NEIGHBOUR_WITHLIST

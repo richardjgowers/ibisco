@@ -60,18 +60,29 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
 
                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                       + NBOND_POT(TIJ,NI+1)*ALPHA
+
+                 IF(I .eq. 1) THEN
+                    WRITE(1234,*) I, J, RIJ, VIJ, FIJ
+                 ELSE IF(J .eq. 1) THEN
+                    WRITE(1234,*) J, I, RIJ, VIJ, FIJ
+                 END IF
+
 #ifdef DEBUG_DETAILEDNB
                  IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM
                     WRITE(7100,*) I, J, VIJ, RIJ, FIJ, ALPHA, NI
+                    E_ATOM = E_ATOM + VIJ
                  ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD/VS
                     IF(I .le. NATOMS) THEN !I BEAD
                        IF(J .le. NATOMS) THEN !J BEAD
                           WRITE(7200,*) I, J, VIJ, RIJ, FIJ
+                          E_CG = E_CG + VIJ
                        ELSE ! J VS
-                          WRITE(7300,*) I, J, VIJ, RIJ, FIJ
+                          WRITE(7300,*) I, VIRT_CENTER((J-NATOMS)), VIJ, RIJ, FIJ
+                          E_MIX = E_MIX + VIJ
                        END IF
                     ELSE !I VS
                        WRITE(7300,*) I, J, VIJ, RIJ, FIJ
+                       E_MIX = E_MIX + VIJ
                     END IF
                  END IF
 #endif

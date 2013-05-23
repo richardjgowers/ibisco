@@ -4,7 +4,11 @@ SUBROUTINE NEW_LOOP()
 
   IMPLICIT NONE
 
+  INTEGER :: I
+
   DO STEP=1,NSTEP
+
+     WRITE(*,*) CELL_BEAD(1), CELL_ATOM(422), CELL_BEAD(NUMATOMS + VIRT_VS_IND(422))
 
      !Update shifted positions of atoms in box
      CALL SHIFT() !Applies PBC
