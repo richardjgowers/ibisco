@@ -223,6 +223,12 @@ SUBROUTINE RDCONTROL ()
      IF (IOS2 /= 0) EXIT
   END DO
 
+  IF(IBRDESCR .eq. 10) THEN !Error reading this
+     WRITE(*,*) '*********FATAL ERROR: KEYWORD //virtual_sites// is missing in //control// file***********'
+     WRITE(1,*)'*********FATAL ERROR: KEYWORD //virtual_sites// is missing in //control// file***********'
+     ISTOP =1
+  END IF
+
   !*********************************************************************************************
   !*********************************************************************************************
 

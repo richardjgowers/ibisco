@@ -28,12 +28,6 @@ SUBROUTINE RDCOOR()
   real(kind=rkind) :: Fcomrx,Fcomry,Fcomrz
   real(kind=rkind) :: xf,yf,zf
   character(len=20) :: text
-  !      character(len=20) :: flush
-
-
-
-
-  !       *******************************************************************
 
   OPEN (3, IOSTAT=IOS, FILE='coordinate', STATUS='OLD')
 
@@ -54,6 +48,7 @@ SUBROUTINE RDCOOR()
   CALL PARSE ()
   IF (STRNGS(1) == 'Time') THEN
      READ (STRNGS(2),*) INITIME
+     WRITE(*,*) INITIME
   END IF
   READ(3,*)
   READ(3,*)BOXX, BOXY, BOXZ
@@ -76,7 +71,7 @@ SUBROUTINE RDCOOR()
   allocate(name_mol(nmol))
 
   IF (IBRDESCR .EQ. 0) THEN !Hybrid RDCOOR
-     ALLOCATE(TYPE_LABEL(NATOMS))
+     ALLOCATE(TYPE_LABEL(NITEMS))
   END IF
 
   TYPE_LABEL = 0

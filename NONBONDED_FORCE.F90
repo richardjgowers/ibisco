@@ -1,11 +1,14 @@
+#include "ibi-preprocess.h"
+
 SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
 
   USE VAR
 
   IMPLICIT NONE
 
-  INTEGER, INTENT(IN) :: N, INDEX_LIST(N), POINT(N+1), MAXNAB, LIST(MAXNAB), RCUT, RCUTSQ
+  INTEGER, INTENT(IN) :: N, INDEX_LIST(N), POINT(N+1), MAXNAB, LIST(MAXNAB)
   REAL(KIND=RKIND), INTENT(INOUT) :: VNBOND
+  REAL(KIND=RKIND), INTENT(IN) :: RCUT, RCUTSQ
   INTEGER :: A, I, J, TI, TJ, TIJ
   INTEGER :: JNAB, JBEG, JEND
   REAL(KIND=RKIND) :: FXI,FYI,FZI, FXIJ, FYIJ, FZIJ
@@ -15,8 +18,8 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
 
   DO A=1,N
      I = INDEX_LIST(A) !I is the index of atom being considered
-     JBEG = POINT(I)
-     JEND = POINT(I+1) - 1
+     JBEG = POINT(A)
+     JEND = POINT(A+1) - 1
 
      IF(JBEG .LE. JEND) THEN
         RXI = RX(I)
@@ -57,6 +60,22 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
 
                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                       + NBOND_POT(TIJ,NI+1)*ALPHA
+#ifdef DEBUG_DETAILEDNB
+                 IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM
+                    WRITE(7100,*) I, J, VIJ, RIJ, FIJ, ALPHA, NI
+                 ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD/VS
+                    IF(I .le. NATOMS) THEN !I BEAD
+                       IF(J .le. NATOMS) THEN !J BEAD
+                          WRITE(7200,*) I, J, VIJ, RIJ, FIJ
+                       ELSE ! J VS
+                          WRITE(7300,*) I, J, VIJ, RIJ, FIJ
+                       END IF
+                    ELSE !I VS
+                       WRITE(7300,*) I, J, VIJ, RIJ, FIJ
+                    END IF
+                 END IF
+#endif
+
 
                  VNBOND = VNBOND + VIJ
 

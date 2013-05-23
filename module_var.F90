@@ -57,6 +57,7 @@ INTEGER, POINTER :: VIRT_POINT(:), VLIST(:), VLIST_SEC(:),VIRT_POINT_SEC(:)
 
 INTEGER :: MAXNAB_ATOM
 INTEGER :: MAXNAB_BEAD
+INTEGER :: MAX_CONTACT!Largest gap between 2 connected things
 
 INTEGER, POINTER :: CONNECTIONS(:), CONNECTED_TO(:,:)
 
@@ -161,7 +162,8 @@ REAL(kind=rkind), POINTER :: STVANGLE_At(:), STV_At(:)
  character(len=18) :: name_file_virt
  character(len=7),pointer  :: name_mol(:) 
  character(len=2),dimension(18) :: name_label='NU'  
-INTEGER, POINTER :: NUMATOMS, NUMBEADS, ATOM(:), BEAD(:)
+INTEGER :: NUMATOMS, NUMBEADS
+INTEGER, POINTER :: ATOM(:), BEAD(:)
 
 #ifdef DEBUG_OOP
 !     Variables for Testing the OOP with the Atomistic PolyStyrene

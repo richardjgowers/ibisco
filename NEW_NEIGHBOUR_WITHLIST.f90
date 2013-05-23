@@ -6,7 +6,7 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
   IMPLICIT	NONE
 
   INTEGER, INTENT(IN) :: N, MAXNUMCELL, MAXNAB
-  INTEGER, INTENT(IN) :: INDEX_LIST(N), CELL(N), LCLIST(N), SIZEMAP, MAP(SIZEMAP), HEAD(MAXNUMCELL)
+  INTEGER, INTENT(IN) :: INDEX_LIST(N), CELL(NITEMS), LCLIST(NITEMS), SIZEMAP, MAP(SIZEMAP), HEAD(MAXNUMCELL)
   INTEGER, INTENT(INOUT) :: POINT(N+1), LIST(MAXNAB)
   INTEGER :: A, B, C, I, J, NLIST, JCELL, JCELL0, NABOR
   REAL(KIND=RKIND), INTENT(IN) :: RLIST
@@ -23,7 +23,8 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
   NLIST = 0            !!!!!!!!!!EXCLUDE THE BONDED PAIRS FROM INTERACTION LIST**************
   DO A = 1,N
      I = INDEX_LIST(A)
-     POINT(I) = NLIST + 1
+
+     POINT(A) = NLIST + 1
      JCELL = CELL(I)
      RXI = RX(I)
      RYI = RY(I)
@@ -57,7 +58,10 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
            RZIJ = RZIJ - ANINT(RZIJ*BOXZINV)*BOXZ
            RIJSQ = RXIJ**2 + RYIJ**2 + RZIJ**2
 
+!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)i,j,jcell, RIJSQ,RLISTSQ,RLIST
+
            IF (RIJSQ.LT.RLISTSQ) THEN
+ !             if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)'giao'
               NLIST = NLIST + 1
               LIST(NLIST) = J
               IF (NLIST.EQ.MAXNAB) STOP 'LIST TOO SMALL'
@@ -98,9 +102,11 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
               RYIJ = RYIJ - ANINT(RYIJ*BOXYINV)*BOXY
               RZIJ = RZIJ - ANINT(RZIJ*BOXZINV)*BOXZ
               RIJSQ = RXIJ**2 + RYIJ**2 + RZIJ**2
+!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)i,j,jcell, RIJSQ,RLISTSQ,RLIST
 
 
               IF (RIJSQ.LT.RLISTSQ) THEN
+!if(type_label(i) .eq. 1 .and.type_label(j) .eq. 1 .and. i .eq. 2 )write(*,*)'giao'
                  NLIST = NLIST + 1
                  LIST(NLIST) = J
                  IF (NLIST.EQ.MAXNAB) STOP 'LIST TOO SMALL'
@@ -112,6 +118,8 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST (INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAX
 
   END DO
   POINT(N+1) = NLIST + 1
+
+  WRITE(*,*) POINT(1), POINT(2), POINT(3)
 
   RETURN
 END SUBROUTINE NEW_NEIGHBOUR_WITHLIST
