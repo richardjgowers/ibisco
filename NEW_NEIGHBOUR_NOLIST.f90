@@ -36,6 +36,12 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAXNAB
               END IF
            END DO
         END IF
+        !Check if VS-VS
+        IF(IBRDESCR .eq. 0) THEN
+           IF(I .gt. NATOMS .and. J .gt. NATOMS) THEN
+              NONBOND = 0
+           END IF
+        END IF
 
         IF(NONBOND .eq. 1) THEN
            RXIJ  = RXI - RX(J)

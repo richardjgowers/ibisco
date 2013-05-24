@@ -151,4 +151,3 @@ DO  A = 1, NIJKL(I)
 
 
 END DO 
-!296	CONTINUE

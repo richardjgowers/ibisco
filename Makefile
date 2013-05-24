@@ -3,15 +3,12 @@ PROG = IBIsCO-openmp-test
 SRCS =    moduleparsing.f90 module_var.F90  \
           main.F90 WRITETP.f90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \
           AVERAGE.f90 ALLOCATEVAR.f90 SCALEBP.f90 MOMENTUM.f90 OUTPUT.F90 MOVE.f90 \
-          FPANGLE.f90 FPTOR.f90 UNIT.f90 COMVEL.f90 RDCONTROL.f90 \
+          UNIT.f90 COMVEL.f90 RDCONTROL.f90 \
           RDCOOR.f90 RDINTERACT.f90 PARSE.f90 SETLIS.f90 SHIFT.f90 \
           RDGAUSSIAN.f90 BONDTABLE.f90 ANGLETABLE.f90 LINKS.f90 \
           SCALEV.f90  \
           LINEAR.f90 \
-          FPOUTPLANE.F90 \
-	  NON_BOND_ARRAY_BEAD.f90 \
           config.f90 \
-          NON_BOND_ARRAY_BEAD_SEC.f90 \
           analysis.f90 SHAKE.f90 \
           ibi-preprocess.h RDVIRTUAL.f90 VIRTUAL_DEF.f90 \
           MAKE_LISTS.f90 DISTRIBUTE_VSFORCE.f90 NEW_FORCE.f90 NEW_LOOP.f90 \
@@ -23,13 +20,11 @@ SRCS =    moduleparsing.f90 module_var.F90  \
 OBJS =    moduleparsing.o module_var.o \
           main.o WRITETP.o MAPS.o   FTABLE.o WRITETRJ.o \
           AVERAGE.o ALLOCATEVAR.o SCALEBP.o MOMENTUM.o OUTPUT.o MOVE.o \
-          FPANGLE.o FPTOR.o UNIT.o COMVEL.o  RDCONTROL.o RDCOOR.o \
+          UNIT.o COMVEL.o  RDCONTROL.o RDCOOR.o \
           RDINTERACT.o PARSE.o SETLIS.o SHIFT.o RDGAUSSIAN.o \
           BONDTABLE.o ANGLETABLE.o LINKS.o SCALEV.o   \
           LINEAR.o \
-          FPOUTPLANE.o \
           config.o \
-          NON_BOND_ARRAY_BEAD_SEC.o \
           analysis.o SHAKE.o RDVIRTUAL.o VIRTUAL_DEF.o \
           MAKE_LISTS.o DISTRIBUTE_VSFORCE.o NEW_FORCE.o NEW_LOOP.o \
           NONBONDED_FORCE.o UPDATE_NEIGHBOURLIST.o NEW_NEIGHBOUR_WITHLIST.o \
@@ -48,8 +43,8 @@ F90 = gfortran
 #F90FLAGS = -openmp -openmp-report1 -O2
 #LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
-F90FLAGS = -g -fopenmp -fbacktrace -fbounds-check
-LDFLAGS = -g -fopenmp -fbacktrace -fbounds-check
+F90FLAGS = -g -fbacktrace -fbounds-check
+LDFLAGS = -g -fbacktrace -fbounds-check
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #F90FLAGS  = -g -fbounds-check 
 #F90FLAGS = -O3

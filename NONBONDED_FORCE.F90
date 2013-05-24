@@ -1,13 +1,12 @@
 #include "ibi-preprocess.h"
 
-SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
+SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,RCUT,RCUTSQ)
 
   USE VAR
 
   IMPLICIT NONE
 
   INTEGER, INTENT(IN) :: N, INDEX_LIST(N), POINT(N+1), MAXNAB, LIST(MAXNAB)
-  REAL(KIND=RKIND), INTENT(INOUT) :: VNBOND
   REAL(KIND=RKIND), INTENT(IN) :: RCUT, RCUTSQ
   INTEGER :: A, I, J, TI, TJ, TIJ
   INTEGER :: JNAB, JBEG, JEND
@@ -61,34 +60,36 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,VNBOND,RCUT,RCUTSQ)
                  VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
                       + NBOND_POT(TIJ,NI+1)*ALPHA
 
-                 IF(I .eq. 1) THEN
-                    WRITE(1234,*) I, J, RIJ, VIJ, FIJ
-                 ELSE IF(J .eq. 1) THEN
-                    WRITE(1234,*) J, I, RIJ, VIJ, FIJ
-                 END IF
 
 #ifdef DEBUG_DETAILEDNB
                  IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM
-                    WRITE(7100,*) I, J, VIJ, RIJ, FIJ, ALPHA, NI
-                    E_ATOM = E_ATOM + VIJ
-                 ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD/VS
-                    IF(I .le. NATOMS) THEN !I BEAD
-                       IF(J .le. NATOMS) THEN !J BEAD
-                          WRITE(7200,*) I, J, VIJ, RIJ, FIJ
-                          E_CG = E_CG + VIJ
-                       ELSE ! J VS
-                          WRITE(7300,*) I, VIRT_CENTER((J-NATOMS)), VIJ, RIJ, FIJ
-                          E_MIX = E_MIX + VIJ
-                       END IF
-                    ELSE !I VS
-                       WRITE(7300,*) I, J, VIJ, RIJ, FIJ
-                       E_MIX = E_MIX + VIJ
+                    VNBOND_ATOM = VNBOND_ATOM + VIJ
+                    WRITE(5100,*) I, J, VIJ*conv
+                 ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD
+                    IF(TYPE_LABEL(J) .eq.2) THEN !I BEAD
+                       VNBOND_BEAD = VNBOND_BEAD + VIJ
+                       WRITE(5200,*) I, J, VIJ*conv
+                    ELSE IF(TYPE_LABEL(J) .eq. 3) THEN
+                       VNBOND_MIX = VNBOND_MIX + VIJ
+                       WRITE(5300,*) I, J, VIJ*conv
+                    ELSE
+                       WRITE(*,*) 'EXCEPTION!', I, J
                     END IF
+                 ELSE IF(TYPE_LABEL(I) .eq. 3) THEN !VS
+                    IF(TYPE_LABEL(J) .eq. 2) THEN
+                       VNBOND_MIX = VNBOND_MIX + VIJ
+                       WRITE(5300,*) I, J, VIJ*conv
+                    ELSE
+                       WRITE(*,*) 'EXCEPTION!', I, J
+                    END IF
+                 ELSE
+                    WRITE(*,*) 'EXCEPTION', I, J
                  END IF
+
+                 WRITE(5000,*) I, J, VIJ*conv
 #endif
 
-
-                 VNBOND = VNBOND + VIJ
+                 VNBOND_TOTAL = VNBOND_TOTAL + VIJ
 
                  FXIJ = FIJ * RXIJ
                  FYIJ = FIJ * RYIJ

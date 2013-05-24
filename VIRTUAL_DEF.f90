@@ -13,6 +13,9 @@ REAL(KIND=RKIND) :: SUMTOTBMASS
 DO I=1,NVIRTA
    POS = I + NATOMS
 
+   !Assign type_labels to virtual sites
+   TYPE_LABEL(POS) = 3
+
    IF (VIRT_CENTER(I) .NE. 0)THEN !If using a functional site
       J = VIRT_CENTER(I)
       RX(POS) = SX(J)

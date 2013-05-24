@@ -4,8 +4,6 @@ SUBROUTINE NEW_LOOP()
 
   IMPLICIT NONE
 
-  INTEGER :: I
-
   DO STEP=1,NSTEP
 
      !Update shifted positions of atoms in box
@@ -22,6 +20,17 @@ SUBROUTINE NEW_LOOP()
 
      !Move atoms within box
      CALL MOVE()
+
+     VOLUME = BOXX * BOXY * BOXZ
+     INV_VOLUME = 1.0D0 / VOLUME
+
+     PT11 = PT11 * INV_VOLUME
+     PT22 = PT22 * INV_VOLUME
+     PT33 = PT33 * INV_VOLUME
+
+     PT12 = PT12 * INV_VOLUME
+     PT13 = PT13 * INV_VOLUME
+     PT23 = PT23 * INV_VOLUME
 
      !If needed, halt the net drift of box
      IF(MOD(STEP,HALT_DRIFT) .eq. 0) THEN
