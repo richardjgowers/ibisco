@@ -13,8 +13,6 @@
 SUBROUTINE ALLOCATEVAR ()
 
   USE VAR
-  USE PAIR
-  USE RNEMD 
 
   IMPLICIT NONE
 
@@ -187,64 +185,11 @@ IF (IBRDESCR .eq. 0) THEN
     end if
 END IF
 
-!###############################################################################
-
-! Allocate variables for DPD-thermostat
-
-!         IF ( (STANDARD_DPDINPUT .EQ.  1) .OR. (TRANDPD_INPUT .EQ.1)) THEN
-!                 ALLOCATE(VXO(NATOMS))
-!                 ALLOCATE(VYO(NATOMS))
-!                 ALLOCATE(VZO(NATOMS))
-!                 ALLOCATE(DPD_POINT(NATOMS))
-!                 ALLOCATE(DPD_LIST(MAXNAB))
-!         ENDIF
-
-!         IF (  STANDARD_DPDINPUT .EQ.  1)  THEN
-!              ALLOCATE ( FDX(NATOMS) ) 
-!              ALLOCATE ( FDY(NATOMS) )
-!              ALLOCATE ( FDZ(NATOMS) )
-!              ALLOCATE ( FRANDOMX(NATOMS))
-!              ALLOCATE ( FRANDOMY(NATOMS))
-!              ALLOCATE ( FRANDOMZ(NATOMS))
-!         ENDIF
- 
-!           IF (TRANDPD_INPUT .EQ.  1)   THEN
-!              ALLOCATE ( TRAN_FDX (NATOMS ) ) 
-!              ALLOCATE ( TRAN_FDY (NATOMS ) )
-!              ALLOCATE ( TRAN_FDZ (NATOMS ) )
-!              ALLOCATE ( TRAN_FRANDOMX (NATOMS ) )
-!              ALLOCATE ( TRAN_FRANDOMY (NATOMS ) )
-!              ALLOCATE ( TRAN_FRANDOMZ (NATOMS ) )
-!           ENDIF
            
-      IF (VISCINPUT == 1) THEN
-            ALLOCATE (AM(NATOMS))
-!           ALLOCATE (VXPROF(NUMSLAB))
-            ALLOCATE (VXMEAN_SLAB (NUMSLAB))
-            ALLOCATE (VX_SLAB(NUMSLAB))
-            ALLOCATE (NUMA_SLAB(NUMSLAB))
-            ALLOCATE (SLAB_DENS(NUMSLAB))
-            ALLOCATE (SLAB_TEMP(NUMSLAB))
-            ALLOCATE (SLAB_MTEMP(NUMSLAB))
-            ALLOCATE (SLAB_MDENS(NUMSLAB))
-      ENDIF
+
        
       ALLOCATE (VPX(NATOMS))
       ALLOCATE (Z_POSITION(NATOMS))
-
-      IF (PPF_INPUT .EQ. 1) THEN
-            ALLOCATE (NUM(SLIDE))
-            ALLOCATE (DENSITY(SLIDE))
-            ALLOCATE (VXPRO(SLIDE))
-            ALLOCATE (TEEMP(SLIDE))
-            ALLOCATE (RDENSITY(SLIDE))
-            ALLOCATE (RVXPRO(SLIDE))
-            ALLOCATE (RTEEMP(SLIDE))
-            ALLOCATE (PZX(SLIDE))
-            ALLOCATE (RPZX(SLIDE))
-            ALLOCATE (VVISCOSITY(SLIDE))
-            ALLOCATE (RVVISCOSITY(SLIDE))
-      ENDIF
 
       RETURN
 

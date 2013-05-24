@@ -3,8 +3,7 @@ SUBROUTINE RDCONTROL ()
 
   USE MODULEPARSING
   USE VAR
-  USE  PAIR
-  USE  RNEMD
+
   IMPLICIT NONE
   INTEGER ALARM
   CHARACTER(80)	TEXT
@@ -59,8 +58,7 @@ SUBROUTINE RDCONTROL ()
   !	TAKE A INVALID VALUE TO ENSEMBLE AND INTERACT AND RESTART
   ENSEMBLE = 10
   INTERACT = 10
-  RESTART  = 10
-  VISCINPUT = 10  
+  RESTART  = 10 
   DPDINPUT = 10
   LAINPUT = 10
   ALARM = 10
@@ -834,129 +832,6 @@ SUBROUTINE RDCONTROL ()
   ALARM = 10
   REWIND (2)
 
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)', IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'RNEMD') THEN
-        READ (STRNGS(2),*) TEXT
-        !               Write (*,*) "Shear_viscosity", TEXT
-        IF ((TEXT(1:1) == 'Y').OR.((TEXT(1:1) == 'y'))) VISCINPUT = 1
-        IF ((TEXT(1:1) == 'N').OR.((TEXT(1:1) == 'n'))) VISCINPUT = 0
-        IF (VISCINPUT == 1) Write (*,*) "Shear_viscosity", TEXT
-        !                     IF ( VISCINPUT  == 10 ) THEN
-        !                             WRITE (1,*)     &
-        !                        ' **** FATAL ERROR! You did not input a valid VISC file for RNEMD ****'
-        !                             WRITE (*,*)     &
-        !                        ' **** FATAL ERROR! You did not input a valid VISC file for RNEMD  ****'
-        !                         ISTOP=1
-        !                         RETURN
-        !                     END IF
-        EXIT
-     ENDIF
-     IF (IOS2 /= 0) EXIT
-  END DO
-  ALARM = 10
-  REWIND (2)
-
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)', IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'num_RNEMD_slab') THEN
-        READ (STRNGS(2),*) NUMSLAB
-        ALARM = 0
-        EXIT
-     ENDIF
-     IF (IOS2 /= 0) EXIT
-  END DO
-  IF (ALARM.NE.0.AND.VISCINPUT.EQ.1) THEN
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_slab// is missing in //control// file***********'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_slab// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)', IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'num_RNEMD_exchange') THEN
-        READ (STRNGS(2),*)  NEXCH
-        ALARM = 0
-        EXIT
-     ENDIF
-     IF (IOS2 /= 0) EXIT
-  END DO
-  IF (ALARM.NE.0.AND.VISCINPUT.EQ.1) THEN
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_exchange// is missing in //control// file***********'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_exchange// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-
-
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)', IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'num_RNEMD_prof') THEN
-        READ (STRNGS(2),*)  NEMDPROF
-        ALARM = 0
-        EXIT
-     ENDIF
-     IF (IOS2 /= 0) EXIT
-  END DO
-  IF (ALARM.NE.0.AND.VISCINPUT.EQ.1) THEN
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_prof// is missing in //control// file***********'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_prof// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)', IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'num_RNEMD_trj') THEN
-        READ (STRNGS(2),*) NEMDTRAJ
-        ALARM = 0
-        EXIT
-     ENDIF
-     IF (IOS2 /= 0) EXIT
-  END DO
-  IF (ALARM.NE.0.AND.VISCINPUT.EQ.1) THEN
-     WRITE (1,*) &
-          '********* Warning: You are running RNEMD simulation, ************************************'
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_trj// is missing in //control// file***********'
-     WRITE (*,*) &
-          '********* Warning: You are running RNEMD simulation, ************************************'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //Num_RNEMD_trj// is missing in //control// file***********'
-     ISTOP=1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-
-
-  !    READ Viscosity input file for RNEMD calculation
-  IF ( Viscinput .Eq. 1) then
-     write (*,*) '******************************************'
-     write (*,*) '*** you are running RNEMD - VISCOSITY ****'
-     write (*,*) 'NUMSLAB=',NUMSLAB, 'NEXCH=', NEXCH
-     write (*,*) 'NEMDPROF=', NEMDPROF, 'NEMDTRAJ=',NEMDTRAJ
-     write (*,*) '******************************************'
-  Endif
-
   !      REAN IN parameters for Periodic Poiseuille Flow method       
   DO WHILE (.TRUE.)
      READ (2, '(A80)', IOSTAT=IOS2) LINE
@@ -1139,66 +1014,6 @@ SUBROUTINE RDCONTROL ()
   ENDIF
   ALARM = 10
   REWIND (2)
-
-  DO WHILE (.TRUE.)
-     READ (2, '(A80)',IOSTAT=IOS2) LINE
-     CALL PARSE ()
-     IF (STRNGS(1) == 'time_steps_before_steady_state') THEN
-        READ (STRNGS(2),*) TSET
-        ALARM = 0
-        EXIT
-     END IF
-
-     IF (IOS2 /= 0) EXIT
-  END DO
-  IF (ALARM.NE.0.and.(VISCINPUT.EQ.1.OR.PPF_INPUT.EQ.1)) THEN
-     WRITE (1,*) &
-          '********* FATAL ERROR: YOU ARE RUNNING NEMD (RNEMD/PPF) SIMULATION **************************'
-     WRITE (1,*) &
-          '*********FATAL ERROR: KEYWORD //T_EQ// is missing in //control// file ***********************'
-     WRITE (1,*) &
-          '********* NOTE: T_EQ: is a preset number of time-steps needed to reach a stady state ********'
-     WRITE (*,*) &
-          '********* FATAL ERROR: YOU ARE RUNNING NEMD (RNEMD/PPF) SIMULATION **************************'
-     WRITE(*,*) &
-          '*********FATAL ERROR: KEYWORD //T_EQ// is missing in //control// file************************'
-     WRITE(*,*) &
-          '********* NOTE: T_EQ: is a preset number of time-steps needed to reach a stady state ********'
-     ISTOP=1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-
-  IF (VISCINPUT.EQ.1.AND.PPF_INPUT.EQ.1) THEN
-     ISTOP = 1
-     WRITE(1,*) &
-          '******** FATAL ERROR: RNEMD and PPF are running at the same time, which is absolutly forbidden *******'
-     write(1,*) &
-          '******** Please switch off one of them ***********************************************************'
-     WRITE(*,*) &
-          '******** FATAL ERROR: RNEMD and PPF are running at the same time, which is absolutly forbidden ****'
-     write(*,*) &
-          '******** Please switch off one of them ***********************************************************'
-     ISTOP =1
-  ENDIF
-  ALARM = 10
-  REWIND (2)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  if (DPDINPUT.EQ.1.AND.DPD_BONDED.EQ.1)  then
-     WRITE (*,*)  '**** DPD THERMOSTAT IS ACTING ON ALL THE POSSIBLE PAIRS ****'
-     WRITE (1,*)  '**** DPD THERMOSTAT IS ACTING ON ALL THE POSSIBLE PAIRS ****'
-  elseif (DPDINPUT.EQ.1.AND.DPD_BONDED.EQ.0) then
-     WRITE (*,*)  '**** DPD THERMOSTAT IS ACTING ONLY ON NONBONDED PAIRS ****'
-     WRITE (1,*)  '**** DPD THERMOSTAT IS ACTING ONLY ON NONBONDED PAIRS ****'
-  ENDIF
-  if (LAINPUT.EQ.1.AND.DPD_BONDED.EQ.1)  then
-     WRITE (*,*)  '**** LA THERMOSTAT IS ACTING ON ALL THE POSSIBLE PAIRS ****'
-     WRITE (1,*)  '**** LA THERMOSTAT IS ACTING ON ALL THE POSSIBLE PAIRS ****'
-  elseif (LAINPUT.EQ.1.AND.DPD_BONDED.EQ.0) then
-     WRITE (*,*)  '**** LA THERMOSTAT IS ACTING ONLY ON NONBONDED PAIRS ****'
-     WRITE (1,*)  '**** LA THERMOSTAT IS ACTING ONLY ON NONBONDED PAIRS ****'
-  ENDIF
 
   DO  WHILE (.TRUE.)
      READ (2, '(A80)',IOSTAT=IOS2) LINE
