@@ -94,7 +94,7 @@
         WRITE(1,*)'FATAL ERROR: Entry in out of plane table', TOIJKL,' does not exist'
         write(*,*) i,j,k,l
         write(*,*) NI,phi
-        WRITE(*,*)'Simulation stopped at Time Step: ',timestepcheck
+        WRITE(*,*)'Simulation stopped at Time Step: ',STEP
         STOP
      END IF
 
