@@ -45,11 +45,11 @@ SUBROUTINE NEW_FORCE()
      FZNB(I) = FZ(I)
   END DO
 
-  WRITE(*,*) 'TOTAL ',VNBOND_TOTAL*conv
-  WRITE(*,*) 'ATOM  ',VNBOND_ATOM*conv
-  WRITE(*,*) 'MIXED ',VNBOND_MIX*conv
-  WRITE(*,*) 'MIXED ',VNBOND_MIX2*conv
-  WRITE(*,*) 'BEAD  ',VNBOND_BEAD*conv
+!  WRITE(*,*) 'TOTAL ',VNBOND_TOTAL*conv
+!  WRITE(*,*) 'ATOM  ',VNBOND_ATOM*conv
+!  WRITE(*,*) 'MIXED ',VNBOND_MIX*conv
+!  WRITE(*,*) 'MIXED ',VNBOND_MIX2*conv
+!  WRITE(*,*) 'BEAD  ',VNBOND_BEAD*conv
 
 
   !Bonded forces

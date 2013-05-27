@@ -146,10 +146,10 @@
       WRITE (115, 100)'Total_energy:             ', TOTEP, REP
       WRITE (115, 100)'Potential_energy:         ', TOTPOTP, RVP
       WRITE (115, 100)'Kinetic_energy:           ', EKP, REKP
-      WRITE (115, 100)'Tot._Nonbonded_energy:         ', totVNBOND, RVNBONDP
-      WRITE (115, 100)'      Nonbonded_Atom_energy:  ', VNBOND_ATOM, RVNBONDP_At
-      WRITE (115, 100)'      Nonbonded_Beads_energy: ', VNBOND_BEAD, RVNBONDP_CG
-      WRITE (115, 100)'      Nonbonded_mix_energy:   ', VNBONDP_MIX, RVNBONDP_MIX
+      WRITE (115, 100)'Tot._Nonbonded_energy:         ', VNBOND_TOTAL*conv, RVNBONDP
+      WRITE (115, 100)'      Nonbonded_Atom_energy:  ', VNBOND_ATOM*conv, RVNBONDP_At
+      WRITE (115, 100)'      Nonbonded_Beads_energy: ', VNBOND_BEAD*conv, RVNBONDP_CG
+      WRITE (115, 100)'      Nonbonded_mix_energy:   ', VNBOND_MIX*conv, RVNBONDP_MIX
       WRITE (115, 100)'Tot._Bond_energy:        ', totVBOND , RVBONDP
       WRITE (115, 100)'      Bond_Atom_energy:  ', VBONDP, RVBONDP_At
       WRITE (115, 100)'      Bond_Beads_energy: ', VBONDP_CG, RVBONDP_CG
