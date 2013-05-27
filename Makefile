@@ -43,8 +43,8 @@ F90 = gfortran
 #F90FLAGS = -openmp -openmp-report1 -O2
 #LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
-F90FLAGS = -g -fbacktrace -fbounds-check
-LDFLAGS = -g -fbacktrace -fbounds-check
+F90FLAGS = -O2
+LDFLAGS = -O2
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #F90FLAGS  = -g -fbounds-check 
 #F90FLAGS = -O3

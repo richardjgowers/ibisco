@@ -64,21 +64,21 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,RCUT,RCUTSQ)
 #ifdef DEBUG_DETAILEDNB
                  IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM
                     VNBOND_ATOM = VNBOND_ATOM + VIJ
-                    WRITE(5100,*) I, J, VIJ*conv
+!                    WRITE(5100,*) I, J, VIJ*conv
                  ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD
                     IF(TYPE_LABEL(J) .eq.2) THEN !I BEAD
                        VNBOND_BEAD = VNBOND_BEAD + VIJ
-                       WRITE(5200,*) I, J, VIJ*conv
+!                       WRITE(5200,*) I, J, VIJ*conv
                     ELSE IF(TYPE_LABEL(J) .eq. 3) THEN
                        VNBOND_MIX = VNBOND_MIX + VIJ
-                       WRITE(5300,*) I, J, VIJ*conv
+ !                      WRITE(5300,*) I, J, VIJ*conv
                     ELSE
                        WRITE(*,*) 'EXCEPTION!', I, J
                     END IF
                  ELSE IF(TYPE_LABEL(I) .eq. 3) THEN !VS
                     IF(TYPE_LABEL(J) .eq. 2) THEN
                        VNBOND_MIX = VNBOND_MIX + VIJ
-                       WRITE(5300,*) I, J, VIJ*conv
+  !                     WRITE(5300,*) I, J, VIJ*conv
                     ELSE
                        WRITE(*,*) 'EXCEPTION!', I, J
                     END IF
@@ -86,7 +86,7 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,RCUT,RCUTSQ)
                     WRITE(*,*) 'EXCEPTION', I, J
                  END IF
 
-                 WRITE(5000,*) I, J, VIJ*conv
+   !              WRITE(5000,*) I, J, VIJ*conv
 #endif
 
                  VNBOND_TOTAL = VNBOND_TOTAL + VIJ
