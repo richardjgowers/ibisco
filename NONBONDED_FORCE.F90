@@ -19,16 +19,17 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,POINT,MAXNAB,LIST,RCUT,RCUTSQ)
      I = INDEX_LIST(A) !I is the index of atom being considered
      JBEG = POINT(A)
      JEND = POINT(A+1) - 1
+     FXI=0.0D0
+     FYI=0.0D0
+     FZI=0.0D0
+
+     RXI = RX(I)
+     RYI = RY(I)
+     RZI = RZ(I)
+
+     TI = ITYPE(I)
 
      IF(JBEG .LE. JEND) THEN
-        RXI = RX(I)
-        RYI = RY(I)
-        RZI = RZ(I)
-
-        FXI=0.0D0
-        FYI=0.0D0
-        FZI=0.0D0
-        TI = ITYPE(I)
 
         DO JNAB = JBEG, JEND
 
