@@ -94,7 +94,7 @@
         WRITE(1,*)'FATAL ERROR: Entry in out of plane table', TOIJKL,' does not exist'
         write(*,*) i,j,k,l
         write(*,*) NI,phi
-        WRITE(*,*)'Simulation stopped at Time Step: ',timestepcheck
+        WRITE(*,*)'Simulation stopped at Time Step: ',STEP
         STOP
      END IF
 
@@ -121,20 +121,20 @@
      FY4 = -FIJKL * RYN/SINN/RKL
      FZ4 = -FIJKL * RZN/SINN/RKL
 
-     FX(L) = FX(L) + FX4
-     FY(L) = FY(L) + FY4
-     FZ(L) = FZ(L) + FZ4
+     FXL(L) = FXL(L) + FX4
+     FYL(L) = FYL(L) + FY4
+     FZL(L) = FZL(L) + FZ4
 
      FX12 = FIJKL*(COTANM*RXM+COTANN*RXN)/RJK
      FY12 = FIJKL*(COTANM*RYM+COTANN*RYN)/RJK
      FZ12 = FIJKL*(COTANM*RZM+COTANN*RZN)/RJK
 
-     FX(J) = FX(J) - FX1 + FX12
-     FY(J) = FY(J) - FY1 + FY12
-     FZ(J) = FZ(J) - FZ1 + FZ12
+     FXL(J) = FXL(J) - FX1 + FX12
+     FYL(J) = FYL(J) - FY1 + FY12
+     FZL(J) = FZL(J) - FZ1 + FZ12
 
-     FX(K) = FX(K) - FX4 - FX12
-     FY(K) = FY(K) - FY4 - FY12
-     FZ(K) = FZ(K) - FZ4 - FZ12
+     FXL(K) = FXL(K) - FX4 - FX12
+     FYL(K) = FYL(K) - FY4 - FY12
+     FZL(K) = FZL(K) - FZ4 - FZ12
 
   END DO

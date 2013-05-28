@@ -7,13 +7,12 @@ SRCS =    moduleparsing.f90 module_var.F90  \
           RDCOOR.f90 RDINTERACT.f90 PARSE.f90 SETLIS.f90 SHIFT.f90 \
           RDGAUSSIAN.f90 BONDTABLE.f90 ANGLETABLE.f90 LINKS.f90 \
           SCALEV.f90  \
-          LINEAR.f90 \
           config.f90 \
           analysis.f90 SHAKE.f90 \
           ibi-preprocess.h RDVIRTUAL.f90 VIRTUAL_DEF.f90 \
           MAKE_LISTS.f90 DISTRIBUTE_VSFORCE.f90 NEW_FORCE.f90 NEW_LOOP.f90 \
           NONBONDED_FORCE.F90 UPDATE_NEIGHBOURLIST.f90 NEW_NEIGHBOUR_WITHLIST.f90 \
-          BUILD_CONNECTIVITY.f90 BONDED_FORCE.f90 ALLOCATEVAR2.f90 \
+          BUILD_CONNECTIVITY.f90 BONDED_FORCE.F90 ALLOCATEVAR2.f90 \
           NEW_NEIGHBOUR_NOLIST.f90
 
 
@@ -23,7 +22,6 @@ OBJS =    moduleparsing.o module_var.o \
           UNIT.o COMVEL.o  RDCONTROL.o RDCOOR.o \
           RDINTERACT.o PARSE.o SETLIS.o SHIFT.o RDGAUSSIAN.o \
           BONDTABLE.o ANGLETABLE.o LINKS.o SCALEV.o   \
-          LINEAR.o \
           config.o \
           analysis.o SHAKE.o RDVIRTUAL.o VIRTUAL_DEF.o \
           MAKE_LISTS.o DISTRIBUTE_VSFORCE.o NEW_FORCE.o NEW_LOOP.o \
@@ -43,8 +41,8 @@ F90 = gfortran
 #F90FLAGS = -openmp -openmp-report1 -O2
 #LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
-F90FLAGS = -O2
-LDFLAGS = -O2
+F90FLAGS = -fopenmp -O2
+LDFLAGS = -fopenmp -O2
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #F90FLAGS  = -g -fbounds-check 
 #F90FLAGS = -O3

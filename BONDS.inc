@@ -45,9 +45,9 @@
         FYI   = FYI + FYIJ
         FZI   = FZI + FZIJ
 
-        FX(J) = FX(J) - FXIJ
-        FY(J) = FY(J) - FYIJ
-        FZ(J) = FZ(J) - FZIJ
+        FXL(J) = FXL(J) - FXIJ
+        FYL(J) = FYL(J) - FYIJ
+        FZL(J) = FZL(J) - FZIJ
 
      END IF
   END DO

@@ -64,12 +64,12 @@
      FYI   = FYI + FYIJK
      FZI   = FZI + FZIJK
 
-     FX(K) = FX(K) + FIJK* RXS/RKJ
-     FY(K) = FY(K) + FIJK* RYS/RKJ
-     FZ(K) = FZ(K) + FIJK* RZS/RKJ
+     FXL(K) = FXL(K) + FIJK* RXS/RKJ
+     FYL(K) = FYL(K) + FIJK* RYS/RKJ
+     FZL(K) = FZL(K) + FIJK* RZS/RKJ
 
-     FX(J) = FX(J) - FIJK* RXS/RKJ - FXIJK
-     FY(J) = FY(J) - FIJK* RYS/RKJ - FYIJK
-     FZ(J) = FZ(J) - FIJK* RZS/RKJ - FZIJK
+     FXL(J) = FXL(J) - FIJK* RXS/RKJ - FXIJK
+     FYL(J) = FYL(J) - FIJK* RYS/RKJ - FYIJK
+     FZL(J) = FZL(J) - FIJK* RZS/RKJ - FZIJK
 
   END DO

@@ -4,7 +4,7 @@ SUBROUTINE NEW_FORCE()
 
   IMPLICIT NONE
 
-  INTEGER :: I, A, J
+  INTEGER :: I
 
   !Reset all forces
   FX = 0.0D0
