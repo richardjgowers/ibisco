@@ -8,7 +8,7 @@ SUBROUTINE NEW_LOOP()
 
      !Update shifted positions of atoms in box
      CALL SHIFT() !Applies PBC
-     IF(IBRDESCR .eq. 0) CALL VIRTUAL_DEF() !Defines the position of virtual sites
+     IF(IBRDESCR .eq. 0 .and. MOD(STEP,VUPDATE) .eq. 0) CALL VIRTUAL_DEF() !Defines the position of virtual sites
 
      !If needed, update neighbour list
      IF(MOD(STEP,NUPDATE) .eq. 0) THEN
