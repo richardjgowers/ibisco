@@ -10,10 +10,11 @@ SRCS =    moduleparsing.f90 module_var.F90  \
           config.f90 \
           analysis.f90 SHAKE.f90 \
           ibi-preprocess.h RDVIRTUAL.f90 VIRTUAL_DEF.f90 \
-          MAKE_LISTS.f90 DISTRIBUTE_VSFORCE.f90 NEW_FORCE.f90 NEW_LOOP.f90 \
+          MAKE_LISTS.f90 DISTRIBUTE_VSFORCE.f90 NEW_FORCE.F90 NEW_LOOP.F90 \
           NONBONDED_FORCE.F90 UPDATE_NEIGHBOURLIST.f90 NEW_NEIGHBOUR_WITHLIST.f90 \
           BUILD_CONNECTIVITY.f90 BONDED_FORCE.F90 ALLOCATEVAR2.f90 \
-          NEW_NEIGHBOUR_NOLIST.f90
+          NEW_NEIGHBOUR_NOLIST.f90 \
+          TIMING.f90
 
 
 OBJS =    moduleparsing.o module_var.o \
@@ -27,7 +28,8 @@ OBJS =    moduleparsing.o module_var.o \
           MAKE_LISTS.o DISTRIBUTE_VSFORCE.o NEW_FORCE.o NEW_LOOP.o \
           NONBONDED_FORCE.o UPDATE_NEIGHBOURLIST.o NEW_NEIGHBOUR_WITHLIST.o \
           BUILD_CONNECTIVITY.o BONDED_FORCE.o ALLOCATEVAR2.o \
-          NEW_NEIGHBOUR_NOLIST.o
+          NEW_NEIGHBOUR_NOLIST.o \
+          TIMING.o
 
 .SUFFIXES: $(SUFFIXES) .f90 .F90
 
@@ -42,9 +44,9 @@ F90 = gfortran
 #LDFLAGS = -openmp -O2
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
 #F90FLAGS = -fopenmp -O2
-LDFLAGS = -fopenmp
+LDFLAGS = -fopenmp -O2
 #F90FLAGS = -g -Wall -Wextra -Wconversion
-F90FLAGS  = -g -fbounds-check -openmp
+F90FLAGS  = -fopenmp -O2 
 #F90FLAGS = -O3
 #LIBS= -L/home/nicodemo/bin/lib -lmpack1  
 # l'opzione -c compila e assembla ma non linka

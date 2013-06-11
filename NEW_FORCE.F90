@@ -1,6 +1,9 @@
+#include "ibi-preprocess.h"
+
 SUBROUTINE NEW_FORCE()
 
   USE VAR
+  USE OMP_LIB
 
   IMPLICIT NONE
 
@@ -31,12 +34,29 @@ SUBROUTINE NEW_FORCE()
   VTOR       = 0.0D0
   VOOP       = 0.0D0
 
+#ifdef TIMING_ON
+  t_NONBONDED_atom(1) = OMP_GET_WTIME()
+#endif
   !Nonbonded forces
   CALL NONBONDED_FORCE(NUMATOMS,ATOM,POINT_ATOM,MAXNAB_ATOM,LIST_ATOM,RCUT_ATOM,RCUTSQ_ATOM)
+#ifdef TIMING_ON
+  t_NONBONDED_atom(2) = OMP_GET_WTIME()
+#endif
+
 
   IF(IBRDESCR .eq. 0) THEN
+#ifdef TIMING_ON
+  t_NONBONDED_bead(1) = OMP_GET_WTIME()
+#endif
      CALL NONBONDED_FORCE(NCOARSE,BEAD,POINT_BEAD,MAXNAB_BEAD,LIST_BEAD,RCUT_BEAD,RCUTSQ_BEAD)
+#ifdef TIMING_ON
+  t_NONBONDED_bead(2) = OMP_GET_WTIME()
+  t_DISTRIBUTE_VSFORCE(1) = OMP_GET_WTIME()
+#endif
      CALL DISTRIBUTE_VSFORCE() !Distributes forces from VS onto the atoms underneath
+#ifdef TIMING_ON
+  t_DISTRIBUTE_VSFORCE(2) = OMP_GET_WTIME()
+#endif
   END IF
 
   DO I=1,NATOMS
@@ -51,9 +71,14 @@ SUBROUTINE NEW_FORCE()
 !  WRITE(*,*) 'MIXED ',VNBOND_MIX2*conv
 !  WRITE(*,*) 'BEAD  ',VNBOND_BEAD*conv
 
-
+#ifdef TIMING_ON
+  t_BONDED_FORCE(1) = OMP_GET_WTIME()
+#endif
   !Bonded forces
   CALL BONDED_FORCE()
+#ifdef TIMING_ON
+  t_BONDED_FORCE(2) = OMP_GET_WTIME()
+#endif
 
   DO I=1,NATOMS
      PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
