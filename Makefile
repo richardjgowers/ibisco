@@ -14,7 +14,7 @@ SRCS =    moduleparsing.f90 module_var.F90  \
           NONBONDED_FORCE.F90 UPDATE_NEIGHBOURLIST.f90 NEW_NEIGHBOUR_WITHLIST.f90 \
           BUILD_CONNECTIVITY.f90 BONDED_FORCE.F90 ALLOCATEVAR2.f90 \
           NEW_NEIGHBOUR_NOLIST.f90 \
-          TIMING.f90
+          TIMING.F90
 
 
 OBJS =    moduleparsing.o module_var.o \
