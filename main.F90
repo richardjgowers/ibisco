@@ -1,7 +1,6 @@
 ! Debugging
 #define DEBUG_OOP .TRUE.! Select to include the debugging stuff of the OOP
 #include "ibi-preprocess.h"
-#define TIMING_ON .TRUE.
 !    *******************************************************************
 
   PROGRAM IBISCO

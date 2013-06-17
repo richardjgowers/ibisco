@@ -1,9 +1,13 @@
+#include "ibi-preprocess.h"
+
 SUBROUTINE TIMING()
 
   USE VAR
   USE OMP_LIB
 
   IMPLICIT NONE
+
+#ifdef TIMING_ON
 
   REAL*8 :: t_MOVING !Because of how program is arranged, this has to be calculated separately
 
@@ -43,6 +47,8 @@ SUBROUTINE TIMING()
   WRITE(44,*) '________________________'
 
   FLUSH(44)
+
+#endif
 
   RETURN
 
