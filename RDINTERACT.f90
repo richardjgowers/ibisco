@@ -59,8 +59,6 @@ SUBROUTINE RDINTERACT()
            ISTOP = 1
            return
         end if
-        MASS(I) = MASS0(I)/NA/MASSSCALE!/1000.0
-        INVMASS(I) = 1.0D0 / MASS(I)
         if(name_label(TYPEI) .ne. 'A' .and. name_label(TYPEI) .ne. 'a')then
            if(name_label(TYPEI) .ne. 'B' .and. name_label(TYPEI) .ne. 'b')then  
               call error_inter ()
@@ -72,8 +70,9 @@ SUBROUTINE RDINTERACT()
         READ (STRNGS(1),*) TYPEI
         READ (STRNGS(2),*) LABEL(TYPEI)
         READ (STRNGS(3),*) MASS0(TYPEI)
-        MASS(I) = MASS0(I)/NA/MASSSCALE!/1000.0
      end if
+     MASS(I) = MASS0(I)/NA/MASSSCALE!/1000.0
+     INVMASS(I) = 1.0D0 / MASS(I)
   END DO
 
   ALLOCATE(IBONDT(NTYPE, NTYPE ))

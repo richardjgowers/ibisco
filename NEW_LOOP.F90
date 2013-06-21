@@ -8,6 +8,7 @@ SUBROUTINE NEW_LOOP()
   IMPLICIT NONE
 
   DO STEP=1,NSTEP
+
 #ifdef TIMING_ON
 !Reset timer functions to zero at start of each loop
      t_LOOP = 0.0D0
@@ -52,45 +53,35 @@ SUBROUTINE NEW_LOOP()
 #ifdef TIMING_ON
      t_SHIFT(2) = OMP_GET_WTIME()
      t_FORCECALC(1) = OMP_GET_WTIME()
+     t_VIRTUAL_DEF(1) = OMP_GET_WTIME()
 #endif
 
      IF(IBRDESCR .eq. 0 .and. MOD(STEP,VUPDATE) .eq. 0) THEN
-
-#ifdef TIMING_ON
-        t_VIRTUAL_DEF(1) = OMP_GET_WTIME()
-#endif
         CALL VIRTUAL_DEF() !Defines the position of virtual sites
-
-#ifdef TIMING_ON
-        t_VIRTUAL_DEF(2)= OMP_GET_WTIME()    
-#endif
      END IF
 
+#ifdef TIMING_ON
+     t_VIRTUAL_DEF(2)= OMP_GET_WTIME() 
+     t_UPDATE_NEIGHBOURLIST(1) = OMP_GET_WTIME()
+#endif
+     
      !If needed, update neighbour list
      IF(MOD(STEP,NUPDATE) .eq. 0) THEN
-
-#ifdef TIMING_ON
-        t_UPDATE_NEIGHBOURLIST(1) = OMP_GET_WTIME()
-#endif
-
         CALL UPDATE_NEIGHBOURLIST()
-
-#ifdef TIMING_ON
-        t_UPDATE_NEIGHBOURLIST(2) = OMP_GET_WTIME()
-#endif
-
      END IF
+     
+#ifdef TIMING_ON
+     t_UPDATE_NEIGHBOURLIST(2) = OMP_GET_WTIME()
+     t_NEW_FORCE(1) = OMP_GET_WTIME()
+#endif
 
      !Calculate all forces on atoms
-#ifdef TIMING_ON
-        t_NEW_FORCE(1) = OMP_GET_WTIME()
-#endif
      CALL NEW_FORCE()
 
 #ifdef TIMING_ON
-        t_NEW_FORCE(2) = OMP_GET_WTIME()
-        t_FORCECALC(2) = OMP_GET_WTIME()
-        t_MOVE(1) = OMP_GET_WTIME()
+     t_NEW_FORCE(2) = OMP_GET_WTIME()
+     t_FORCECALC(2) = OMP_GET_WTIME()
+     t_MOVE(1) = OMP_GET_WTIME()
 #endif
 
      !Move atoms within box
@@ -108,70 +99,59 @@ SUBROUTINE NEW_LOOP()
      PT23 = PT23 * INV_VOLUME
 
 #ifdef TIMING_ON
-        t_MOVE(2) = OMP_GET_WTIME()
+     t_MOVE(2) = OMP_GET_WTIME()
+     t_MOMENTUM(1) = OMP_GET_WTIME()
 #endif
 
      !If needed, halt the net drift of box
      IF(MOD(STEP,HALT_DRIFT) .eq. 0) THEN
-#ifdef TIMING_ON
-        t_MOMENTUM(1) = OMP_GET_WTIME()
-#endif
         CALL MOMENTUM()
-#ifdef TIMING_ON
-        t_MOMENTUM(2) = OMP_GET_WTIME()
-#endif
      END IF
+
+#ifdef TIMING_ON
+     t_MOMENTUM(2) = OMP_GET_WTIME()
+     t_SCALEBP(1) = OMP_GET_WTIME()
+#endif
 
      IF(ENSEMBLE .eq. 2) THEN !If NPT
-#ifdef TIMING_ON
-        t_SCALEBP(1) = OMP_GET_WTIME()
-#endif
         CALL SCALEBP(STEP) !Change box size and scale positions
-#ifdef TIMING_ON
-        t_SCALEBP(2) = OMP_GET_WTIME()
-#endif
      END IF
 
 #ifdef TIMING_ON
+     t_SCALEBP(2) = OMP_GET_WTIME()
      t_REPORTRESULTS(1) = OMP_GET_WTIME()
+     t_AVERAGE(1) = OMP_GET_WTIME()
 #endif
 
      !STORING AVERAGE DATA AND RESTART FILE
      IF ((STEP .EQ. 1).OR.(MOD(STEP, NAVERAGE) == 0)) THEN
-#ifdef TIMING_ON
-        t_AVERAGE(1) = OMP_GET_WTIME()
-#endif
         CALL AVERAGE (STEP)
-#ifdef TIMING_ON
-        t_AVERAGE(2) = OMP_GET_WTIME()
-#endif
      END IF
+
+#ifdef TIMING_ON
+     t_AVERAGE(2) = OMP_GET_WTIME()
+     t_WRITETRJ(1) = OMP_GET_WTIME()
+#endif
 
      !STORING THE TRAJECTORY FILE
      IF (MOD(STEP, NTRJ) == 0) THEN
-#ifdef TIMING_ON
-        t_WRITETRJ(1) = OMP_GET_WTIME()
-#endif
         CALL WRITETRJ (STEP)
-#ifdef TIMING_ON
-        t_WRITETRJ(2) = OMP_GET_WTIME()
-#endif
      END IF
+
+#ifdef TIMING_ON
+     t_WRITETRJ(2) = OMP_GET_WTIME()
+     t_OUTPUT(1) = OMP_GET_WTIME()
+#endif
 
      IF (MOD(STEP, NSAMPLING) == 0) THEN
-#ifdef TIMING_ON
-        t_OUTPUT(1) = OMP_GET_WTIME()
-#endif
         CALL OUTPUT(STEP)
-#ifdef TIMING_ON
-        t_OUTPUT(2) = OMP_GET_WTIME()
-#endif
      END IF
 
 #ifdef TIMING_ON
+     t_OUTPUT(2) = OMP_GET_WTIME()
      t_REPORTRESULTS(2) = OMP_GET_WTIME()
      t_LOOP(2) = OMP_GET_WTIME()
-
+     !Write all timing results to file
      CALL TIMING()
 #endif
 

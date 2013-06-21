@@ -31,11 +31,11 @@
   OPEN(44,FILE='Time')
   WRITE(44,*) 'Timing report'
 
-    WRITE(*,'(//  '' IBIsCO TIME  Version 54'')')
+    WRITE(*,'(//  '' IBIsCO TIME  Version 55'')')
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
-    WRITE( 115, *)'IBIsCO Revision 54:'
+    WRITE( 115, *)'IBIsCO Revision 55:'
     OPEN (1, FILE='ERROR')
     WRITE(*,*)
     ISTOP = 0
@@ -70,13 +70,24 @@
 
        IF(ISTOP .eq. 1) STOP 'Failed at RDVIRTUAL'
        !Make linked lists of atoms or bead/VS
-       CALL MAKE_LISTS()
-
-       IF(ISTOP .eq. 1) STOP 'Failed at MAKE_LISTS'
     END IF
 
-    ! Calculate centers of VS, either COM or adopt an atom's coords
-    CALL VIRTUAL_DEF()
+    IF(IBRDESCR .EQ. 0) THEN
+       CALL MAKE_LISTS()
+       IF(ISTOP .eq. 1) STOP 'Failed at MAKE_LISTS'
+    ELSE
+       !Nonhybrid settings, single list containing all atoms
+       NUMATOMS = NATOMS
+       ALLOCATE(ATOM(NUMATOMS))
+       DO I=1,NATOMS
+          ATOM(I) = I
+       END DO
+    END IF
+
+    IF(IBRDESCR .EQ. 0) THEN
+       ! Calculate centers of VS, either COM or adopt an atom's coords
+       CALL VIRTUAL_DEF()
+    END IF
 
     !     SHIFT THE ATOMS INSIDE THE BOX
     CALL SHIFT ()
