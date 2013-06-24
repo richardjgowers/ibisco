@@ -64,7 +64,7 @@ DO I=1,NVIRTA
       RETURN
    END IF
 
-   VIRT_VS_IND(VIRT_CENTER(I)) = I
+   IF(VIRT_CENTER(I) .ne. 0) VIRT_VS_IND(VIRT_CENTER(I)) = I
 
    IF(NUMATOM .gt. MAX_ATOMS) THEN
       WRITE(*,*) 'Number of atoms in VS exceeds maximum, check virtual file'
