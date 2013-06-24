@@ -20,7 +20,6 @@
 
 	DO 100 I = 1, NATOMS
 
-		CM = BEADMASS(I)
 		VX(I) = SQRT(FACTOR) * VX(I)
 		VY(I) = SQRT(FACTOR) * VY(I)
 		VZ(I) = SQRT(FACTOR) * VZ(I)

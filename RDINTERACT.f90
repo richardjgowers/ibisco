@@ -73,6 +73,7 @@ SUBROUTINE RDINTERACT()
         READ (STRNGS(2),*) LABEL(TYPEI)
         READ (STRNGS(3),*) MASS0(TYPEI)
         MASS(I) = MASS0(I)/NA/MASSSCALE!/1000.0
+        INVMASS(I) = 1.0D0 / MASS(I)
      end if
   END DO
 

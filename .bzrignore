@@ -106,3 +106,5 @@ WRITETRJ.o
 ./hybrid_input_MOVE
 IBIsCO-openmp-tt
 IBIsCO-openmp-test
+IBIsCO-openmp-old
+IBIsCO-openmp-old-v2
