@@ -22,7 +22,8 @@
 
 MODULE VAR
 
-
+INTEGER :: revno !Stores the revision number according to bazaar. Read from 'revno' in the same directory
+                 !This should be automatically created when you do commits (if you have the plugin installed)
 
 INTEGER*4 :: ENSEMBLE, NATOMS, NITEMS, NCOARSE, NSTEP, NMOL, MAXINPUT,PPF_INPUT,LAINPUT,DPDINPUT,WDPDT
 INTEGER*4 :: INTERACT, NAVERAGE, HALT_DRIFT, NTRJ, NSAMPLING

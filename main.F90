@@ -28,14 +28,15 @@
 
 ! character(len=2) ::writetype1 
 
-  OPEN(44,FILE='Time')
-  WRITE(44,*) 'Timing report'
+open(UNIT=45, FILE='revno')
+READ(45,*) revno
+close(45)
 
-    WRITE(*,'(//  '' IBIsCO TIME  Version 56'')')
+    WRITE(*,*) 'IBIsCO TIME! Revision ',revno
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
-    WRITE( 115, *)'IBIsCO Revision 56:'
+    WRITE( 115, *)'IBIsCO Revision', revno
     OPEN (1, FILE='ERROR')
     WRITE(*,*)
     ISTOP = 0
@@ -232,7 +233,6 @@ CALL NEW_LOOP()
       
       CLOSE (201)
       CLOSE (202)
-      CLOSE(44)
   
       Write(*,*)'**************************************'
       Write(*,*)'********* END OF DYNAMICS ************'
