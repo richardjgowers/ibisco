@@ -1,4 +1,4 @@
-PROG = IBIsCO-openmp-test
+PROG = IBIsCO-openmp-old-v3
 
 SRCS =    moduleparsing.f90 module_var.F90  \
           main.F90 WRITETP.f90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \
