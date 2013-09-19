@@ -19,10 +19,18 @@
         NI = INT (RIJ / BINB(TIJ))
 
         IF(NI .GT. NDATB(TIJ)) THEN
-           WRITE(*,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'
-           WRITE(1,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'                   
-           WRITE(*,*)'Simulation stopped at Time Step: ',STEP
-           STOP 'Failure in BONDS.inc'
+!           WRITE(*,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'
+!	   WRITE(*,*) I, J, RIJ
+!           WRITE(1,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'                   
+!           WRITE(*,*)'Simulation stopped at Time Step: ',STEP
+!           STOP 'Failure in BONDS.inc'
+	    WRITE(*,*) 'Overextended bond between atoms ', I, ' and ', J
+	    WRITE(*,*) 'Distance ', RIJ, ' Timestep ', STEP
+	    WRITE(*,*) 'Continuing on, but this might be a problem!'
+	    WRITE(1,*) 'Overextended bond between atoms ', I, ' and ', J
+	    WRITE(1,*) 'Distance ', RIJ, ' Timestep ', STEP
+	    WRITE(1,*) 'Continuing on, but this might be a problem!'
+	    NI = NDATB(TIJ) !set values to use last in table and continue, better than it crashing I guess
         END IF
 
         !            LINEAR INTEPOLATION
