@@ -1,5 +1,5 @@
 ! Debugging
-#define DEBUG_OOP .TRUE.! Select to include the debugging stuff of the OOP
+!#define DEBUG_OOP .TRUE.! Select to include the debugging stuff of the OOP
 #include "ibi-preprocess.h"
 !    *******************************************************************
 
@@ -36,6 +36,10 @@ close(45)
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
+#ifdef TIMING_ON
+    OPEN ( 44  , FILE = 'timing.out')
+#endif
+
     WRITE( 115, *)'IBIsCO Revision', revno
     OPEN (1, FILE='ERROR')
     WRITE(*,*)
@@ -93,13 +97,15 @@ close(45)
     !     SHIFT THE ATOMS INSIDE THE BOX
     CALL SHIFT ()
 
-    ALLOCATE(POINT_ATOM(NUMATOMS+1),CELL_ATOM(NUMATOMS),LCLIST_ATOM(NUMATOMS))
+    MAXNAB_ATOM = 1000 !Max number of neighbours for a single atom
+    ALLOCATE(LIST_ATOM(MAXNAB_ATOM,NUMATOMS),CELL_ATOM(NUMATOMS),LCLIST_ATOM(NUMATOMS))
     IF(IBRDESCR .eq. 0) THEN
-       ALLOCATE(POINT_BEAD(NCOARSE+1),CELL_BEAD(NCOARSE),LCLIST_BEAD(NCOARSE))
+       MAXNAB_BEAD = 1000
+       ALLOCATE(LIST_BEAD(MAXNAB_BEAD,NCOARSE),CELL_BEAD(NCOARSE),LCLIST_BEAD(NCOARSE))
     END IF
 
     TIN = TEMP
-    TFAC = DSQRT(TIN)
+    TFAC = SQRT(TIN) !!double precision
     gamma = 0.5D0*sigma**2/TIN
 
     !Decide which type of neighbour list to use
