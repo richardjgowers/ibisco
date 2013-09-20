@@ -4,13 +4,13 @@ SUBROUTINE WRITETRJ (TM)
 
   IMPLICIT NONE
 
-  !      INTEGER :: I,J,K,L,M,KK,TM
   INTEGER :: I,J,TM
-  REAL*8 ::PRESS, PTOT, ETOT, T, TREAL
-  REAL(KIND=RKIND) :: smallnumber
+  REAL*8 :: PRESS, PT_11, PT_12, PT_13, PT_22, PT_23, PT_33
+  REAL*8 :: PTOT, ETOT, T, TREAL
+  REAL*8 :: BOX_X, BOX_Y, BOX_Z
+  REAL*8 :: smallnumber
   REAL*4, POINTER :: NSX(:), NSY(:), NSZ(:), NVX(:), NVY(:), NVZ(:)
   INTEGER*4 :: nrec
-  CHARACTER(len=3):: WRITETYPE
   CHARACTER(80) :: YASPTITLE
 
   data nrec / 10 /
@@ -26,7 +26,7 @@ SUBROUTINE WRITETRJ (TM)
   ALLOCATE(NVZ(NATOMS))
 
   !	CONVERT TO 4-BYTE PRECISION (COORDINATES AND VELOCITES ONLY)
-  smallnumber = 1.0 / 1.0D+12 / TIMESCALE
+  smallnumber = 1.0D0 / 1.0D+12 / TIMESCALE
 
   DO J = 1, NATOMS
 
@@ -51,16 +51,25 @@ SUBROUTINE WRITETRJ (TM)
   WRITE(113) NFRAME, NTRJ*NFRAME, NATOMS, TREAL
 
   !	... simulation cell unit vectors
-  WRITE(113) BOXX, 0.0D00, 0.0D00, &
-       0.0D00, BOXY, 0.0D00, &
-       0.0D00, 0.0D00, BOXZ
+  BOX_X = BOXX
+  BOX_Y = BOXY
+  BOX_Z = BOXZ
+  WRITE(113) BOX_X, 0.0D00, 0.0D00, &
+       0.0D00, BOX_Y, 0.0D00, &
+       0.0D00, 0.0D00, BOX_Z
 
   !     ... isotropic pressure and pressure tensor
   PRESS = (PT11+PT22+PT33)*PSCALE/3.0d0
-  WRITE(113) PRESS,                   &
-       PT11*PSCALE,                  &
-       PT12*PSCALE, PT22*PSCALE,     &
-       PT13*PSCALE, PT23*PSCALE, PT33*PSCALE
+  PT_11 = PT11*PSCALE
+  PT_12 = PT12*PSCALE
+  PT_13 = PT13*PSCALE
+  PT_22 = PT22*PSCALE
+  PT_23 = PT23*PSCALE
+  PT_33 = PT33*PSCALE
+  WRITE(113) PRESS,      &
+       PT_11,            &
+       PT_12, PT_22,     &
+       PT_13, PT_23, PT_33
 
   PTOT = VNBOND_ATOM + VNBOND_BEAD + VBOND + VANGLE + VTOR
   ETOT = PTOT + EK
@@ -84,17 +93,6 @@ SUBROUTINE WRITETRJ (TM)
   WRITE(114,*) 't'
   DO I = 1, NATOMS
      WRITE(114,9050) LABEL(ITYPE(I)), NSX(I)*10, NSY(I)*10, NSZ(I)*10
-!     IF(IBRDESCR .EQ. 0) THEN
-!        IF(TYPE_LABEL(I) .EQ. 1) THEN
-!           WRITETYPE = 'C'
-!           WRITE(114,9040)WRITETYPE, NSX(I)*10, NSY(I)*10, NSZ(I)*10
-!        ELSE
-!           WRITETYPE = 'O'
-!           WRITE(114,9040)WRITETYPE, NSX(I)*10, NSY(I)*10, NSZ(I)*10
-!        END IF
-!     ELSE
-!        WRITE(114,9050)LABEL(ITYPE(I)), NSX(I), NSY(I), NSZ(I)
-!     END IF
   END DO
 !9040 FORMAT (1X,A8,1X,3 (G21.14,1X))
 9050 FORMAT (1X,A8,1X,3 (G21.14,1X))
