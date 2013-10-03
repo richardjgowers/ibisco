@@ -156,49 +156,33 @@ SUBROUTINE RDINTERACT()
               h=h+1
            else
 
-
               shakeOK=.false.
               OPEN (11, IOSTAT=IOS, FILE=STRNGS(3), STATUS='OLD')
               IF (IOS.NE.0) THEN
                  WRITE (1,*)	&
                       ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
-
                  WRITE (*,*)	&
                       ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
                  ISTOP=1
                  RETURN
               END IF
 
-              READ(11,*,IOSTAT=IOS2)RBOND(I, 0), BOND_POT(I,0)
-              READ(11,*,IOSTAT=IOS2)RBOND(I, 1), BOND_POT(I,1)
-              BOND_POT(I,0) = BOND_POT(I,0)*1000.0/ NA / ESCALE
-              BOND_POT(I,1) = BOND_POT(I,1)*1000.0/ NA / ESCALE
-
-              RBOND(I, 0) = RBOND(I, 0)! / rscale
-              RBOND(I, 1) = RBOND(I, 1)! / rscale
-
-              BINB(I) = RBOND(I,1)-RBOND(I,0)
-
-              IF(RBOND(I, 0) /= 0.0) THEN
-                 RBOND(I,0) = 0.0	
-                 RBOND(I,2) = RBOND(I,1)
-                 BOND_POT(I,2) = BOND_POT(I,1)
-                 RBOND(I,1) = BINB(I)
-                 BOND_POT(I,1) = BOND_POT(I,0)
-                 K = 3
-              ELSE
-                 K = 2
-              END IF
-
+              K = 0
               DO WHILE (.TRUE.)
-                 READ(11,*,IOSTAT=IOS2)RBOND(I, K), BOND_POT(I,K)
-                 BOND_POT(I,K) = BOND_POT(I,K)*1000.0/ NA / ESCALE
-                 RBOND(I, K) = RBOND(I, K) !/ rscale
-                 IF (IOS2 /= 0) EXIT
-                 K = K + 1 
+                 READ(11,*,IOSTAT=IOS2) RBOND(I,K), BOND_POT(I,K)
+                 IF(IOS2 .ne. 0) EXIT
+                 K = K+1
               END DO
               NDATB(I) = K - 1
-              CLOSE (11)
+
+              CLOSE(11)
+
+              !Rescale energies
+              DO J =0,NDATB(I)
+                 BOND_POT(I,J) = BOND_POT(I,J) *1000.0 /NA /ESCALE
+              END DO
+
+              BINB(I) = RBOND(I,1)-RBOND(I,0)
 
            END IF
 

@@ -18,14 +18,13 @@ IF (INTERACT == 1) THEN
 !	MAKE TABLE FORCE FOR BOND
     DO I = 1, NBTYPE
         if(.not. typeBond(i))then
-            BOND_FORCE(I, 1) = -(BOND_POT(I, 2) - BOND_POT(I, 1))/BINB(I)/RBOND(I, 1)
-            BOND_FORCE(I, 0) = BOND_FORCE(I, 1)
-            DO J = 2, NDATB(I) - 1 
-                  BOND_FORCE(I,J) = -(BOND_POT(I,J+1) - BOND_POT(I,J-1))/BINB(I)/RBOND(I,J)/2.0D0
-            END DO
-            BOND_FORCE(I, NDATB) = BOND_FORCE(I, NDATB(I)-1)
+           DO J = 1, NDATB(I) - 1 
+              BOND_FORCE(I,J) = -(BOND_POT(I,J+1) - BOND_POT(I,J-1))/BINB(I)/RBOND(I,J)/2.0D0
+           END DO
+           BOND_FORCE(I, 0)     = BOND_FORCE(I, 1)
+           BOND_FORCE(I, NDATB) = BOND_FORCE(I, NDATB(I)-1)
         end if
-      END DO
+     END DO
 
 !	MAKE TABLE FORCE FOR BEND
       DO I = 1, NATYPE
