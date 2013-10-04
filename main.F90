@@ -28,11 +28,7 @@
 
 ! character(len=2) ::writetype1 
 
-open(UNIT=45, FILE='revno')
-READ(45,*) revno
-close(45)
-
-    WRITE(*,*) 'IBIsCO TIME! Revision ',revno
+    WRITE(*,*) 'IBIsCO TIME! Revision 65'
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
