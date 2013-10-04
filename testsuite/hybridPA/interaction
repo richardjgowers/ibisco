@@ -1,0 +1,83 @@
+atom_types 11 
+# Type, Label, Mass, A/B
+   1	H      0.00100782     A
+   2	Hn     0.00100782     A
+   3	C      0.0120         A
+   4	Ca     0.0120         A
+   5	N      0.0140031      A
+   6	O      0.0159949      A
+   7	M3P    0.043054    B
+   8	M3     0.042046    B
+   9	AP     0.058029    B
+   10	A      0.057021    B
+   11	M2     0.028031    B
+bond_types 9
+#Type1, Type2, filename
+   7	3       hybond1 # bondlength = 0.257
+   3	1	bond1
+   3	4	bond3
+   4	6	bond7
+   4	5	bond4
+   5	2	bond5
+   5	8	hybond2  # bondlength = 0.245
+   8	8	fort.103  
+   3	11	hybond3  # bondlength = 0.222
+angle_types 14
+#Type1, Type2, Type3, filename
+ 7	3      1      ang.201
+ 7	3      4      ang.202
+ 1	3      1      ang.002
+ 1	3      4      ang.004
+ 3	4      6      ang.005
+ 3	4      5      ang.006
+ 6	4      5      ang.012
+ 4	5      2      ang.007
+ 4	5      8      ang.203
+ 2	5      8      ang.204
+ 5	8      8      ang.205
+ 1	3      11     ang.206
+ 3	11     3      ang.207
+ 4	3      11     ang.208
+torsion_types 1
+#Type1 Type2 Type3 Type4 filename
+ 2     5     4	   6	 tors5  # 6     4     3	   1
+non_bonded_interaction_types 36
+#       Type1 Type2     filename
+	1	1	nb01
+	1	2	nb02
+	1	3	nb03
+	1	4	nb04
+	1	5	nb05
+	1	6	nb06
+	2	2	nb07
+	2	3	nb08
+	2	4	nb09
+	2	5	nb10
+	2	6	nb11
+	3	3	nb12
+	3	4	nb13
+	3	5	nb14
+	3	6	nb15
+	4	4	nb16
+	4	5	nb17
+	4	6	nb18
+	5	5	nb19
+	5	6	nb20
+	6	6	nb21
+	7	7	fort.415
+	7	8	fort.412
+	7	9	fort.414
+	7	10	fort.405
+	7	11	fort.409
+	8	8	fort.410
+	8	9	fort.411
+	8	10	fort.403
+	8	11	fort.407
+	9	9	fort.413
+	9	10	fort.404
+	9	11	fort.408
+	10	10	fort.401
+	10	11	fort.402
+	11	11	fort.406
+Out_of_Planes 0
+#Type1 Type 2 filename

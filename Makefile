@@ -1,4 +1,4 @@
-PROG = IBIsCO-openmp-old-v3
+PROG = IBIsCO
 
 SRCS =    moduleparsing.f90 module_var.F90  \
           main.F90 WRITETP.f90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \
@@ -48,8 +48,8 @@ F90 = gfortran
 #LDFLAGS = -g -pg -fbounds-check -fbacktrace -O0
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
 #Fast gfortran options
-F90FLAGS = -fopenmp -O2
-LDFLAGS = -fopenmp -O2
+F90FLAGS = -O2 -fopenmp
+LDFLAGS = -O2 -fopenmp
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #LIBS= -L/home/nicodemo/bin/lib -lmpack1  
 # l'opzione -c compila e assembla ma non linka
