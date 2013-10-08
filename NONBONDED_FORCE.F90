@@ -100,13 +100,13 @@ FZL = 0.0D0
 
                  NI = INT(RIJ/BINNB(TIJ))
 
-                 ALPHA = (RIJ - RNBOND(TIJ,NI))/BINNB(TIJ)
+                 ALPHA = (RIJ - RNBOND(NI,TIJ))/BINNB(TIJ)
 
-                 FIJ = NBOND_FORCE(TIJ,NI)*(1.0D0 - ALPHA) &
-                      + NBOND_FORCE(TIJ,NI+1)*ALPHA
+                 FIJ = NBOND_FORCE(NI,TIJ)*(1.0D0 - ALPHA) &
+                      + NBOND_FORCE(NI+1,TIJ)*ALPHA
 
-                 VIJ = NBOND_POT(TIJ,NI)*(1.0D0 - ALPHA) &
-                      + NBOND_POT(TIJ,NI+1)*ALPHA
+                 VIJ = NBOND_POT(NI,TIJ)*(1.0D0 - ALPHA) &
+                      + NBOND_POT(NI+1,TIJ)*ALPHA
 
 
 #ifdef DEBUG_DETAILEDNB

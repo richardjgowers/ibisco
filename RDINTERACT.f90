@@ -439,9 +439,9 @@ SUBROUTINE RDINTERACT()
   END IF
   READ(4,*)
   IF (NNBTYPE.GT.0) THEN
-     ALLOCATE(RNBOND(NNBTYPE, 0:MAXINPUT))
-     ALLOCATE(NBOND_FORCE(NNBTYPE, 0:MAXINPUT))
-     ALLOCATE(NBOND_POT(NNBTYPE, 0:MAXINPUT))
+     ALLOCATE(RNBOND(0:MAXINPUT, NNBTYPE))
+     ALLOCATE(NBOND_FORCE(0:MAXINPUT,NNBTYPE))
+     ALLOCATE(NBOND_POT(0:MAXINPUT,NNBTYPE))
      ALLOCATE(BINNB(NNBTYPE))
      ALLOCATE(NDATNB(NNBTYPE))
      NBOND_FORCE = 0.0D0
@@ -487,32 +487,28 @@ SUBROUTINE RDINTERACT()
            RETURN
         END IF
 
-        READ(11,*,IOSTAT=IOS2)RNBOND(I, 0), NBOND_POT(I,0)
-        READ(11,*,IOSTAT=IOS2)RNBOND(I, 1), NBOND_POT(I,1)
-        NBOND_POT(I,0) = NBOND_POT(I,0)*1000.0/ NA / ESCALE
-        NBOND_POT(I,1) = NBOND_POT(I,1)*1000.0/ NA / ESCALE
+        READ(11,*,IOSTAT=IOS2)RNBOND(0, I), NBOND_POT(0,I)
+        READ(11,*,IOSTAT=IOS2)RNBOND(1, I), NBOND_POT(1,I)
+        NBOND_POT(0,I) = NBOND_POT(0,I)*1000.0/ NA / ESCALE
+        NBOND_POT(1,I) = NBOND_POT(1,I)*1000.0/ NA / ESCALE
 
-        RNBOND(I, 0) = RNBOND(I, 0) !/ rscale
-        RNBOND(I, 1) = RNBOND(I, 1) !/ rscale
+        BINNB(I) = RNBOND(1,I) - RNBOND(0,I)
 
-        BINNB(I) = RNBOND(I,1) - RNBOND(I,0)
-
-        IF(RNBOND(I, 0) /= 0.0) THEN
-           RNBOND(I,0) = 0.0	
-           RNBOND(I,2) = RNBOND(I,1)
-           NBOND_POT(I,2) = NBOND_POT(I,1)
-           RNBOND(I,1) = BINNB(I)
-           NBOND_POT(I,1) = NBOND_POT(I,0)
+        IF(RNBOND(0,I) /= 0.0) THEN
+           RNBOND(0,I) = 0.0	
+           RNBOND(2,I) = RNBOND(1,I)
+           NBOND_POT(2,I) = NBOND_POT(1,I)
+           RNBOND(1,I) = BINNB(I)
+           NBOND_POT(1,I) = NBOND_POT(0,I)
            K = 3
         ELSE
            K = 2
         END IF
 
         DO WHILE (.TRUE.)
-           READ(11,*,IOSTAT=IOS2)RNBOND(I, K), NBOND_POT(I,K)
-           IF (RNBOND(I,K) .NE. RNBOND(I,K-1) .AND. IOS2 == 0) THEN
-              NBOND_POT(I,K) = NBOND_POT(I,K)*1000.0/ NA / ESCALE	
-              RNBOND(I, K) = RNBOND(I, K) !/ rscale
+           READ(11,*,IOSTAT=IOS2)RNBOND(K,I), NBOND_POT(K,I)
+           IF (RNBOND(K,I) .NE. RNBOND(K-1,I) .AND. IOS2 == 0) THEN
+              NBOND_POT(K,I) = NBOND_POT(K,I)*1000.0/ NA / ESCALE
               IF (IOS2 /= 0) EXIT
               K = K + 1 
            ELSE

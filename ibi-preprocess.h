@@ -5,4 +5,4 @@
 
 /*#define DETAILED_ATOM */ /* Allows the detailed printout of all contributions to a specific atom */
 
-/* #define TIMING_ON  */
+#define TIMING_ON
