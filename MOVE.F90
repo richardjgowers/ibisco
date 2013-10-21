@@ -1,3 +1,5 @@
+#include "ibi-preprocess.h"
+
 SUBROUTINE MOVE ( )
 
   USE VAR
@@ -10,6 +12,10 @@ SUBROUTINE MOVE ( )
   REAL(KIND=RKIND) :: PT11K, PT22K, PT33K
   REAL(KIND=RKIND) :: PT12K, PT23K, PT13K
 !  real(kind=rkind) :: t1,t2,tick
+#ifdef SEPARATE_THERMOMETER
+  INTEGER :: A
+  REAL*8 :: BEAD_TEMP, ATOM_TEMP, E_K
+#endif
 
   EK = 0.0D0
 
@@ -71,6 +77,25 @@ SUBROUTINE MOVE ( )
   !  tick=omp_get_wtick()
 
   !      write(4001,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
+#ifdef SEPARATE_THERMOMETER
+  E_K = 0.0
+  DO A=1,NUMATOMS
+     I = ATOM(A)
+     TI = ITYPE(I)
+     E_K = E_K + 0.5*MASS(TI)*SQRT(VTX(I)*VTX(I) + VTY(I)*VTY(I) + VTZ(I)*VTZ(I))
+  END DO
+  ATOM_TEMP = 3/2.0/REAL(NUMATOMS) * E_K * TEMPSCALE
+  E_K = 0.0
+  DO A=1,NUMBEADS
+     I = BEAD(A)
+     TI = ITYPE(I)
+     E_K = E_K + 0.5*MASS(TI)*SQRT(VTX(I)*VTX(I) + VTY(I)*VTY(I) + VTZ(I)*VTZ(I))
+  END DO
+  BEAD_TEMP = 3/2.0/REAL(NUMBEADS) * E_K * TEMPSCALE
+
+  WRITE(*,*) 'Atom T: ',ATOM_TEMP,' Bead T: ',BEAD_TEMP
+#endif
+
 
   PT11 = PT11 + PT11K
   PT22 = PT22 + PT22K 
