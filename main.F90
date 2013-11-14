@@ -156,6 +156,12 @@
           WRITE(*,*)
        END IF
     END IF
+    
+    !Read virtangles
+    IF(IBRDESCR .eq. 0) THEN
+       CALL RDVIRTANGLES()
+       IF(ISTOP .eq. 1) STOP 'Failed in RDVIRTANGLES'
+    END IF
 
 CONNECTIONS = 0
 CONNECTED_TO = 0

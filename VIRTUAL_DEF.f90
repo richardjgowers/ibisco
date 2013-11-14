@@ -18,9 +18,14 @@ DO I=1,NVIRTA
 
    IF (VIRT_CENTER(I) .NE. 0)THEN !If using a functional site
       J = VIRT_CENTER(I)
+
       RX(POS) = SX(J)
       RY(POS) = SY(J)
       RZ(POS) = SZ(J)
+
+      SX(POS) = SX(J)
+      SY(POS) = SY(J)
+      SZ(POS) = SZ(J)
    ELSE !Else using a COM
       TI = VITYPE(I)
       SUMTOTX = 0.0D0
@@ -37,6 +42,10 @@ DO I=1,NVIRTA
       RX(POS) = SUMTOTX*VIRT_INVMASS(TI)
       RY(POS) = SUMTOTY*VIRT_INVMASS(TI)
       RZ(POS) = SUMTOTZ*VIRT_INVMASS(TI)
+
+      SX(POS) = RX(POS)
+      SY(POS) = RY(POS)
+      SZ(POS) = RZ(POS)
    END IF
 
    IF ((RX(POS)> BOXX2).OR.(RX(POS) < -BOXX2) &

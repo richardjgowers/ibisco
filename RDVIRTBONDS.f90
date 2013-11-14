@@ -2,6 +2,8 @@ SUBROUTINE RDVIRTBONDS()
 
   USE VAR
 
+  IMPLICIT NONE
+
   INTEGER :: I, J
 
   !Reads the file 'virtbonds' if it exists and adds to the nonbonded exclusions

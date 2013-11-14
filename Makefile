@@ -15,7 +15,7 @@ SRCS =    moduleparsing.f90 module_var.F90  \
           BUILD_CONNECTIVITY.f90 BONDED_FORCE.F90 ALLOCATEVAR2.f90 \
           NEW_NEIGHBOUR_NOLIST.f90 \
           TIMING.F90 \
-	  RDVIRTBONDS.f90
+	  RDVIRTBONDS.f90 RDVIRTANGLES.f90
 
 OBJS =    moduleparsing.o module_var.o \
           main.o WRITETP.o MAPS.o   FTABLE.o WRITETRJ.o \
@@ -30,7 +30,7 @@ OBJS =    moduleparsing.o module_var.o \
           BUILD_CONNECTIVITY.o BONDED_FORCE.o ALLOCATEVAR2.o \
           NEW_NEIGHBOUR_NOLIST.o \
           TIMING.o \
-	  RDVIRTBONDS.o
+	  RDVIRTBONDS.o RDVIRTANGLES.o
 
 .SUFFIXES: $(SUFFIXES) .f90 .F90
 

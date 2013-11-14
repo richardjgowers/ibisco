@@ -77,6 +77,7 @@ SUBROUTINE NEW_FORCE()
 #ifdef TIMING_ON
   t_BONDED_FORCE(2) = OMP_GET_WTIME()
 #endif
+  CALL DISTRIBUTE_VSFORCE() !Distribute forces on virtual sites arising from bonded interactions
 
   DO I=1,NATOMS
      PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)

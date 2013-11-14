@@ -1,6 +1,3 @@
-
-!	update 16/1/2008 15:57:50
-!	********************************************************************************
 SUBROUTINE SETLIS()
 
   USE VAR
@@ -12,7 +9,6 @@ SUBROUTINE SETLIS()
   INTEGER, DIMENSION(10,10,10,10) :: NOWRITE2 = 0
   !       *******************************************************************
 
-  !       SWITCH = 0
   IF (NBTYPE.GT.0) THEN
      I = 0
 
@@ -32,35 +28,35 @@ SUBROUTINE SETLIS()
            IF (NOTYPE.GT.0) THEN
               IF (NBONDS(I).EQ.3) THEN
 
-                do ll = 1,6
+                 do ll = 1,6
                     if(ll .eq. 1)then ! questa era quella che c'era
-                        Z = JBOND(I,1)
-                        P = JBOND(I,2)
-                        O = JBOND(I,3)
+                       Z = JBOND(I,1)
+                       P = JBOND(I,2)
+                       O = JBOND(I,3)
                     elseif(ll .eq. 2)then
-                        Z = JBOND(I,3)
-                        P = JBOND(I,1)
-                        O = JBOND(I,2)
+                       Z = JBOND(I,3)
+                       P = JBOND(I,1)
+                       O = JBOND(I,2)
                     elseif(ll .eq. 3)then
-                        Z = JBOND(I,2)
-                        P = JBOND(I,1)
-                        O = JBOND(I,3)
+                       Z = JBOND(I,2)
+                       P = JBOND(I,1)
+                       O = JBOND(I,3)
                     elseif(ll .eq. 4)then ! questa era quella che c'era con (ll .eq. 2)
-                        Z = JBOND(I,1)
-                        P = JBOND(I,3)
-                        O = JBOND(I,2)
-                   elseif(ll .eq. 5)then
-                        Z = JBOND(I,2)
-                        P = JBOND(I,3)
-                        O = JBOND(I,1)
-                   elseif(ll .eq. 6)then
-                        Z = JBOND(I,3)
-                        P = JBOND(I,2)
-                        O = JBOND(I,1)
-                   end if
-                   ZT = ITYPE(Z)
-                   PT = ITYPE(P)
-                   OT = ITYPE(O)
+                       Z = JBOND(I,1)
+                       P = JBOND(I,3)
+                       O = JBOND(I,2)
+                    elseif(ll .eq. 5)then
+                       Z = JBOND(I,2)
+                       P = JBOND(I,3)
+                       O = JBOND(I,1)
+                    elseif(ll .eq. 6)then
+                       Z = JBOND(I,3)
+                       P = JBOND(I,2)
+                       O = JBOND(I,1)
+                    end if
+                    ZT = ITYPE(Z)
+                    PT = ITYPE(P)
+                    OT = ITYPE(O)
 
                     IF (IOOPT(IT,ZT,PT,OT).NE.0 .and. NOOPIJKL(I) .eq. 0) THEN
                        !		        WRITE(*,*) 'found',i,z,p,o,ll
@@ -302,13 +298,13 @@ SUBROUTINE SETLIS()
 
                                       END IF
 
-                                      WRITE (1,*) ' '
-                                      WRITE (1,*) &
-                                           ' **** FATAL ERROR! FATAL ERROR! ****'
-                                      WRITE (1,*) ' No parameters found for the torsion'
-                                      WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
-                                      WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
-                                      WRITE (1,*) ' **** Check interaction file ****'
+!                                      WRITE (1,*) ' '
+!                                      WRITE (1,*) &
+!                                           ' **** FATAL ERROR! FATAL ERROR! ****'
+!                                      WRITE (1,*) ' No parameters found for the torsion'
+!                                      WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
+!                                      WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
+!                                      WRITE (1,*) ' **** Check interaction file ****'
                                       !                        WRITE (*,*) ' '
 
                                       !                        ISTOP = 1
@@ -370,13 +366,13 @@ SUBROUTINE SETLIS()
 
                                    END IF
 
-                                   WRITE (1,*) ' '
-                                   WRITE (1,*) &
-                                        ' **** FATAL ERROR! FATAL ERROR! ****'
-                                   WRITE (1,*) ' No parameters found for the torsion'
-                                   WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
-                                   WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
-                                   WRITE (1,*) ' **** Check interaction file ****'
+!                                   WRITE (1,*) ' '
+!                                   WRITE (1,*) &
+!                                        ' **** FATAL ERROR! FATAL ERROR! ****'
+!                                   WRITE (1,*) ' No parameters found for the torsion'
+!                                   WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
+!                                   WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
+!                                   WRITE (1,*) ' **** Check interaction file ****'
                                    !                        WRITE (*,*) ' '
 
                                    !                        ISTOP = 1
@@ -419,70 +415,68 @@ SUBROUTINE SETLIS()
 
                  IF (NOANGLE .EQ. 1) THEN
 
-                    WRITE(*,*) '             ********************* WARNING *********************'
-                    WRITE(*,*) '             *       No parameters found for the angle(s)      *'
-                    DO H=3,X,3
-                       WRITE (*,570) ATOM_ANG(H-2),ATOM_ANG(H-1),ATOM_ANG(H)
-570                    FORMAT(2X, '            *         of atom types:',3(3X,I3),'        *')
-                    END DO
-                    WRITE(*,*) '             ***************************************************'
-                    WRITE(*,*)
+!                    WRITE(*,*) '             ********************* WARNING *********************'
+!                    WRITE(*,*) '             *       No parameters found for the angle(s)      *'
+!                    DO H=3,X,3
+!                       WRITE (*,570) ATOM_ANG(H-2),ATOM_ANG(H-1),ATOM_ANG(H)
+!570                    FORMAT(2X, '            *         of atom types:',3(3X,I3),'        *')
+!                    END DO
+!                    WRITE(*,*) '             ***************************************************'
+!                    WRITE(*,*)
 
                  END IF
 
                  IF (NOTORS .EQ. 1) THEN
 
-                    WRITE(*,*) '             ********************* WARNING *********************'
-                    WRITE(*,*) '             *       No parameters found for the torsion(s)    *'
-                    DO H=4,Q,4
-                       WRITE (*,510) ATOM_TORS(H-3),ATOM_TORS(H-2),ATOM_TORS(H-1),ATOM_TORS(H)
-510                    FORMAT(2X, '            *        of atom types:',4(3X,I3),'   *')
-                    END DO
-                    WRITE(*,*) '             ***************************************************'
-                    WRITE(*,*)
+!                    WRITE(*,*) '             ********************* WARNING *********************'
+!                    WRITE(*,*) '             *       No parameters found for the torsion(s)    *'
+!                    DO H=4,Q,4
+!                       WRITE (*,510) ATOM_TORS(H-3),ATOM_TORS(H-2),ATOM_TORS(H-1),ATOM_TORS(H)
+!510                    FORMAT(2X, '            *        of atom types:',4(3X,I3),'   *')
+!                    END DO
+!                    WRITE(*,*) '             ***************************************************'
+!                    WRITE(*,*)
 
                  END IF
 
 
                  ! Find the highest connectivity
 
-!                 if(ibrdescr .eq. 0)then
-!                    contactA = 0
-!                    contactB = 0
-!                    tmp=0
-!                    do i=1,natoms-1 
-!                       do j=i+1,natoms
-!                          if(type_label(i) .eq. 1 .and. type_label(j) .eq. 1)then
-!                             call non_bond_array(i,j)
-!                             if(nonbond .ne. 1)then
-!                                tmp = abs(j-i)+1
-!                                if(contactA .lt. tmp)contactA=tmp
-!                             end if
-!                          elseif(type_label(i) .eq. 2 .and. type_label(j) .eq. 2)then
-!                             call non_bond_array_bead(i,j)
-!                             if(nonbond .ne. 1)then
-!                                tmp = abs(j-i)+1
-!                                if(contactB .lt. tmp)contactB=tmp
-!                             end if
-!                          end if
-!                       end do
-!                    end do
-!                 else
-!                    contactA = 0
-!                    tmp=0
-!                    do i=1,natoms 
-!                       do j=i+1,natoms
-!                          call non_bond_array(i,j)
-!                          if(nonbond .ne. 1)then
-!                             tmp = abs(j-i)
-!                             if(contactA .lt. tmp)contactA=tmp+1
-!                          end if
-!                       end do
-!                    end do
-!                 end if
+                 !                 if(ibrdescr .eq. 0)then
+                 !                    contactA = 0
+                 !                    contactB = 0
+                 !                    tmp=0
+                 !                    do i=1,natoms-1 
+                 !                       do j=i+1,natoms
+                 !                          if(type_label(i) .eq. 1 .and. type_label(j) .eq. 1)then
+                 !                             call non_bond_array(i,j)
+                 !                             if(nonbond .ne. 1)then
+                 !                                tmp = abs(j-i)+1
+                 !                                if(contactA .lt. tmp)contactA=tmp
+                 !                             end if
+                 !                          elseif(type_label(i) .eq. 2 .and. type_label(j) .eq. 2)then
+                 !                             call non_bond_array_bead(i,j)
+                 !                             if(nonbond .ne. 1)then
+                 !                                tmp = abs(j-i)+1
+                 !                                if(contactB .lt. tmp)contactB=tmp
+                 !                             end if
+                 !                          end if
+                 !                       end do
+                 !                    end do
+                 !                 else
+                 !                    contactA = 0
+                 !                    tmp=0
+                 !                    do i=1,natoms 
+                 !                       do j=i+1,natoms
+                 !                          call non_bond_array(i,j)
+                 !                          if(nonbond .ne. 1)then
+                 !                             tmp = abs(j-i)
+                 !                             if(contactA .lt. tmp)contactA=tmp+1
+                 !                          end if
+                 !                       end do
+                 !                    end do
+                 !                 end if
 
 
                  RETURN
                END SUBROUTINE SETLIS
-
-               !	***************************************************************************
