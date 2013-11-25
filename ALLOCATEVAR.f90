@@ -53,6 +53,21 @@ SUBROUTINE ALLOCATEVAR ()
   RVOL = 0.0D0
   RDENS = 0.0D0
 
+
+  !Reset average totals to 0 to begin new averaging window
+  AV_TOT_E = 0.0
+  AV_POT_E = 0.0
+  AV_KIN_E = 0.0
+  AV_V_NB = 0.0
+  AV_V_BOND = 0.0
+  AV_V_ANGLE = 0.0
+  AV_V_TORSION = 0.0
+  AV_V_OOP = 0.0
+  AV_TEMP = 0.0
+  AV_PRES = 0.0
+  AV_BOX = 0.0
+  AV_DENS = 0.0
+
 !            ALLOCATE(RX(NATOMS)) !Allocated in ALLOCATEVAR2 instead
 !            ALLOCATE(RY(NATOMS))
 !            ALLOCATE(RZ(NATOMS))

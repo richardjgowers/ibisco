@@ -62,6 +62,13 @@ REAL*8, DIMENSION(2) :: t_SHIFT, t_MOVE, t_MOMENTUM, t_SCALEBP
 REAL*8, DIMENSION(2) :: t_REPORTRESULTS, t_AVERAGE, t_WRITETRJ, t_OUTPUT
 !End timing variables
 
+!Averaging and output variables
+REAL*8 :: POT_E, KIN_E, TOT_E, PRES(7), BOX(4), DENS
+REAL*8 :: AV_POT_E, AV_KIN_E, AV_TOT_E, AV_PRES(7), AV_BOX(4), AV_DENS
+REAL*8, DIMENSION(3) :: AV_V_NB, AV_V_BOND, AV_V_ANGLE, AV_V_TORSION, AV_V_OOP
+REAL*8 :: AV_TEMP
+!End averaging and output variables
+
 INTEGER, POINTER :: LIST_ATOM(:,:)
 INTEGER, POINTER :: LIST_BEAD(:,:)
 
