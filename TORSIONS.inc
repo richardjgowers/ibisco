@@ -104,7 +104,7 @@ DO  A = 1, NIJKL(I)
 
     IF(NI .GT. NDATT(TIJKL)) THEN
         WRITE(*,*)'FATAL ERROR: Entry in torsion table', TIJKL,' does not exist'
-        WRITE(1,*)'FATAL ERROR: Entry in torsion table', TIJKL,' does not exist'		
+        WRITE(1,*)'FATAL ERROR: Entry in torsion table', TIJKL,' does not exist'
         STOP
     END IF
 

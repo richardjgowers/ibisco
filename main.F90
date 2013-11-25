@@ -11,22 +11,7 @@
 
     IMPLICIT NONE
 
-
-!      real etime          ! Declare the type of etime()
-!      real elapsed(2),tarray(2),result     ! For receiving user and system time
-!      real total          ! For receiving total time
-!      real t1,t2
-!              character(8)  :: date
-!              character(10) :: time
-!              character(5)  :: zone
-!              integer,dimension(8) :: values
-
-    INTEGER :: I,J,H
-!    integer :: temp_step
-
-!    REAL :: R2INIS,dummy
-
-! character(len=2) ::writetype1 
+    INTEGER :: I
 
     WRITE(*,*) 'IBIsCO TIME! Revision 65'
     OPEN ( 115 , FILE = 's-md.out')

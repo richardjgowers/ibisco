@@ -1,32 +1,12 @@
-!     Modified by Nicodemo Di Pasquale
-!           June 2011
-!
-! mol_counter = molecules counter. Counter for the number of atoms/bead in one molecule of the system
-!
-! init_change(i) says if that group of atoms have to be changed with the corresponding bead
-!     init_change(i) = 1 ---> atoms have to be changed
-!     init_change(i) = 0 ---> atoms remains atoms
-!
-!
 
 SUBROUTINE RDCOOR()
 
   USE MODULEPARSING
   USE VAR
-  IMPLICIT NONE
-  !	character(20)  text
-  INTEGER :: I, J, L, LL, K,q,kk,qq,p=0,jj=0, lv,TT
-  integer :: shifted,ql
-  integer :: nbon
 
-  INTEGER :: count_VS,num_indx
-  !      integer :: init=20, fin=27
-  integer :: num_mol,counter=1,Btype, recover, atom_in_bead, mol_counter, &
-       num_bond,tot_virt_site=0!, original_atom=1
-  integer,pointer :: init_change(:)
-  real(kind=rkind) :: comrx,comry,comrz,totmass_ad, vec_pcom,x,vcomrx,vcomry,vcomrz
-  real(kind=rkind) :: Fcomrx,Fcomry,Fcomrz
-  real(kind=rkind) :: xf,yf,zf
+  IMPLICIT NONE
+
+  INTEGER :: I, J, L=0, LL, K, TT
   character(len=20) :: text
 
   OPEN (3, IOSTAT=IOS, FILE='coordinate', STATUS='OLD')
@@ -66,7 +46,7 @@ SUBROUTINE RDCOOR()
   READ (3,*)
   READ (3,*)
   READ (3,*)text, NMOL
-  L = 0
+
   ALLOCATE(NATM(NMOL))
   allocate(name_mol(nmol))
 

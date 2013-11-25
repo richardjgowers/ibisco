@@ -4,7 +4,7 @@ SUBROUTINE SETLIS()
   IMPLICIT NONE
   INTEGER		N, M, I, J, K, J1, K1, L, L1,Z,P,O,ll
   INTEGER		IT, JT, KT, LT, SWITCH,ITA, ZT,PT,OT,tmp
-  INTEGER	::	H,Q=0,X=0,NOWRITE=0,COUNTER=0
+  INTEGER	::	H,Q=0,X=0,NOWRITE=0 !,COUNTER=0
   INTEGER,DIMENSION(500):: ATOM_TORS = 0, ATOM_ANG = 0
   INTEGER, DIMENSION(10,10,10,10) :: NOWRITE2 = 0
   !       *******************************************************************

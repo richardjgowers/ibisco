@@ -21,7 +21,6 @@ SUBROUTINE SHIFT()
   IMPLICIT NONE
   INTEGER :: I
   REAL*8 ::SPX, SPY, SPZ
-  real(kind=rkind) :: t1,t2,tick
   !       *******************************************************************
 
   ! INT(funzione parte intera) is an intrinsic function that reads a real, cuts the decimal 
