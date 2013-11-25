@@ -45,7 +45,7 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
   !$OMP& PRIVATE(FXI,FYI,FZI,RXI,RYI,RZI,RXIJ,RYIJ,RZIJ,RIJSQ,RIJ)&
   !$OMP& PRIVATE(NI,ALPHA,FIJ,VIJ,FXIJ,FYIJ,FZIJ)&
   !$OMP& PRIVATE(FXL,FYL,FZL)&
-  !$OMP& REDUCTION(+:VNBOND_TOTAL,VNBOND_ATOM,VNBOND_BEAD,VNBOND_MIX)&
+  !$OMP& REDUCTION(+:V_NB)&
   !$OMP& REDUCTION(+:PT11,PT22,PT33,PT12,PT13,PT23) &
   !$OMP& REDUCTION(+:FX,FY,FZ)
 
@@ -108,36 +108,17 @@ FZL = 0.0D0
                  VIJ = NBOND_POT(NI,TIJ)*(1.0D0 - ALPHA) &
                       + NBOND_POT(NI+1,TIJ)*ALPHA
 
-
-#ifdef DEBUG_DETAILEDNB
                  IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM
-                    VNBOND_ATOM = VNBOND_ATOM + VIJ
-!                    WRITE(5100,*) I, J, VIJ*conv
+                    V_NB(1) = V_NB(1) + VIJ
                  ELSE IF(TYPE_LABEL(I) .eq. 2) THEN !BEAD
-                    IF(TYPE_LABEL(J) .eq.2) THEN !I BEAD
-                       VNBOND_BEAD = VNBOND_BEAD + VIJ
-!                       WRITE(5200,*) I, J, VIJ*conv
-                    ELSE IF(TYPE_LABEL(J) .eq. 3) THEN
-                       VNBOND_MIX = VNBOND_MIX + VIJ
- !                      WRITE(5300,*) I, J, VIJ*conv
-                    ELSE
-                       WRITE(*,*) 'EXCEPTION!', I, J
+                    IF(TYPE_LABEL(J) .eq.2) THEN !BOTH BEADS
+                       V_NB(2) = V_NB(2) + VIJ
+                    ELSE IF(TYPE_LABEL(J) .eq. 3) THEN!MIXED
+                       V_NB(3) = V_NB(3) + VIJ
                     END IF
                  ELSE IF(TYPE_LABEL(I) .eq. 3) THEN !VS
-                    IF(TYPE_LABEL(J) .eq. 2) THEN
-                       VNBOND_MIX = VNBOND_MIX + VIJ
-  !                     WRITE(5300,*) I, J, VIJ*conv
-                    ELSE
-                       WRITE(*,*) 'EXCEPTION!', I, J
-                    END IF
-                 ELSE
-                    WRITE(*,*) 'EXCEPTION', I, J
+                    V_NB(3) = V_NB(3) + VIJ
                  END IF
-
-   !              WRITE(5000,*) I, J, VIJ*conv
-#endif
-
-                 VNBOND_TOTAL = VNBOND_TOTAL + VIJ
 
                  FXIJ = FIJ * RXIJ
                  FYIJ = FIJ * RYIJ

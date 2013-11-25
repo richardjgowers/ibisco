@@ -9,7 +9,7 @@ SUBROUTINE NEW_FORCE()
 
   INTEGER :: I
 
-  !Reset all forces
+  !Reset all forces and pressure
   FX = 0.0D0
   FY = 0.0D0
   FZ = 0.0D0
@@ -25,14 +25,12 @@ SUBROUTINE NEW_FORCE()
   PT13 = 0.0D0
   PT23 = 0.0D0
 
-  VNBOND_TOTAL = 0.0D0
-  VNBOND_ATOM = 0.0D0
-  VNBOND_BEAD = 0.0D0
-  VNBOND_MIX = 0.0D0
-  VBOND = 0.0D0
-  VANGLE = 0.0D0
-  VTOR       = 0.0D0
-  VOOP       = 0.0D0
+  !Reset potential energy measures
+  V_NB = 0.0
+  V_BOND = 0.0
+  V_ANGLE = 0.0
+  V_TORSION = 0.0
+  V_OOP = 0.0
 
 #ifdef TIMING_ON
   t_NONBONDED_atom(1) = OMP_GET_WTIME()
@@ -62,12 +60,6 @@ SUBROUTINE NEW_FORCE()
      FYNB(I) = FY(I)
      FZNB(I) = FZ(I)
   END DO
-
-!  WRITE(*,*) 'TOTAL ',VNBOND_TOTAL*conv
-!  WRITE(*,*) 'ATOM  ',VNBOND_ATOM*conv
-!  WRITE(*,*) 'MIXED ',VNBOND_MIX*conv
-!  WRITE(*,*) 'MIXED ',VNBOND_MIX2*conv
-!  WRITE(*,*) 'BEAD  ',VNBOND_BEAD*conv
 
 #ifdef TIMING_ON
   t_BONDED_FORCE(1) = OMP_GET_WTIME()

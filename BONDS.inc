@@ -3,7 +3,6 @@
   DO A=1,NBONDS(I)
 
      J = JBOND(I,A)
-
      !            IF ANY OF NEIGHBOUR OF ITH SITE HAS INDEX J < I THEN WE 
      !            SKIP THE BONDED INTERATION OF THIS GROUP AS IT HAS BEEN CALCULATED BEFORE 
      IF (J > I) THEN
@@ -37,7 +36,6 @@
         END IF
 
         !            LINEAR INTEPOLATION
-
         ALPHA=(RIJ-RBOND(TIJ,NI))/BINB(TIJ)
 
         FIJ = BOND_FORCE(TIJ,NI)*(1.0D0-ALPHA) &
@@ -46,7 +44,7 @@
         VIJ = BOND_POT(TIJ,NI)*(1.0D0-ALPHA) &
              + ALPHA*BOND_POT(TIJ,NI+1) 
 
-        VBOND = VBOND + VIJ
+        V_BOND(BOND_TYPE_LABEL(TIJ)) = V_BOND(BOND_TYPE_LABEL(TIJ)) + VIJ           
 
         FXIJ  = FIJ * RXIJ
         FYIJ  = FIJ * RYIJ

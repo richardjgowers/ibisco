@@ -220,6 +220,8 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
 !              print '(a,2x,a,2x,a)', date, time, zone
 !              print '(8i5))', values
 
+WRITE(*,*) 'Beginning simulation'
+
 CALL NEW_LOOP()
 
 

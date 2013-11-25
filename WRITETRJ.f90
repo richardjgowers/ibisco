@@ -71,7 +71,7 @@ SUBROUTINE WRITETRJ (TM)
        PT_12, PT_22,     &
        PT_13, PT_23, PT_33
 
-  PTOT = VNBOND_ATOM + VNBOND_BEAD + VBOND + VANGLE + VTOR
+  PTOT = SUM(V_BOND) + SUM(V_ANGLE) + SUM(V_TORSION) + SUM(V_OOP) + SUM(V_NB)
   ETOT = PTOT + EK
   T = EK * MKTEMP
   !	... energy and friends

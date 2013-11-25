@@ -1,3 +1,4 @@
+#include "ibi-preprocess.h"
 SUBROUTINE RDINTERACT()
   USE MODULEPARSING
   USE VAR
@@ -10,14 +11,17 @@ SUBROUTINE RDINTERACT()
   REAL*8		R
   CHARACTER(len=80) :: LINE2
   logical :: alloc=.true.
+  !Detailed energy breakdown variables
+  INTEGER :: HASH, TI, TJ, TK, TL, TI_TYPE, TJ_TYPE, TK_TYPE, TL_TYPE, WHAT_TYPE
+  INTEGER, DIMENSION(:), ALLOCATABLE :: BOND_I, BOND_J, ANGLE_I, ANGLE_J, ANGLE_K
+  INTEGER, DIMENSION(:), ALLOCATABLE :: TORSION_I, TORSION_J, TORSION_K, TORSION_L
+  INTEGER, DIMENSION(:), ALLOCATABLE :: OOP_I, OOP_J, OOP_K, OOP_L
 
   OPEN (4, IOSTAT=IOS, FILE='interaction', STATUS='OLD')
 
   IF (IOS.NE.0) THEN
-     WRITE (1,*)	&
-          ' **** FATAL ERROR! File interaction does not exist ****'
-     WRITE (*,*)	&
-          ' **** FATAL ERROR! File interaction does not exist ****'
+     WRITE (1,*)' **** FATAL ERROR! File interaction does not exist ****'
+     WRITE (*,*)' **** FATAL ERROR! File interaction does not exist ****'
      ISTOP=1
      RETURN
   END IF
@@ -49,27 +53,21 @@ SUBROUTINE RDINTERACT()
         WRITE(*,*) '             ******************************************************'
         RETURN 
      END IF
-     if(ibrdescr .eq. 0)then
-        READ (STRNGS(1),*) TYPEI
-        READ (STRNGS(2),*) LABEL(TYPEI)
-        READ (STRNGS(3),*) MASS0(TYPEI)
-        READ (STRNGS(4),*,iostat=ios) name_label(TYPEI)
-        if(ios .ne. 0)then
+     READ (STRNGS(1),*) TYPEI
+     READ (STRNGS(2),*) LABEL(TYPEI)
+     READ (STRNGS(3),*) MASS0(TYPEI)
+     READ (STRNGS(4),*,iostat=ios) name_label(TYPEI)
+     if(ios .ne. 0)then
+        call error_inter ()
+        ISTOP = 1
+        return
+     end if
+     if(name_label(TYPEI) .ne. 'A' .and. name_label(TYPEI) .ne. 'a')then
+        if(name_label(TYPEI) .ne. 'B' .and. name_label(TYPEI) .ne. 'b')then  
            call error_inter ()
            ISTOP = 1
            return
         end if
-        if(name_label(TYPEI) .ne. 'A' .and. name_label(TYPEI) .ne. 'a')then
-           if(name_label(TYPEI) .ne. 'B' .and. name_label(TYPEI) .ne. 'b')then  
-              call error_inter ()
-              ISTOP = 1
-              return
-           end if
-        end if
-     else
-        READ (STRNGS(1),*) TYPEI
-        READ (STRNGS(2),*) LABEL(TYPEI)
-        READ (STRNGS(3),*) MASS0(TYPEI)
      end if
      MASS(I) = MASS0(I)/NA/MASSSCALE!/1000.0
      INVMASS(I) = 1.0D0 / MASS(I)
@@ -107,6 +105,8 @@ SUBROUTINE RDINTERACT()
      ALLOCATE(BINB(NBTYPE))
      ALLOCATE(NDATB(NBTYPE))
      allocate(typeBond(nbtype))
+     ALLOCATE(BOND_I(NBTYPE), BOND_J(NBTYPE))
+
      typeBond = .false.
      BOND_FORCE = 0.0D0
      BOND_POT = 0.0D0
@@ -125,16 +125,17 @@ SUBROUTINE RDINTERACT()
         END IF
         READ (STRNGS(1),*) IB
         READ (STRNGS(2),*) JB
-        !write(*,*)STRNGS(1),STRNGS(2),STRNGS(3),STRNGS(4)
+
+        BOND_I(I) = IB
+        BOND_J(I) = JB
+
 
         IF(IBONDT(IB,JB).EQ.0) THEN
            IBONDT(IB,JB) = I
            IBONDT(JB,IB) = I
         ELSE
-           WRITE (1,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for bonds ****'
-           WRITE (*,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for bonds ****'
+           WRITE (1,*)'**** FATAL ERROR: Duplicate entry in interaction file for bonds ****'
+           WRITE (*,*)'**** FATAL ERROR: Duplicate entry in interaction file for bonds ****'
            ISTOP=1
            RETURN
         ENDIF
@@ -142,9 +143,7 @@ SUBROUTINE RDINTERACT()
         ! If you choose to use table for potentials INTERACT==1, else if you want to use gaussian function INTERACT==0
 
         IF (INTERACT == 1) THEN
-
            if(STRNGS(3) .eq. 'constraint')then
-
               !   If there are some constraints, it allocates the corresponding vectors        
               if(alloc)then
                  allocate(constr(nbtype))
@@ -159,10 +158,8 @@ SUBROUTINE RDINTERACT()
               shakeOK=.false.
               OPEN (11, IOSTAT=IOS, FILE=STRNGS(3), STATUS='OLD')
               IF (IOS.NE.0) THEN
-                 WRITE (1,*)	&
-                      ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
-                 WRITE (*,*)	&
-                      ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+                 WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+                 WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
                  ISTOP=1
                  RETURN
               END IF
@@ -183,20 +180,14 @@ SUBROUTINE RDINTERACT()
               END DO
 
               BINB(I) = RBOND(I,1)-RBOND(I,0)
-
            END IF
-
         end if
-
      END DO
-
      if(h .eq. NBTYPE)then
         NoBond=.true. ! if there are only constraints there is no need for the subroutine FPBOND.f90
      else
         NoBond=.false. 
      end if
-
-
   END IF !If NBTYPE gt 0
 
   !**********************************
@@ -222,6 +213,7 @@ SUBROUTINE RDINTERACT()
      ALLOCATE(BEND_POT(NATYPE, 0:MAXINPUT))
      ALLOCATE(BINA(NATYPE))
      ALLOCATE(NDATAN(NATYPE))
+     ALLOCATE(ANGLE_I(NATYPE), ANGLE_J(NATYPE), ANGLE_K(NATYPE))
 
      ALLOCATE(JANGLEIJK(NITEMS,10))
      ALLOCATE(KANGLEIJK(NITEMS,10))
@@ -253,6 +245,10 @@ SUBROUTINE RDINTERACT()
         READ (STRNGS(2),*) JA
         READ (STRNGS(3),*) KA
 
+        ANGLE_I(I) = IA
+        ANGLE_J(I) = JA
+        ANGLE_K(I) = KA
+
         IF(IANGT(IA,JA,KA).EQ.0) THEN
            IANGT(IA,JA,KA) = I
            IANGT(KA,JA,IA) = I
@@ -260,10 +256,8 @@ SUBROUTINE RDINTERACT()
            ATIANG(ITA+2) = JA
            ATIANG(ITA+3) = KA
         ELSE
-           WRITE (1,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for angles ****'
-           WRITE (*,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for angles ****'
+           WRITE (1,*)'**** FATAL ERROR: Duplicate entry in interaction file for angles ****'
+           WRITE (*,*)'**** FATAL ERROR: Duplicate entry in interaction file for angles ****'
            ISTOP=1
            RETURN
         ENDIF
@@ -272,11 +266,8 @@ SUBROUTINE RDINTERACT()
 
            OPEN (11, IOSTAT=IOS, FILE=STRNGS(4), STATUS='OLD')
            IF (IOS.NE.0) THEN
-              WRITE (1,*)	&
-                   ' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
-
-              WRITE (*,*)	&
-                   ' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
+              WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
+              WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
               ISTOP=1
               RETURN
            END IF
@@ -308,7 +299,6 @@ SUBROUTINE RDINTERACT()
            CLOSE (11)
            NDATAN(I) = K - 1
         END IF
-
      END DO
   END IF
   !**********************************
@@ -345,6 +335,8 @@ SUBROUTINE RDINTERACT()
      ALLOCATE(FLTORIJKL(NATOMS,10))
 
      ALLOCATE(ITORT(NTYPE,NTYPE,NTYPE,NTYPE))
+     ALLOCATE(TORSION_I(NTTYPE), TORSION_J(NTTYPE), TORSION_K(NTTYPE), TORSION_L(NTTYPE))
+
      ITORT = 0
      TOR_FORCE = 0.0D0
      TOR_POT = 0.0D0
@@ -365,16 +357,18 @@ SUBROUTINE RDINTERACT()
         READ (STRNGS(3),*) KT
         READ (STRNGS(4),*) LT
 
+        TORSION_I(I) = IT
+        TORSION_J(I) = JT
+        TORSION_K(I) = KT
+        TORSION_L(I) = LT
+
         IF(ITORT(IT,JT,KT,LT).EQ.0) THEN
            ITORT(IT,JT,KT,LT) = I
            ITORT(LT,KT,JT,IT) = I
         ELSE
-           WRITE (1,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for torsions  ****'
-           WRITE (*,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for torsions  ****'
-           WRITE (*,*)	&
-                IT,JT,KT,LT
+           WRITE (1,*)'**** FATAL ERROR: Duplicate entry in interaction file for torsions  ****'
+           WRITE (*,*)'**** FATAL ERROR: Duplicate entry in interaction file for torsions  ****'
+           WRITE (*,*)IT,JT,KT,LT
            ISTOP=1
            RETURN
         ENDIF
@@ -466,23 +460,17 @@ SUBROUTINE RDINTERACT()
            INBONDT(INB,JNB) = I
            INBONDT(JNB,INB) = I
         ELSE
-           WRITE (1,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for non-bonded interactions ****'
-           WRITE (*,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for non-bonded interactions ****'
-           WRITE (*,*)	&
-                IT,JT
+           WRITE (1,*)'**** FATAL ERROR: Duplicate entry in interaction file for non-bonded interactions ****'
+           WRITE (*,*)'**** FATAL ERROR: Duplicate entry in interaction file for non-bonded interactions ****'
+           WRITE (*,*)INB,JNB
            ISTOP=1
            RETURN
         ENDIF
 
         OPEN (11, IOSTAT=IOS, FILE=STRNGS(3), STATUS='OLD')
         IF (IOS.NE.0) THEN
-           WRITE (1,*)	&
-                ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
-
-           WRITE (*,*)	&
-                ' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+           WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+           WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
            ISTOP=1
            RETURN
         END IF
@@ -552,6 +540,8 @@ SUBROUTINE RDINTERACT()
      ALLOCATE(LOOPIJKL(NATOMS,20))
 
      ALLOCATE(IOOPT(NTYPE,NTYPE,NTYPE,NTYPE))
+     ALLOCATE(OOP_I(NOTYPE), OOP_J(NOTYPE), OOP_K(NOTYPE), OOP_L(NOTYPE))
+
      IOOPT = 0
      OOP_FORCE = 0.0D0
      OOP_POT = 0.0D0
@@ -571,6 +561,11 @@ SUBROUTINE RDINTERACT()
         READ (STRNGS(2),*) JT
         READ (STRNGS(3),*) KT
         READ (STRNGS(4),*) LT
+
+        OOP_I(I) = IT
+        OOP_J(I) = JT
+        OOP_K(I) = KT
+        OOP_L(I) = LT
 
         IF (I .EQ. NOTYPE) THEN
            READ (4, '(A80)',IOSTAT = iosIN) LINE2
@@ -594,27 +589,20 @@ SUBROUTINE RDINTERACT()
            !		IOOPT(IT,KT,JT,LT) = I
            !		IOOPT(IT,KT,LT,JT) = I
         ELSE
-           WRITE (1,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for out of planes  ****'
-           WRITE (*,*)	&
-                '**** FATAL ERROR: Duplicate entry in interaction file for  out of planes   ****'
-           WRITE (*,*)	&
-                IT,JT,KT,LT
+           WRITE (1,*)'**** FATAL ERROR: Duplicate entry in interaction file for out of planes  ****'
+           WRITE (*,*)'**** FATAL ERROR: Duplicate entry in interaction file for out of planes  ****'
+           WRITE (*,*)IT,JT,KT,LT
            ISTOP=1
            RETURN
         ENDIF
 
         OPEN (11, IOSTAT=IOS, FILE=STRNGS(5), STATUS='OLD')
         IF (IOS.NE.0) THEN
-           WRITE (1,*)	&
-                ' **** FATAL ERROR! File', STRNGS(5),' does not exist ****'
-
-           WRITE (*,*)	&
-                ' **** FATAL ERROR! File', STRNGS(5),' does not exist ****'
+           WRITE (1,*)' **** FATAL ERROR! File', STRNGS(5),' does not exist ****'
+           WRITE (*,*)' **** FATAL ERROR! File', STRNGS(5),' does not exist ****'
            ISTOP=1
            RETURN
         END IF
-
 
         READ(11,*,IOSTAT=IOS2)ANGLE_OOP(I,0), OOP_POT(I,0)
         READ(11,*,IOSTAT=IOS2)ANGLE_OOP(I,1), OOP_POT(I,1)
@@ -647,15 +635,114 @@ SUBROUTINE RDINTERACT()
         NDATO(I) = K - 1
         CLOSE (11)
 
-
      END DO
-
 
   END IF
 
   CLOSE (4)
+
+!Determine the type (all atomistic, all CG, hybrid) of
+!each bonded type, so it can be easily sorted later
+!BOND_TYPE_LABEL(TIJ) returns:
+! 1 - all atomistic
+! 2 - all CG
+! 3 - mixed
+  ALLOCATE(BOND_TYPE_LABEL(NBTYPE), ANGLE_TYPE_LABEL(NATYPE), &
+       TORSION_TYPE_LABEL(NTTYPE), OOP_TYPE_LABEL(NOTYPE))
+
+  DO I=1,NBTYPE
+     TI = BOND_I(I)
+     TJ = BOND_J(I)
+     TI_TYPE = WHAT_TYPE(NAME_LABEL(TI))
+     TJ_TYPE = WHAT_TYPE(NAME_LABEL(TJ))
+     HASH = TI_TYPE + TJ_TYPE
+     IF(HASH .EQ. 2) THEN
+        BOND_TYPE_LABEL(I) = 1
+     ELSE IF (HASH .EQ. 4) THEN
+        BOND_TYPE_LABEL(I) = 2
+     ELSE
+        BOND_TYPE_LABEL(I) = 3
+     END IF
+  END DO
+
+  DO I=1,NATYPE
+     TI = ANGLE_I(I)
+     TJ = ANGLE_J(I)
+     TK = ANGLE_K(I)
+     TI_TYPE = WHAT_TYPE(NAME_LABEL(TI))
+     TJ_TYPE = WHAT_TYPE(NAME_LABEL(TJ))
+     TK_TYPE = WHAT_TYPE(NAME_LABEL(TK))
+     HASH = TI_TYPE + TJ_TYPE + TK_TYPE !sum the types as a makeshift hash
+     IF (HASH .EQ. 3) THEN !minimum hash = all atoms
+        ANGLE_TYPE_LABEL(I) = 1
+     ELSE IF (HASH .EQ. 6) THEN !max mash = all beads
+        ANGLE_TYPE_LABEL(I) = 2
+     ELSE !else mixture of the two
+        ANGLE_TYPE_LABEL(I) = 3
+     END IF
+  END DO
+
+  DO I=1,NTTYPE
+     TI = TORSION_I(I)
+     TJ = TORSION_J(I)
+     TK = TORSION_K(I)
+     TL = TORSION_L(I)
+     TI_TYPE = WHAT_TYPE(NAME_LABEL(TI))
+     TJ_TYPE = WHAT_TYPE(NAME_LABEL(TJ))
+     TK_TYPE = WHAT_TYPE(NAME_LABEL(TK))
+     TL_TYPE = WHAT_TYPE(NAME_LABEL(TL))
+     HASH = TI_TYPE + TJ_TYPE + TK_TYPE + TL_TYPE
+     IF (HASH .EQ. 4) THEN
+        TORSION_TYPE_LABEL(I) = 1
+     ELSE IF(HASH .EQ. 8) THEN
+        TORSION_TYPE_LABEL(I) = 2
+     ELSE
+        TORSION_TYPE_LABEL(I) = 3
+     END IF
+  END DO
+
+  IF( NOTYPE .GT. 0) THEN
+     DO I=1,NOTYPE
+        TI = OOP_I(I)
+        TJ = OOP_J(I)
+        TK = OOP_K(I)
+        TL = OOP_L(I)
+        TI_TYPE = WHAT_TYPE(NAME_LABEL(TI))
+        TJ_TYPE = WHAT_TYPE(NAME_LABEL(TJ))
+        TK_TYPE = WHAT_TYPE(NAME_LABEL(TK))
+        TL_TYPE = WHAT_TYPE(NAME_LABEL(TL))
+        HASH = TI_TYPE + TJ_TYPE + TK_TYPE + TL_TYPE
+        IF (HASH .EQ. 4) THEN
+           OOP_TYPE_LABEL(I) = 1
+        ELSE IF(HASH .EQ. 8) THEN
+           OOP_TYPE_LABEL(I) = 2
+        ELSE
+           OOP_TYPE_LABEL(I) = 3
+        END IF
+     END DO
+  END IF
+
   RETURN
 END SUBROUTINE RDINTERACT
+
+INTEGER FUNCTION WHAT_TYPE(LABEL)
+  !Parses the label into 1 for A/a or 2 for B/b
+  CHARACTER :: LABEL
+
+  WHAT_TYPE = 100
+
+  IF(LABEL .EQ. 'A') THEN
+     WHAT_TYPE = 1
+  ELSE IF(LABEL .EQ. 'a') THEN
+     WHAT_TYPE = 1
+  ELSE IF(LABEL .EQ. 'B') THEN
+     WHAT_TYPE = 2
+  ELSE IF(LABEL .EQ. 'b') THEN
+     WHAT_TYPE = 2
+  END IF
+
+  RETURN
+END FUNCTION WHAT_TYPE
 
 subroutine error_inter
 

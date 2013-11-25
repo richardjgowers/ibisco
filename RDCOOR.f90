@@ -70,10 +70,8 @@ SUBROUTINE RDCOOR()
   ALLOCATE(NATM(NMOL))
   allocate(name_mol(nmol))
 
-  IF (IBRDESCR .EQ. 0) THEN !Hybrid RDCOOR
-     ALLOCATE(TYPE_LABEL(NITEMS))
-     TYPE_LABEL = 0
-  END IF
+  ALLOCATE(TYPE_LABEL(NITEMS))
+  TYPE_LABEL = 1 !All things are labelled as atoms by default
 
   DO I = 1, NMOL !101
 
@@ -99,7 +97,6 @@ SUBROUTINE RDCOOR()
         !READ (3,*)(JBOND(L,K),K=1,NBONDS(L))
 
         IF(IBRDESCR .eq. 0) THEN
-
            IF(name_label(itype(l)) .EQ. 'A' .OR. name_label(itype(l)) .EQ. 'a') THEN
               TYPE_LABEL(L) = 1	
            ELSE IF (name_label(itype(l)) .EQ. 'B' .OR. name_label(itype(l)) .EQ. 'b') THEN
@@ -112,7 +109,6 @@ SUBROUTINE RDCOOR()
               ISTOP = 1			
               RETURN			
            END IF
-
         END IF
 
         VX(L) = VX(L)*1.e3 / VSCALE
