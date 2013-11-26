@@ -26,7 +26,6 @@ SUBROUTINE SHIFT()
   ! INT(funzione parte intera) is an intrinsic function that reads a real, cuts the decimal 
   ! part of the number leaving only its integer part (the final format is real)
 
-  ! t1 = omp_get_wtime()
   !$OMP PARALLEL DO SCHEDULE(STATIC,1) NUM_THREADS(7) DEFAULT(NONE) &
   !$OMP& SHARED(NATOMS,SX,SY,SZ,BOXX2,BOXY2,BOXZ2,RX,RY,RZ)&
   !$OMP& private(I,SPX,SPY,SPZ)
@@ -54,9 +53,5 @@ SUBROUTINE SHIFT()
   END DO
   !$OMP END PARALLEL DO
 
-  !  t2=omp_get_wtime()
-  !  tick=omp_get_wtick()
-
-  !        write(4000,*) 'Time elapsed ',t2 - t1,' Precision: ',tick
   RETURN
 END SUBROUTINE SHIFT

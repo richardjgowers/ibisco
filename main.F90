@@ -13,7 +13,7 @@
 
     INTEGER :: I
 
-    WRITE(*,*) 'IBIsCO TIME! Revision 65'
+    WRITE(*,*) 'IBIsCO TIME! Revision 70'
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
