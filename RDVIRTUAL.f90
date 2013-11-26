@@ -28,7 +28,6 @@ READ(10,*)
 
 !Variables
 !NVIRTA Number of virtual sites
-ALLOCATE(VIRTRX(NVIRTA),VIRTRY(NVIRTA),VIRTRZ(NVIRTA)) !Position of the virtual site, either a COM or an atom
 ALLOCATE(VIRT_NUMATOMS(NTYPE)) !Number of atoms in different virtual site types
 ALLOCATE(VIRT_MASS(NTYPE), VIRT_INVMASS(NTYPE)) !Mass of VS
 ALLOCATE(VIRT_MASSCOEFF(NTYPE,NTYPE)) !Masscoefficient for atom in VS. Usage VIRT_MASSCOEFF(virt type, atom type)

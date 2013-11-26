@@ -9,7 +9,7 @@
 !     FXiii,  FYiii,  FZiii  = components of the force at time i+2
 !     FXiiii, FYiiii, FZiiii = components of the force at time i+3     
 !
-	!	*********************************************************************************************
+!	*********************************************************************************************
 SUBROUTINE ALLOCATEVAR ()
 
   USE VAR
@@ -18,7 +18,7 @@ SUBROUTINE ALLOCATEVAR ()
 
   INTEGER :: MAXBONDS = 4 !Maximum number of bonds an atom can have
 
-	!       ******************************************************************
+  !       ******************************************************************
 
   !	PROGRAM CONSTANTS
   FAC = DT / TAUT
@@ -44,14 +44,14 @@ SUBROUTINE ALLOCATEVAR ()
   AV_BOX = 0.0
   AV_DENS = 0.0
 
-!            ALLOCATE(RX(NATOMS)) !Allocated in ALLOCATEVAR2 instead
-!            ALLOCATE(RY(NATOMS))
-!            ALLOCATE(RZ(NATOMS))
+  !            ALLOCATE(RX(NATOMS)) !Allocated in ALLOCATEVAR2 instead
+  !            ALLOCATE(RY(NATOMS))
+  !            ALLOCATE(RZ(NATOMS))
 
-!Force and position variables
-!
-!F and R both include the virtual sites appended on the end (NITEMS = NATOMS + NVIRTA)
-!ITYPE also includes NVIRTA
+  !Force and position variables
+  !
+  !F and R both include the virtual sites appended on the end (NITEMS = NATOMS + NVIRTA)
+  !ITYPE also includes NVIRTA
 
   ALLOCATE(SX(NITEMS), SY(NITEMS), SZ(NITEMS) )
   ALLOCATE(VX(NATOMS), VY(NATOMS), VZ(NATOMS) )
@@ -59,7 +59,6 @@ SUBROUTINE ALLOCATEVAR ()
   ALLOCATE(FX(NITEMS), FY(NITEMS), FZ(NITEMS) )
   ALLOCATE(RX(NITEMS), RY(NITEMS), RZ(NITEMS) )
   ALLOCATE(FXNB(NATOMS), FYNB(NATOMS), FZNB(NATOMS) )
-  ALLOCATE(VFXNB(NATOMS), VFYNB(NATOMS), VFZNB(NATOMS) )
   VFXNB = 0
   VFYNB = 0
   VFZNB = 0
@@ -83,7 +82,7 @@ SUBROUTINE ALLOCATEVAR ()
   ALLOCATE(FNIJKL(NITEMS))
   ALLOCATE(NOOPIJKL(NITEMS))
   ALLOCATE(JBOND(NITEMS,MAXBONDS))
-    
+
   IF (DPDINPUT.EQ.1.OR.LAINPUT.EQ.1) THEN
      ALLOCATE(DPDPOINT(NATOMS+1))
      ALLOCATE(DPDLIST(NATOMS*50))
@@ -91,48 +90,42 @@ SUBROUTINE ALLOCATEVAR ()
 
   ALLOCATE(SP(LIMAVP))
 
-!###############################################################################
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| Allocate some variables for Hybrid systems and MTS |
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  !###############################################################################
+  !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  !| Allocate some variables for Hybrid systems and MTS |
+  !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-IF (IBRDESCR .eq. 0) THEN
+  IF (IBRDESCR .eq. 0) THEN
 
-    if( MTS_CHECK .EQ. 0)then
-       ! VECTOR FOR THE Multiple Time Step
-       ALLOCATE(FXi0(NATOMS))
-       ALLOCATE(FYi0(NATOMS))
-       ALLOCATE(FZi0(NATOMS))
-       ALLOCATE(FXi1(NATOMS))
-       ALLOCATE(FYi1(NATOMS))
-       ALLOCATE(FZi1(NATOMS))
-       ALLOCATE(FXii(NATOMS))
-       ALLOCATE(FYii(NATOMS))
-       ALLOCATE(FZii(NATOMS))
-       ALLOCATE(FXiii(NATOMS))
-       ALLOCATE(FYiii(NATOMS))
-       ALLOCATE(FZiii(NATOMS))
-       if(type_mts .eq. 4)then
-          ALLOCATE(FXiiii(NATOMS))
-          ALLOCATE(FYiiii(NATOMS))
-          ALLOCATE(FZiiii(NATOMS))
-       elseif(type_mts .eq. 5)then
-          ALLOCATE(FXiiii(NATOMS))
-          ALLOCATE(FYiiii(NATOMS))
-          ALLOCATE(FZiiii(NATOMS))
-          ALLOCATE(FXv(NATOMS))
-          ALLOCATE(FYv(NATOMS))
-          ALLOCATE(FZv(NATOMS))
-       endif
-    end if
-END IF
+     if( MTS_CHECK .EQ. 0)then
+        ! VECTOR FOR THE Multiple Time Step
+        ALLOCATE(FXi0(NATOMS))
+        ALLOCATE(FYi0(NATOMS))
+        ALLOCATE(FZi0(NATOMS))
+        ALLOCATE(FXi1(NATOMS))
+        ALLOCATE(FYi1(NATOMS))
+        ALLOCATE(FZi1(NATOMS))
+        ALLOCATE(FXii(NATOMS))
+        ALLOCATE(FYii(NATOMS))
+        ALLOCATE(FZii(NATOMS))
+        ALLOCATE(FXiii(NATOMS))
+        ALLOCATE(FYiii(NATOMS))
+        ALLOCATE(FZiii(NATOMS))
+        if(type_mts .eq. 4)then
+           ALLOCATE(FXiiii(NATOMS))
+           ALLOCATE(FYiiii(NATOMS))
+           ALLOCATE(FZiiii(NATOMS))
+        elseif(type_mts .eq. 5)then
+           ALLOCATE(FXiiii(NATOMS))
+           ALLOCATE(FYiiii(NATOMS))
+           ALLOCATE(FZiiii(NATOMS))
+           ALLOCATE(FXv(NATOMS))
+           ALLOCATE(FYv(NATOMS))
+           ALLOCATE(FZv(NATOMS))
+        endif
+     end if
+  END IF
 
-           
+  RETURN
 
-       
-      ALLOCATE (VPX(NATOMS))
-      ALLOCATE (Z_POSITION(NATOMS))
-
-      RETURN
-
-    END SUBROUTINE ALLOCATEVAR
+END SUBROUTINE ALLOCATEVAR
