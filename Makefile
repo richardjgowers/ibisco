@@ -49,8 +49,8 @@ F90 = gfortran
 #LDFLAGS = -g -pg -fbounds-check -fbacktrace -O0
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
 #Fast gfortran options
-F90FLAGS = -O2 #-fopenmp
-LDFLAGS = -O2 #-fopenmp
+F90FLAGS = -O2 -fopenmp
+LDFLAGS = -O2 -fopenmp
 #F90FLAGS = -g -Wall -Wextra -Wconversion
 #LIBS= -L/home/nicodemo/bin/lib -lmpack1  
 # l'opzione -c compila e assembla ma non linka
