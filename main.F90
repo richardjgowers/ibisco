@@ -13,7 +13,7 @@
 
     INTEGER :: I
 
-    WRITE(*,*) 'IBIsCO TIME! Revision 70'
+    WRITE(*,*) 'IBIsCO TIME! Revision 77'
     OPEN ( 115 , FILE = 's-md.out')
     OPEN ( 116 , FILE = 's-md.tp')
     OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
@@ -21,7 +21,7 @@
     OPEN ( 44  , FILE = 'timing.out')
 #endif
 
-    WRITE( 115, *)'IBIsCO Revision', revno
+    WRITE( 115, *)'IBIsCO Revision 77'
     OPEN (1, FILE='ERROR')
     WRITE(*,*)
     ISTOP = 0
@@ -172,8 +172,6 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
 !       CALL ANGLETABLE ()
 !    END IF
 
-
-
       CALL MAPS (MAP_ATOM,MAPSIZE_ATOM &
            , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
       CALL LINKS (HEAD_ATOM,MAXNUMCELL_ATOM,ATOM,NUMATOMS,CELL_ATOM &
@@ -189,6 +187,7 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
       CALL UPDATE_NEIGHBOURLIST()
 
 !     WRITE THE TOPOLOGY FILE 
+      CALL WRITEPSF()
 !      CALL WRITETP () FIX THIS
 
 !      call analysis () FIX THIS
@@ -196,33 +195,13 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
       !!*************************************************
       !*********** START OF MAIN LOOP*****************
       !*************************************************
-       
-!        call cpu_time ( t1 )
-!              call date_and_time(date,time,zone,values)
-!              call date_and_time(DATE=date,ZONE=zone)
-!              call date_and_time(TIME=time)
-!              call date_and_time(VALUES=values)
-!              print '(a,2x,a,2x,a)', date, time, zone
-!              print '(8i5))', values
 
+WRITE(*,*)
 WRITE(*,*) 'Beginning simulation'
+WRITE(*,*)
 
 CALL NEW_LOOP()
 
-
-!      total = etime(elapsed)
-!      write (*,*) 'End: total=', total, ' user=', elapsed(1),' system=', elapsed(2)
-
-!              call date_and_time(date,time,zone,values)
-!              call date_and_time(DATE=date,ZONE=zone)
-!              call date_and_time(TIME=time)
-!              call date_and_time(VALUES=values)
-!              print '(a,2x,a,2x,a)', date, time, zone
-!              print '(8i5))', values
-
-
-!        call cpu_time ( t2 )
-!        write ( *, * ) 'Elapsed CPU time = ', t2 - t1
 
       !*************************************************
       !***********  END OF MAIN LOOP********************

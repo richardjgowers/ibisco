@@ -65,16 +65,16 @@ SUBROUTINE RDCOOR()
      DO J = 1, NATM(I)  !102
         L = L + 1
         IF ( NATOMS .lt. L ) THEN
-           WRITE (1,*)	&
-                ' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
-           WRITE (*,*)	&
-                ' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
+           WRITE (1,*)' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
+           WRITE (*,*)' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
            ISTOP=1
            RETURN
         END IF
         READ (3,*) LL,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
         READ (3,*) VX(L),VY(L),VZ(L),(JBOND(L,K),K=1,NBONDS(L))
         !READ (3,*)(JBOND(L,K),K=1,NBONDS(L))
+
+        MOL(L) = I !Which molecule atom L belongs to
 
         IF(IBRDESCR .eq. 0) THEN
            IF(name_label(itype(l)) .EQ. 'A' .OR. name_label(itype(l)) .EQ. 'a') THEN
@@ -99,10 +99,8 @@ SUBROUTINE RDCOOR()
   END DO !101     CONTINUE
 
   IF ( NATOMS /= L ) THEN
-     WRITE (1,*)	&
-          ' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
-     WRITE (*,*)	&
-          ' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
+     WRITE (1,*)' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
+     WRITE (*,*)' **** FATAL ERROR! No. Atoms in coordinate does not equal to NATOMS ****'
      ISTOP=1
      RETURN
   END IF

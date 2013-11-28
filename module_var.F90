@@ -137,7 +137,8 @@ INTEGER, POINTER :: VIRT_NUMATOMS(:), VIRT_CENTER(:), VIRT_VS_IND(:), VIRT_ATM_I
 REAL(KIND=RKIND), POINTER :: VIRT_MASS(:), VIRT_INVMASS(:), VIRT_MASSCOEFF(:,:)
 real(kind=rkind) :: FCUTA,FCUTB
 character(len=18) :: name_file_virt
-character(len=7),pointer  :: name_mol(:) 
+character(len=7),pointer  :: name_mol(:)
+INTEGER, ALLOCATABLE :: MOL(:)
 character(len=2),dimension(18) :: name_label='NU'  
 INTEGER :: NUMATOMS, NUMBEADS
 INTEGER, POINTER :: ATOM(:), BEAD(:)
@@ -171,7 +172,7 @@ logical,pointer :: typeBond(:)
 
 !***************************************
 
- CHARACTER(80), POINTER :: LABEL(:)
+ CHARACTER(6), POINTER :: LABEL(:)
  CHARACTER(72) :: TITLE, NEIGHBORLIST
  CHARACTER(len=2):: TYn
  CHARACTER(1) day(9)
