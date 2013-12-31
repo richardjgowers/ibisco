@@ -1,4 +1,3 @@
-#include "ibi-preprocess.h"
 SUBROUTINE RDINTERACT()
   USE MODULEPARSING
   USE VAR

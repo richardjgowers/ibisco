@@ -75,6 +75,9 @@ SUBROUTINE AVERAGE (TM)
           L = L + 1
           WRITE (112,9040) L,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
           SELECT CASE (NBONDS(L))
+          CASE(0)
+             WRITE(112,9090)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3
+9090         FORMAT (3(F16.10,1X))
           CASE(1)
              WRITE(112,9050)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3,(JBOND(L,KK),KK=1,NBONDS(L))
 9050         FORMAT (3(F16.10,1X), I5)
