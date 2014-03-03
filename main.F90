@@ -11,7 +11,7 @@
 
     IMPLICIT NONE
 
-    INTEGER :: I
+    INTEGER :: I, A
 
     WRITE(*,*) 'IBIsCO TIME! Revision 77'
     OPEN ( 115 , FILE = 's-md.out')
@@ -89,14 +89,6 @@
     TFAC = SQRT(TIN) !!double precision
     gamma = 0.5D0*sigma**2/TIN
 
-    !Decide which type of neighbour list to use
-!    IF ((BOXX <= 3.0D0*RLIST).OR.(BOXY <= 3.0D0*RLIST).OR. &
-!         (BOXZ <= 3.0D0*RLIST)) THEN
-!       NEIGHBORLIST = 'NEIGHBOR_NOLIST'
-!    ELSE
-!       NEIGHBORLIST = 'NEIGHBOR_WITHLIST'
-!    END IF
-
     !MAKE TABLE FORCES
     CALL FTABLE ()
 
@@ -107,13 +99,33 @@
     END IF
 
     !     CALCULATE THE INITIAL TEMPERATURE AND KINETIC ENERGY
-    DO I = 1, NATOMS
-       EK = EK + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+    EK(1) = 0.0
+    EK(2) = 0.0
+    WRITE(*,*) NUMATOMS, NUMBEADS
+    MKTEMP_ATOM = 2.0D0 / REAL(3.0D0 * (NUMATOMS - 1))
+    MKTEMP_BEAD = 2.0D0 / REAL(3.0D0 * (NUMBEADS - 1))
+    DO A = 1, NUMATOMS
+       I = ATOM(A)
+       EK(1) = EK(1) + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
        TOTMASS = TOTMASS + MASS(ITYPE(I))
     END DO
 
-    EK = 0.5D0 * EK	
-    TEMP = EK * MKTEMP	
+    DO A=1,NUMBEADS
+       I = BEAD(A)
+       EK(2) = EK(2) + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+       TOTMASS = TOTMASS + MASS(ITYPE(I))
+    END DO
+
+    WRITE(*,*) MKTEMP, MKTEMP_ATOM, MKTEMP_BEAD
+    WRITE(*,*) EK(1), EK(2)
+
+    EK(1) = 0.5D0 * EK(1)
+    EK(2) = 0.5D0 * EK(2)
+    TEMP = SUM(EK) * MKTEMP	
+    TEMP_ATOM = EK(1) * MKTEMP_ATOM
+    TEMP_BEAD = EK(2) * MKTEMP_BEAD
+
+    WRITE(*,*) TEMP*TEMPSCALE, TEMP_ATOM*TEMPSCALE, TEMP_BEAD*TEMPSCALE
 
 !     CREATE LISTS OF BONDS, ANGLES AND TORSIONS
     CALL SETLIS
@@ -161,6 +173,10 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
        CALL RDVIRTBONDS()
        IF(ISTOP .EQ. 1) STOP 'Failed in RDVIRTBONDS'
     END IF
+
+#ifdef REPORT_EXCLUSIONS
+    CALL REPORT_EXCLUSIONS() ! Reports all nonbonded exclusions
+#endif
 
 !     IF YOU WANT TO USE GUSSIAN FUNCTION FOR BOND AND BEND INTERACTIONS,
 !     READ GUSSIAN FILE AND MAKE TABLE FOR POTENTIAL AND FORCE

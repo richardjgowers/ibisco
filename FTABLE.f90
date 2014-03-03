@@ -61,13 +61,13 @@ SUBROUTINE FTABLE ()
      NBOND_FORCE(NDATNB(I),I) = 0.0D0
 
      !Shift forces towards end of cutoff to make smooth
-     RAMP_SIZE = 0.1 !Length of potential to shift
-     N_ENTRY = INT(RAMP_SIZE/BINNB(I)) !Number of entries to modify at tail of this table
-     DO J=1,N_ENTRY
-        SCALE = REAL(J)/N_ENTRY !Amount to shift potentials towards zero by
-        E = NDATNB(I) - (N_ENTRY - J) !Entry to modify
-        NBOND_FORCE(E,I) = NBOND_FORCE(E,I) - NBOND_FORCE(E,I)*SCALE
-     END DO
+!     RAMP_SIZE = 0.1 !Length of potential to shift
+!     N_ENTRY = INT(RAMP_SIZE/BINNB(I)) !Number of entries to modify at tail of this table
+!     DO J=1,N_ENTRY
+!        SCALE = REAL(J)/N_ENTRY !Amount to shift potentials towards zero by
+!        E = NDATNB(I) - (N_ENTRY - J) !Entry to modify
+!        NBOND_FORCE(E,I) = NBOND_FORCE(E,I) - NBOND_FORCE(E,I)*SCALE
+!     END DO
   END DO
 
   !	MAKE TABLE FORCE FOR IMPROPER TORSION

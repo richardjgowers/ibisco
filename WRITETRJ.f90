@@ -72,10 +72,10 @@ SUBROUTINE WRITETRJ (TM)
        PT_13, PT_23, PT_33
 
   PTOT = SUM(V_BOND) + SUM(V_ANGLE) + SUM(V_TORSION) + SUM(V_OOP) + SUM(V_NB)
-  ETOT = PTOT + EK
-  T = EK * MKTEMP
+  ETOT = PTOT + SUM(EK)
+  T = SUM(EK) * MKTEMP
   !	... energy and friends
-  WRITE(113) 6, ETOT*CONV, PTOT*CONV, EK*CONV, T, 0.0D00, 0.0D00
+  WRITE(113) 6, ETOT*CONV, PTOT*CONV, SUM(EK)*CONV, T, 0.0D00, 0.0D00
 
   !	... coordinates (atom positions)
   WRITE(113)NSX

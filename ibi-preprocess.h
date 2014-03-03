@@ -6,5 +6,7 @@
 
 /* #define TIMING_ON */
 
-/* #define SEPARATE_THERMOMETER */ /* Reports the temperature of beads and atoms separately (every step) */
+/* #define REPORT_EXCLUSIONS */ /* Report which atoms are forbidden from nonbonded interactions with eachother  */
+
+#define SEPARATE_THERMOMETER /* Reports the temperature of beads and atoms separately (every step) */
 

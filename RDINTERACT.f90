@@ -483,6 +483,7 @@ SUBROUTINE RDINTERACT()
 
         IF(RNBOND(0,I) /= 0.0) THEN
            RNBOND(0,I) = 0.0	
+           WRITE(*,*) ' Nonbonded file ', I, ' doesnt begin with 0'
            RNBOND(2,I) = RNBOND(1,I)
            NBOND_POT(2,I) = NBOND_POT(1,I)
            RNBOND(1,I) = BINNB(I)
@@ -494,9 +495,8 @@ SUBROUTINE RDINTERACT()
 
         DO WHILE (.TRUE.)
            READ(11,*,IOSTAT=IOS2)RNBOND(K,I), NBOND_POT(K,I)
-           IF (RNBOND(K,I) .NE. RNBOND(K-1,I) .AND. IOS2 == 0) THEN
+           IF (IOS2 .EQ. 0) THEN
               NBOND_POT(K,I) = NBOND_POT(K,I)*1000.0/ NA / ESCALE
-              IF (IOS2 /= 0) EXIT
               K = K + 1 
            ELSE
               EXIT

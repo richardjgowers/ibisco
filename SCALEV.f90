@@ -1,32 +1,29 @@
+SUBROUTINE SCALEV ()
+  USE VAR
 
-	SUBROUTINE SCALEV ()
-	USE VAR
-	
-	IMPLICIT	NONE
-        REAL*8        FACTOR, T
-	INTEGER		I
-!       *******************************************************************
+  IMPLICIT NONE
 
-	EK = 0.0D0
-        DO 5 I = 1, NATOMS
+  REAL*8 :: FACTOR, T
+  INTEGER ::I
 
-           EK = EK + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+  EK(1) = 0.0D0
+  DO  I = 1, NATOMS
 
-5       CONTINUE
+     EK(1) = EK(1) + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
 
-        EK = 0.5D0 * EK
-	T = EK *  MKTEMP
-	FACTOR = TIN / T
+  END DO
 
-	DO 100 I = 1, NATOMS
+  EK(1) = 0.5D0 * EK(1)
+  T = EK(1) *  MKTEMP
+  FACTOR = TIN / T
 
-		CM = MASS(ITYPE(I))
-		VX(I) = SQRT(FACTOR) * VX(I)
-		VY(I) = SQRT(FACTOR) * VY(I)
-		VZ(I) = SQRT(FACTOR) * VZ(I)
-100	CONTINUE
+  DO  I = 1, NATOMS
+     VX(I) = SQRT(FACTOR) * VX(I)
+     VY(I) = SQRT(FACTOR) * VY(I)
+     VZ(I) = SQRT(FACTOR) * VZ(I)
+  END DO
 
-	RETURN
-	END
+  RETURN
+END SUBROUTINE SCALEV
 
 

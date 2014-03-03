@@ -12,8 +12,9 @@ SUBROUTINE AVERAGE (TM)
 
   ! Calculate a few totals, why not
   POT_E = SUM(V_NB) + SUM(V_BOND) + SUM(V_ANGLE) + SUM(V_TORSION) + SUM(V_OOP)
-  KIN_E = EK
-  TOT_E = KIN_E + POT_E
+  KIN_E(1) = EK(1)
+  KIN_E(2) = EK(2)
+  TOT_E = SUM(KIN_E) + POT_E
   
   PRES(1) = (PT11 + PT22 + PT33)/3.0
   PRES(2) = PT11

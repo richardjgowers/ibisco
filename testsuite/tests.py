@@ -83,7 +83,7 @@ class AtomisticTest(TestCase, reference_atomistic_data):
     def test_short_times(self):
         self.trz.rewind()
         assert_almost_equal(self.ref_coords_short, self.universe.atoms.coordinates()[0:3], self.prec)
-        assert_almost_equal(self.ref_velos_short,  self.universe.atoms.velocities()[0:3], self.prec)
+        assert_almost_equal(self.ref_velos_short,  self.universe.atoms.velocities[0:3], self.prec)
         assert_almost_equal(self.ref_box_short,    self.universe.dimensions, self.prec)
         
     def test_long_times(self):
@@ -92,7 +92,7 @@ class AtomisticTest(TestCase, reference_atomistic_data):
         self.trz.next()
         self.trz.next()
         assert_almost_equal(self.ref_coords_long, self.universe.atoms.coordinates()[0:3], self.prec)
-        assert_almost_equal(self.ref_velos_long,  self.universe.atoms.velocities()[0:3], self.prec)
+        assert_almost_equal(self.ref_velos_long,  self.universe.atoms.velocities[0:3], self.prec)
         assert_almost_equal(self.ref_box_long,    self.universe.dimensions, self.prec)
 
 class HybridTest(TestCase, reference_hybrid_data):
@@ -110,7 +110,7 @@ class HybridTest(TestCase, reference_hybrid_data):
     def test_short_times(self): #test after 1 step
         self.trz.rewind()
         assert_almost_equal(self.ref_coords_short, self.universe.atoms.coordinates()[0:3], self.prec)
-        assert_almost_equal(self.ref_velos_short,  self.universe.atoms.velocities()[0:3], self.prec)
+        assert_almost_equal(self.ref_velos_short,  self.universe.atoms.velocities[0:3], self.prec)
         assert_almost_equal(self.ref_box_short,    self.universe.dimensions, self.prec)
 
     def test_long_times(self): #test after many steps to catch different errors
@@ -119,5 +119,5 @@ class HybridTest(TestCase, reference_hybrid_data):
         self.trz.next()
         self.trz.next()
         assert_almost_equal(self.ref_coords_long, self.universe.atoms.coordinates()[0:3], self.prec)
-        assert_almost_equal(self.ref_velos_long,  self.universe.atoms.velocities()[0:3], self.prec)
+        assert_almost_equal(self.ref_velos_long,  self.universe.atoms.velocities[0:3], self.prec)
         assert_almost_equal(self.ref_box_long,    self.universe.dimensions, self.prec)

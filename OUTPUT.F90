@@ -17,7 +17,7 @@ SUBROUTINE OUTPUT (I)
 
   TREAL = I * DT * TIMESCALE * 1.0D+12 + INITIME !ps
 
-  WRITE(*,*) I, TEMP*TEMPSCALE ,PRES(1)*PSCALE
+  WRITE(*,*) I, TEMP*TEMPSCALE ,TEMP_ATOM*TEMPSCALE, TEMP_BEAD*TEMPSCALE, PRES(1)*PSCALE
 
 #ifdef DEBUG_OOP
   VOOPP_ring = VOOP_ring *CONV
@@ -30,7 +30,9 @@ SUBROUTINE OUTPUT (I)
   WRITE (115, 100)'Simulated_time:           ', TREAL
   WRITE (115, 100)'Total_energy:             ', TOT_E*CONV, AV_TOT_E*AV_CONV
   WRITE (115, 100)'Potential_energy:         ', POT_E*CONV, AV_POT_E*AV_CONV
-  WRITE (115, 100)'Kinetic_energy:           ', KIN_E*CONV, AV_KIN_E*AV_CONV
+  WRITE (115, 100)'Kinetic_energy:           ', SUM(KIN_E)*CONV, SUM(AV_KIN_E)*AV_CONV
+  WRITE (115, 100)'      Kinetic_energy_atom:', KIN_E(1)*CONV, AV_KIN_E(1)*CONV
+  WRITE (115, 100)'      Kinetic_energy_bead:', KIN_E(2)*CONV, AV_KIN_E(2)*CONV
   WRITE (115, 100)'Tot._Nonbonded_energy:         ', SUM(V_NB)*CONV, SUM(AV_V_NB)*AV_CONV 
   WRITE (115, 100)'      Nonbonded_Atom_energy:  ', V_NB(1)*CONV, AV_V_NB(1)*AV_CONV
   WRITE (115, 100)'      Nonbonded_Beads_energy: ', V_NB(2)*CONV, AV_V_NB(2)*AV_CONV
