@@ -1,4 +1,8 @@
+#ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
+#endif
+!> Calculates the nonbonded force in a passed particle list
+!!
 
 SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
 
@@ -7,8 +11,14 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
 
   IMPLICIT NONE
 
-  INTEGER, INTENT(IN) :: N, INDEX_LIST(N), MAXNAB, LIST(MAXNAB,N)
-  REAL(KIND=RKIND), INTENT(IN) :: RCUT, RCUTSQ
+  INTEGER, INTENT(IN) :: N !< Size of the particle list you have passed to it
+  INTEGER, INTENT(IN) :: INDEX_LIST(N) !< Index containing the address in master array of 
+                                       !!each particle in this group
+  INTEGER, INTENT(IN) :: MAXNAB !< The maximum number of neighbours that a particle could ever have
+  INTEGER, INTENT(IN) :: LIST(MAXNAB,N) !< 2d array, first dimension goes over all particles, second dimension contains neighbours for 
+!!             this particle
+  REAL(KIND=RKIND), INTENT(IN) :: RCUT !< Cutoff radius for nonbonded interactions
+  REAL(KIND=RKIND), INTENT(IN) :: RCUTSQ !< Cutoff radius squared
   INTEGER :: A, B, I, J, TI, TJ, TIJ
   INTEGER :: JNAB
   INTEGER :: NI

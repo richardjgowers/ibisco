@@ -1,7 +1,10 @@
-! Debugging
-!#define DEBUG_OOP .TRUE.! Select to include the debugging stuff of the OOP
+#ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
-!    *******************************************************************
+#endif
+
+  !> IBIsCO MD program
+  !! line continuation test
+
 
   PROGRAM IBISCO
 
@@ -11,7 +14,7 @@
 
     IMPLICIT NONE
 
-    INTEGER :: I, A
+    INTEGER :: I, A !< Used as counter variables
 
     WRITE(*,*) 'IBIsCO TIME! Revision 77'
     OPEN ( 115 , FILE = 's-md.out')

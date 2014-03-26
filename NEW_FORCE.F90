@@ -1,4 +1,6 @@
+#ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
+#endif
 
 SUBROUTINE NEW_FORCE()
 
