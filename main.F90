@@ -2,9 +2,9 @@
 #include "ibi-preprocess.h"
 #endif
 
-  !> IBIsCO MD program
-  !! line continuation test
-
+  !> @brief IBIsCO MD program
+  !!
+  !> @details Calls UNIT()
 
   PROGRAM IBISCO
 
@@ -30,7 +30,7 @@
     ISTOP = 0
 
     !DEFINE REDUCED UNITS
-    CALL UNIT ()
+    CALL UNIT () !> \file UNIT.f90
 
     !Read control parameters
     NVIRTA = 0 !By default no virtual sites

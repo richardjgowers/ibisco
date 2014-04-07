@@ -3,7 +3,7 @@
 #endif
 
 !> @brief Calculate all bonded forces
-!> @detail Contains, bonds, angles, torsions and out of planes torsions
+!> @details Contains, bonds, angles, torsions and out of planes torsions
 !> @note Is parallelised using OpenMP
 
 SUBROUTINE BONDED_FORCE()

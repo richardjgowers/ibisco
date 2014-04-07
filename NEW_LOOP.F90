@@ -2,6 +2,18 @@
 #include "ibi-preprocess.h"
 #endif
 !> @brief The molecular dynamics loop
+!> @details Called from IBIsCO()
+!> @details Calls a series of subroutines to perform the MD loop \n
+!!          SHIFT() \n
+!!          VIRTUAL_DEF() If using hybrid system \n
+!!          UPDATE_NEIGHBOURLIST() If required (updates every n steps) \n
+!!          NEW_FORCE() Main calculation step \n
+!!          MOMENTUM() If required \n
+!!          SCALEBP() If NPT \n
+!!          AVERAGE() Keeps track of average physical values for reporting \n
+!!          WRITETRJ() Writes the trajectory \n
+!!          OUTPUT() Writes the s-md.out file \n
+!!          TIMING() If compiled using TIMING flag, reports on time in each subroutine \n
 
 SUBROUTINE NEW_LOOP()
 

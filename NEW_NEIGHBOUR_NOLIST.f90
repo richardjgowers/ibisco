@@ -1,24 +1,28 @@
-SUBROUTINE NEW_NEIGHBOUR_NOLIST(INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
-     , MAP, SIZEMAP, HEAD, MAXNUMCELL)
+!> @brief Neighbour list creation without linked cell lists, generally the slowest option
+!> @note Not currently used, kept in for debugging purposes
+!> @todo Parallelise this if it's ever used
+SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
 
   USE VAR
 
-  INTEGER, INTENT(IN) :: N, MAXNUMCELL, MAXNAB
-  INTEGER, INTENT(IN) :: INDEX_LIST(N), CELL(N), LCLIST(N), SIZEMAP, MAP(SIZEMAP), HEAD(MAXNUMCELL)
-  INTEGER, INTENT(INOUT) :: POINT(N+1), LIST(MAXNAB)
+  INTEGER, INTENT(IN) :: N !< Number of particles in index list
+  INTEGER, INTENT(IN) :: INDEX_LIST(N) !< Gives global index of each particle
+  INTEGER, INTENT(IN) :: MAXNAB !< Maximum possible number neighbours per particle
+  INTEGER, INTENT(INOUT) :: LIST(MAXNAB, N) !< The neighbour list
+  REAL(KIND=RKIND), INTENT(IN) :: RLIST !< Cutoff radius for the neighbour list
   INTEGER :: A, B, C, D, I, J, NLIST
-  REAL(KIND=RKIND), INTENT(IN) :: RLIST
   REAL(KIND=RKIND) :: RXI, RYI, RZI
   REAL(KIND=RKIND) :: RIJSQ
   REAL(KIND=RKIND) :: RXIJ, RYIJ, RZIJ
   REAL(KIND=RKIND) :: RLISTSQ
 
   RLISTSQ = RLIST * RLIST
+  LIST = 0 ! Set neighbour list to 0, this indicates end of list
 
-  NLIST = 0
   DO A=1,N-1
      I = INDEX_LIST(A)
-     POINT(A) = NLIST+1
+     NLIST = 0
+
      RXI = RX(I)
      RYI = RY(I)
      RZI = RZ(I)
@@ -55,16 +59,12 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(INDEX_LIST,POINT,CELL,LCLIST,N,RLIST,LIST,MAXNAB
 
            IF (RIJSQ.LT.RLISTSQ) THEN
               NLIST = NLIST +1
-              LIST(NLIST) = J              
+              LIST(NLIST, A) = J              
               IF (NLIST.EQ.MAXNAB) STOP 'LIST TOO SMALL'
            END IF
         END IF
-        J = LCLIST(A)
      END DO
-
   END DO
-  POINT(N) = NLIST +1
-  POINT(N+1) = NLIST +1
 
 RETURN 
 END SUBROUTINE NEW_NEIGHBOUR_NOLIST
