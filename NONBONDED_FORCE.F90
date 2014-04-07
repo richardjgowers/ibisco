@@ -1,8 +1,11 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
-!> Calculates the nonbonded force in a passed particle list
-!!
+!> @brief Calculates the nonbonded force in a passed particle list
+!> @details This subroutine is designed to work with any particle list that is passed to it.
+!!         In this way, atoms and beads can use the same subroutine.
+!> @note This subroutine is parallelised using OpenMP
+!> @author Rich
 
 SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
 
@@ -15,7 +18,8 @@ SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
   INTEGER, INTENT(IN) :: INDEX_LIST(N) !< Index containing the address in master array of 
                                        !!each particle in this group
   INTEGER, INTENT(IN) :: MAXNAB !< The maximum number of neighbours that a particle could ever have
-  INTEGER, INTENT(IN) :: LIST(MAXNAB,N) !< 2d array, first dimension goes over all particles, second dimension contains neighbours for 
+  INTEGER, INTENT(IN) :: LIST(MAXNAB,N) !< 2d array, first dimension goes over all particles, 
+                                        !! second dimension contains neighbours for 
 !!             this particle
   REAL(KIND=RKIND), INTENT(IN) :: RCUT !< Cutoff radius for nonbonded interactions
   REAL(KIND=RKIND), INTENT(IN) :: RCUTSQ !< Cutoff radius squared
@@ -106,7 +110,7 @@ FZL = 0.0D0
               RIJSQ = RXIJ*RXIJ + RYIJ*RYIJ + RZIJ*RZIJ
 
               IF(RIJSQ .LT. RCUTSQ) THEN
-                 RIJ = SQRT(RIJSQ) !!double precision
+                 RIJ = SQRT(RIJSQ) 
 
                  NI = INT(RIJ/BINNB(TIJ))
 

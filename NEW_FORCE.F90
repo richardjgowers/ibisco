@@ -1,6 +1,7 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @brief The loop which calculates all force information on all particles
 
 SUBROUTINE NEW_FORCE()
 
@@ -16,9 +17,9 @@ SUBROUTINE NEW_FORCE()
   FY = 0.0D0
   FZ = 0.0D0
 
-  FXNB      = 0.0D0
-  FYNB      = 0.0D0
-  FZNB      = 0.0D0
+  FXNB = 0.0D0
+  FYNB = 0.0D0
+  FZNB = 0.0D0
 
   PT11 = 0.0D0
   PT22 = 0.0D0

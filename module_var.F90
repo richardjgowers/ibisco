@@ -1,6 +1,10 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!*MODULE VAR
+
+!> @brief Contains all the global variables throughout the program
+
 
 MODULE VAR
 

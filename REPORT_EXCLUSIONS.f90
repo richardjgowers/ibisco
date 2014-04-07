@@ -1,5 +1,10 @@
+!> @brief Debug module to record of what nonbonded partners were excluded.
+!> @details Some nonbonded exclusions are detected automatically, to check that this has
+!!          been done properly the debug option REPORT_EXCLUSIONS can be enabled in "ibi-preprocess"
+!!          to write a list of these to a file, exclusions.rep
+!> @author Rich
+
 SUBROUTINE REPORT_EXCLUSIONS()
-  ! Write a record of what nonbonded partners were excluded.
   USE VAR
 
   IMPLICIT NONE

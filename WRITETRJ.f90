@@ -1,20 +1,21 @@
+!> @brief Write trajectory frame to TRZ format
 SUBROUTINE WRITETRJ (TM)
 
   USE VAR
 
   IMPLICIT NONE
 
-  INTEGER :: I,J,TM
+  INTEGER, INTENT(IN) :: TM !< Current time step
+  INTEGER :: I, J
   REAL*8 :: PRESS, PT_11, PT_12, PT_13, PT_22, PT_23, PT_33
   REAL*8 :: PTOT, ETOT, T, TREAL
   REAL*8 :: BOX_X, BOX_Y, BOX_Z
   REAL*8 :: smallnumber
   REAL*4, POINTER :: NSX(:), NSY(:), NSZ(:), NVX(:), NVY(:), NVZ(:)
   INTEGER*4 :: nrec
-  CHARACTER(80) :: YASPTITLE
+  CHARACTER(80) :: YASPTITLE 
 
   data nrec / 10 /
-  !       *******************************************************************
 
   NFRAME = NFRAME + 1
 
@@ -29,7 +30,6 @@ SUBROUTINE WRITETRJ (TM)
   smallnumber = 1.0D0 / 1.0D+12 / TIMESCALE
 
   DO J = 1, NATOMS
-
      NSX(J) = SX(J)
      NSY(J) = SY(J)
      NSZ(J) = SZ(J)
@@ -37,7 +37,6 @@ SUBROUTINE WRITETRJ (TM)
      NVX(J) = VX(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
      NVY(J) = VY(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
      NVZ(J) = VZ(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
-
   END DO
 
   !	write header record (together with first frame)
@@ -94,7 +93,7 @@ SUBROUTINE WRITETRJ (TM)
   DO I = 1, NATOMS
      WRITE(114,9050) LABEL(ITYPE(I)), NSX(I)*10, NSY(I)*10, NSZ(I)*10
   END DO
-!9040 FORMAT (1X,A8,1X,3 (G21.14,1X))
+  !9040 FORMAT (1X,A8,1X,3 (G21.14,1X))
 9050 FORMAT (1X,A8,1X,3 (G21.14,1X))
   CLOSE (114)
 

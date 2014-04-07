@@ -2,6 +2,10 @@
 #include "ibi-preprocess.h"
 #endif
 
+!> @brief Calculate all bonded forces
+!> @detail Contains, bonds, angles, torsions and out of planes torsions
+!> @note Is parallelised using OpenMP
+
 SUBROUTINE BONDED_FORCE()
 
   USE VAR

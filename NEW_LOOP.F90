@@ -1,6 +1,7 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @brief The molecular dynamics loop
 
 SUBROUTINE NEW_LOOP()
 
