@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['jangleijk',['JANGLEIJK',['../classVAR.html#af501ec551556c23d6f493cf3f590bb3c',1,'VAR']]],
-  ['jbond',['JBOND',['../classVAR.html#ac712d3fef67942b906f8d2d159432da7',1,'VAR']]],
-  ['joopijkl',['JOOPIJKL',['../classVAR.html#a2652228fd964650886b9c8095f4ade96',1,'VAR']]],
-  ['jtorijkl',['JTORIJKL',['../classVAR.html#a443a441b573040d2330318770be0e87c',1,'VAR']]]
+  ['jangleijk',['jangleijk',['../classvar.html#ad13dbdba73f48e00f2b8e2f79488fc70',1,'var']]],
+  ['jbond',['jbond',['../classvar.html#a6c792ebef9f5d313f89dfd6dd0153eb7',1,'var']]],
+  ['joopijkl',['joopijkl',['../classvar.html#a17b38b5cbcbf29c4941cd61db4eebfdc',1,'var']]],
+  ['jtorijkl',['jtorijkl',['../classvar.html#a569cf561bdc7796642fd52dffb2433b2',1,'var']]]
 ];

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['halt_5fdrift',['HALT_DRIFT',['../classVAR.html#ad20fac246b7b8b4521d308993541c55b',1,'VAR']]],
-  ['head_5fatom',['HEAD_ATOM',['../classVAR.html#a89868f006f204c741bb88cbf43668b6d',1,'VAR']]],
-  ['head_5fbead',['HEAD_BEAD',['../classVAR.html#a7c0996d5a06fdd0ea39402c815f6c3a6',1,'VAR']]]
+  ['halt_5fdrift',['halt_drift',['../classvar.html#a08330b5f757f5355757f5ed3e9fd311b',1,'var']]],
+  ['head_5fatom',['head_atom',['../classvar.html#a2edfa8febb1ee89e59bf7fd14582815c',1,'var']]],
+  ['head_5fbead',['head_bead',['../classvar.html#a4ab0e9dd802103409a63cf0c4bdfb6f4',1,'var']]]
 ];

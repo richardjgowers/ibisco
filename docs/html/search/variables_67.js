@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ga',['GA',['../classVAR.html#a5a7d006feb0d760ce1634f3ffb9ec5da',1,'VAR']]],
-  ['gamma',['gamma',['../classVAR.html#a913edc5e7545e143290dc16dfd1848c5',1,'VAR']]],
-  ['gb',['GB',['../classVAR.html#aa4b3d3e4a411be553a0b969b0aae4ded',1,'VAR']]]
+  ['ga',['ga',['../classvar.html#ade3e631a121cc89586cff801391a1ea8',1,'var']]],
+  ['gamma',['gamma',['../classvar.html#a1e4969652c3fee09fac928d765276abd',1,'var']]],
+  ['gb',['gb',['../classvar.html#a832c25486388e55e1438cf3628dbf1ab',1,'var']]]
 ];
