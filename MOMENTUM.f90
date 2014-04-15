@@ -1,3 +1,7 @@
+!> @file
+!> @brief Resets the net momentum
+!> @details Called from NEW_LOOP.f90
+
 SUBROUTINE MOMENTUM ()
 
   USE VAR
@@ -5,10 +9,6 @@ SUBROUTINE MOMENTUM ()
 
   INTEGER :: I, TI
   REAL(KIND=RKIND) :: SUMX, SUMY, SUMZ, REG_MASS, INV_MASS
-
-  !       ******************************************************************
-  !	***********	RESET THE NET MOMENTUM TO ZERO    ****************
-  !	CALCULATE THE TOTAL MOMENTUM FOR EACH DIRECTION
 
   SUMX = 0.0D0
   SUMY = 0.0D0

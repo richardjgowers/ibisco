@@ -1,15 +1,9 @@
-!     Modified by Nicodemo
-!     2011
+!> @file
+!> @brief Allocates some arrays
+!! 
+!> @details Called from main.f90
 !
-!     Vector Allocated for the Multiple Time Step
-!
-!     FXi0,   FYi0,   FZi0   = components of the force at time i-1
-!     FXi1,   FYi1,   FZi1   = components of the force at time i
-!     FXii,   FYii,   FZii   = components of the force at time i+1
-!     FXiii,  FYiii,  FZiii  = components of the force at time i+2
-!     FXiiii, FYiiii, FZiiii = components of the force at time i+3     
-!
-!	*********************************************************************************************
+
 SUBROUTINE ALLOCATEVAR ()
 
   USE VAR
@@ -17,8 +11,6 @@ SUBROUTINE ALLOCATEVAR ()
   IMPLICIT NONE
 
   INTEGER :: MAXBONDS = 4 !Maximum number of bonds an atom can have
-
-  !       ******************************************************************
 
   !	PROGRAM CONSTANTS
   FAC = DT / TAUT
@@ -124,6 +116,13 @@ SUBROUTINE ALLOCATEVAR ()
         endif
      end if
   END IF
+
+!     FXi0,   FYi0,   FZi0   = components of the force at time i-1
+!     FXi1,   FYi1,   FZi1   = components of the force at time i
+!     FXii,   FYii,   FZii   = components of the force at time i+1
+!     FXiii,  FYiii,  FZiii  = components of the force at time i+2
+!     FXiiii, FYiiii, FZiiii = components of the force at time i+3     
+
 
   RETURN
 

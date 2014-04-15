@@ -1,3 +1,8 @@
+!> @file
+!> @brief Builds topology of system
+!> @details In coordinate only bonds are defined, this subroutine works from that information to 
+!! detect all angles, torsions and OOP that exists within the system
+
 SUBROUTINE SETLIS()
 
   USE VAR
@@ -7,7 +12,6 @@ SUBROUTINE SETLIS()
   INTEGER	::	H,Q=0,X=0,NOWRITE=0 !,COUNTER=0
   INTEGER,DIMENSION(500):: ATOM_TORS = 0, ATOM_ANG = 0
   INTEGER, DIMENSION(10,10,10,10) :: NOWRITE2 = 0
-  !       *******************************************************************
 
   IF (NBTYPE.GT.0) THEN
      I = 0

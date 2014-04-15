@@ -1,9 +1,13 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
-
+!> @file
 !> @brief Calculate all bonded forces
+!!
 !> @details Contains, bonds, angles, torsions and out of planes torsions
+!! 
+!! Called from NEW_FORCE.f90
+!!
 !> @note Is parallelised using OpenMP
 
 SUBROUTINE BONDED_FORCE()

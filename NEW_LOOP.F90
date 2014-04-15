@@ -1,6 +1,7 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
 !> @brief The molecular dynamics loop
 !> @details Called from IBIsCO()
 !> @details Calls a series of subroutines to perform the MD loop \n

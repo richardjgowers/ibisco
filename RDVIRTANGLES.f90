@@ -1,3 +1,6 @@
+!> @file
+!> @brief Reads angles between VS and beads
+
 SUBROUTINE RDVIRTANGLES()
 
   USE VAR

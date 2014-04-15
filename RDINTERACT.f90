@@ -1,3 +1,6 @@
+!> @file
+!> @brief Reads the file interact
+
 SUBROUTINE RDINTERACT()
   USE MODULEPARSING
   USE VAR

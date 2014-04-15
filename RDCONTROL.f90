@@ -1,4 +1,46 @@
-!	***************************************************************************
+!> @file
+!!
+!> @ingroup input_read
+!!
+!> @brief Reads the file 'control'
+!!
+!> @details An example control file is given below \n
+!!          The order of the keywords is not important \n
+!!
+!! Ensemble	        0        (0=NVE, 1=NPT, 2=NVT, 3=EM-V) \n
+!! Temperature	        500      (Temperature/K) \n
+!! Pressure	        100      (Pressure/kPa) \n
+!! Natoms                 2400     (Number of atoms) \n
+!! Nsteps                 1000     (Number of time steps) \n
+!! DT                     1        (Time step in fs) \n
+!! TAUT                   1        (Temperature relaxation time in fs) \n
+!! TAUP                   1        (Pressure relaxation time in fs)\n
+!! Cutoff		 20       (The cutoff distance for non-bonded interaction in nm) \n
+!! Neighbour_list_cutoff  2.3     (Distance in nm of neighbour list cutoff) \n
+!! Update_neighbour_list  15	 (Update frequency of neighbour list) \n
+!! Nsampling	        1	 (Interval of sampling of quantities) \n
+!! Ntrajectory            200      (Number of time steps between storing configuration) \n
+!! Halt_Drift	        10       (Interval at which the net drift of the system is reset to zero) \n
+!! Naverage	        100      () \n
+!! Non-Bonded	        4	 (Use non-bonded potential on 1..4 OR 1..5? 4=1..4, 5=1..5) \n
+!! Interaction	        0	 (Not sure what this one means) \n
+!! Lambda                 0.6      (Velocity tunner for DPD thermostat ) \n
+!! DPD_cutoff             1.5000    () \n
+!! Weight_type            Linear          (linear: 1-r/rcut or step weight function) \n
+!! Shear_viscosity        y        () \n
+!! Num_RNEMD_slab               20       (number of slabs in RNEMD simulation) \n
+!! Num_RNEMD_exchange            60       ( time step interval of velocity exchange ) \n
+!! Num_RNEMD_prof               61       (time step interval of recording RNEMD profile file) \n
+!! Num_RNEMD_trj                61       (time step interval of recording RNEMD trajectory file ) \n
+!! Poiseuille_flow       y       () \n
+!! External_Force        0.02    (External force implimented in PPF method, in pN) \n
+!! Num_slabs_PPF             30      (Num of slabes to collect the velocity profile in PPF method) \n
+!! N_ROLLING_PRO_PPF      10000  () \n
+!! LAFREQ                0.5    (collision frequency of LA thermastat) \n
+!! LA_INPUT              Y      (Y = USING LA, N = NOT USING LA) \n 
+!! ISEED                 61909 \n
+!! END \n
+
 SUBROUTINE RDCONTROL ()
 
   USE MODULEPARSING
@@ -7,42 +49,6 @@ SUBROUTINE RDCONTROL ()
   IMPLICIT NONE
   INTEGER ALARM
   CHARACTER(80)	TEXT
-
-  !	**************************************************************************
-  !Ensemble	        0        (0=NVE, 1=NPT, 2=NVT, 3=EM-V)
-  !Temperature	        500      (Temperature/K)
-  !Pressure	        100      (Pressure/kPa)
-  !Natoms                 2400     (Number of atoms)
-  !Nsteps                 1000     (Number of time steps)
-  !DT                     1        (Time step in fs)
-  !TAUT                   1        (Temperature relaxation time in fs)
-  !TAUP                   1        (Pressure relaxation time in fs)
-  !Cutoff		        20       (The cutoff distance for non-bonded interaction in nm)
-  !Neighbour_list_cutoff  2.3      (Distance in nm up to which pairs of particles are included in the neighbour list.)
-  !Update_neighbour_list  15	 (Set intervals of neighbour list updates; 10..20 is usually a good value)
-  !Nsampling	        1	 (Interval of sampling of quantities)
-  !Ntrajectory            200      (Number of time steps between storing configuration)
-  !Halt_Drift	        10       (Interval at which the net drift of the system is reset to zero)
-  !Naverage	        100      (Number of time steps between storing average data and restart file)
-  !Non-Bonded	        4	 (Use non-bonded potential on 1..4 OR 1..5? 4=1..4, 5=1..5)
-  !Interaction	        0	 (Use guassian function for bond and bend interactions or tabels? 0=gaussian,1=table)
-  !Lambda                 0.6      (Velocity tunner for DPD thermostat )
-  !DPD_cutoff             1.5000    (The cutoff distance for DPD random force and drag force interaction in nm)
-  !Weight_type            Linear          (linear: 1-r/rcut or step weight function)
-  !Shear_viscosity        y        (N= no calculation of shear visocity, Y= calcuation shear viscosity by RNEMD)
-  !Num_RNEMD_slab               20       (number of slabs in RNEMD simulation)
-  !Num_RNEMD_exchange            60       ( time step interval of velocity exchange )
-  !Num_RNEMD_prof               61       (time step interval of recording RNEMD profile file)
-  !Num_RNEMD_trj                61       (time step interval of recording RNEMD trajectory file ) 
-  !Poiseuille_flow       y       (Y = Calculate the viscosity by using Periodic Poiseuille Flow (PPF) method, N = not use this method)
-  !External_Force        0.02    (External force implimented in PPF method, in pN)
-  !Num_slabs_PPF             30      (Num of slabes to collect the velocity profile in PPF method)
-  !N_ROLLING_PRO_PPF      10000  (Num of time steps used for rolling average of PPF profiles: Density, Temp, stress, local viscosity)
-  !LAFREQ                0.5    (collision frequency of LA thermastat)
-  !LA_INPUT              Y      (Y = USING LA, N = NOT USING LA)
-  !ISEED                 61909
-  !END
-  !	**************************************************************************
 
   OPEN (2, IOSTAT=IOS, FILE='control', STATUS='OLD')
 

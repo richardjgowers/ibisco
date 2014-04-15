@@ -1,6 +1,10 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
+!> @brief Debug timing subroutine
+!> @details If the TIMING_ON option is chosen in 'ibi_preprocess.h' then various timing functions
+!! are inserted into the code.  This subroutine prints the results of these every time step.
 
 SUBROUTINE TIMING()
 

@@ -1,3 +1,7 @@
+!> @file
+!> @brief Thermostat
+!> @details I have no idea if this works
+
 SUBROUTINE SCALEV ()
   USE VAR
 

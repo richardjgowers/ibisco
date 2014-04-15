@@ -1,3 +1,11 @@
+!> @file
+!> @brief Calculates the forcefield tables
+!!
+!> @details Forcefield input is tabulated potential against distance.  To turn this into
+!! force information, the derivative at each point is taken.  
+!!
+!! Called from main.f90
+
 SUBROUTINE FTABLE ()
 
   USE VAR

@@ -1,4 +1,6 @@
+!> @file
 !> @brief Write trajectory frame to TRZ format
+
 SUBROUTINE WRITETRJ (TM)
 
   USE VAR

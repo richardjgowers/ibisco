@@ -1,3 +1,6 @@
+!> @file
+!> @brief Reads the file coordinate
+
 
 SUBROUTINE RDCOOR()
 

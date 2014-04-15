@@ -2,6 +2,10 @@
 #include "ibi-preprocess.h"
 #endif
 
+!> @file
+!> @brief Moves atoms in box according to LF algorithm
+!> @details Called from NEW_LOOP.f90
+
 SUBROUTINE MOVE ( )
 
   USE VAR

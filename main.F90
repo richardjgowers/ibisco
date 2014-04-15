@@ -1,10 +1,47 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> \mainpage
+!!
+!! \section IBIsCO Documentation!
+!!
+!! Each file in the source code has its own page!
+!!
+!! Everything starts in:
+!! main.F90
+!! 
+!! 
 
-  !> @brief IBIsCO MD program
-  !!
-  !> @details Calls UNIT()
+!> @file
+!> @brief IBIsCO MD program
+!!
+!> @details This is the trunk of the program
+!!
+!! \section main_sec1 Reading program inputs
+!! UNIT.f90 \n
+!! RDCONTROL.f90 \n
+!! ALLOCATEVAR.f90 \n
+!! RDINTERACT.f90 \n
+!! RDCOOR.f90 \n
+!! ALLOCATEVAR2.f90 \n
+!! RDVIRTUAL.f90 \n
+!!
+!! \section main_sec2 Preparing data structures
+!! 
+!! MAKE_LISTS.f90 \n
+!! VIRTUAL_DEF.f90 \n
+!! SHIFT.f90 \n
+!! FTABLE.f90 \n
+!! COMVEL.f90 \n
+!! SCALEV.f90 \n
+!! SETLIS.f90 \n
+!! RDVIRTANGLES.f90 \n
+!! BUILD_CONNECTIVITY.f90 \n
+!! RDVIRTBONDS.f90 \n
+!!
+!! \section main_sec3 The MD loop
+!!
+!! NEW_LOOP.F90 \n
 
   PROGRAM IBISCO
 
@@ -30,24 +67,22 @@
     ISTOP = 0
 
     !DEFINE REDUCED UNITS
-    CALL UNIT () !> \file UNIT.f90
+    CALL UNIT() !> \file UNIT.f90
 
     !Read control parameters
     NVIRTA = 0 !By default no virtual sites
-    CALL RDCONTROL ()
+    CALL RDCONTROL()
     IF (ISTOP == 1) STOP 'Failed in RDCONTROL'
-!rlist_bead=rlist_atom
-!    rfac  = dsqrt(3.0d0)     
 
     !     ALLOCATE SOME VARIABLES
-    CALL ALLOCATEVAR ()
+    CALL ALLOCATEVAR()
 
     !READ PARAM FILE
-    CALL RDINTERACT  ()
+    CALL RDINTERACT()
     IF (ISTOP == 1) STOP 'Failed in RDINTERACT'
 
     !Read coordinate file
-    CALL  RDCOOR  ()
+    CALL  RDCOOR()
     IF (ISTOP == 1) STOP 'Failed in RDCOOR'
 
     CALL ALLOCATEVAR2()
@@ -181,16 +216,6 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
     CALL REPORT_EXCLUSIONS() ! Reports all nonbonded exclusions
 #endif
 
-!     IF YOU WANT TO USE GUSSIAN FUNCTION FOR BOND AND BEND INTERACTIONS,
-!     READ GUSSIAN FILE AND MAKE TABLE FOR POTENTIAL AND FORCE
-!    IF (INTERACT == 0) THEN
-!       CALL RDGAUSSIAN()
-!       IF (ISTOP == 1) STOP 'Failed in RDGAUSSIAN'
-
-!       CALL BONDTABLE ()
-!       CALL ANGLETABLE ()
-!    END IF
-
       CALL MAPS (MAP_ATOM,MAPSIZE_ATOM &
            , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
       CALL LINKS (HEAD_ATOM,MAXNUMCELL_ATOM,ATOM,NUMATOMS,CELL_ATOM &
@@ -207,9 +232,6 @@ MAX_CONTACT = 0 !Is the largest gap between 2 connected things
 
 !     WRITE THE TOPOLOGY FILE 
       CALL WRITEPSF()
-!      CALL WRITETP () FIX THIS
-
-!      call analysis () FIX THIS
 
       !!*************************************************
       !*********** START OF MAIN LOOP*****************

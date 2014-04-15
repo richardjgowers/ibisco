@@ -3,6 +3,7 @@
 #endif
 !*MODULE VAR
 
+!> @file
 !> @brief Contains all the global variables throughout the program
 
 

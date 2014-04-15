@@ -1,3 +1,7 @@
+!> @file
+!> @brief Reads the input file virtual
+!> @details Virtual has the details of all the virtual sites in the system
+
 SUBROUTINE RDVIRTUAL()
 
 USE VAR

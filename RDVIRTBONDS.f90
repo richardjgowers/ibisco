@@ -1,3 +1,10 @@
+!> @file
+!> @brief Reads the file virtbonds
+!!
+!> @details virtbonds defines VS and beads which would be connected in a fully CG model, but are 
+!! separated by many atoms.  This is to avoid beads which are too close from trying to interact with
+!! eachother through the nb forcefield.
+
 SUBROUTINE RDVIRTBONDS()
 
   USE VAR

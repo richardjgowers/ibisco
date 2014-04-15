@@ -1,3 +1,7 @@
+!> @file
+!> @brief Neighbourlist creation with linked cell lists
+!> @details Called from UPDATE_NEIGHBOURLIST.f90
+
 SUBROUTINE NEW_NEIGHBOUR_WITHLIST(INDEX_LIST,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
      , MAP, SIZEMAP, HEAD, MAXNUMCELL)
 

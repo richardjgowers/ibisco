@@ -1,3 +1,6 @@
+!> @file
+!> @brief Defines some constants
+
 SUBROUTINE UNIT ()
   USE VAR
 
