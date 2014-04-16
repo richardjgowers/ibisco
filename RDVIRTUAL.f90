@@ -1,7 +1,25 @@
 !> @file
 !> @brief Reads the input file virtual
 !> @details Virtual has the details of all the virtual sites in the system
-
+!!
+!! The file has a header of the following format.  From this, only the number of virtual sites is read
+!! @verbatim
+!! **********Polyamide66                                                   
+!! # Number of virtual sites:
+!!         960
+!! Index of VS, Type of VS, Natoms in VS, Index of VS centre or 0 for COM
+!! Index of all atoms in this VS
+!! @endverbatim
+!!
+!! Then for each virtual site, two lines are required \n
+!! The first has the index of the VS, the type of the VS (to correspond with the file 'interaction'),
+!! the number of atoms this VS contains and the center of the VS (or 0 for COM) \n
+!! The second line then lists all the indices of atoms within this VS
+!!
+!! @verbatim
+!!           1          10           7           5
+!!           2           3           4           5           6           7           8
+!! @endverbatim
 SUBROUTINE RDVIRTUAL()
 
 USE VAR
@@ -46,10 +64,6 @@ ALLOCATE(INDX_ATM(NVIRTA,MAX_ATOMS)) !Temp array for reading info
 !The mass coefficient of atoms within a site can change as atoms can appear in a different order within VS
 !Eg -(C-C-N-C)- or -(C-N-C-C)-
 !The type of an atom within a virtual site will always have the same mass coefficient
-
-ALLOCATE(VIRT_POINT_SEC(NVIRTA+1))
-ALLOCATE(VCELL(NVIRTA))
-ALLOCATE(VLCLIST(NVIRTA))
 
 indx_atm = 0
 VIRT_VS_IND = 0

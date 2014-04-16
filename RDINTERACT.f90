@@ -1,5 +1,58 @@
 !> @file
-!> @brief Reads the file interact
+!> @brief Reads the file 'interaction'
+!> @details This file defines all interactions between particles based on their type.
+!! The file has several sections, in the following order.
+!!
+!! First the type number, name, mass and whether it is an atom or bead is defined:
+!! @verbatim
+!! atom_types 6 
+!! # Type, Label, Mass,          A/B
+!!    1	   H      0.00100782     A
+!!    2	   Hn     0.00100782     A
+!!    3	   C      0.0120         A
+!!    4	   Ca     0.0120         A
+!!    5	   N      0.0140031      A
+!!    6	   O      0.0159949      A
+!! @endverbatim
+!!
+!! Next bonds are defined.  All bonds are order independent, ie a bond between types 1-3 is
+!!  the same as a bond between types 3-1.  
+!!
+!! @verbatim
+!! bond_types 5
+!! #Type1, Type2, filename
+!! 3	   1	  bond1
+!! 3	   4	  bond3
+!! 4	   6	  bond7
+!! 4	   5	  bond4
+!! 5	   2	  bond5
+!! angle_types 3
+!! #Type1, Type2, Type3, filename
+!!  7      3      1      ang.201
+!!  7      3      4      ang.202
+!!  1      3      1      ang.002
+!! torsion_types 1
+!! #Type1 Type2 Type3 Type4 filename
+!! 2      5     4     6	    tors5  
+!! @endverbatim
+!!
+!! Then nonbonded potentials are defined
+!!
+!! @verbatim
+!!non_bonded_interaction_types 3
+!!#Type1 Type2     filename
+!! 1     1         nb01
+!! 1     2         nb02
+!! 1     3         nb03
+!! @endverbatim
+!!
+!! Finally out of planes torsions are defined.  Note that all sections must be defined, even if
+!! they are empty, as shown here.
+!!
+!! @verbatim
+!! Out_of_Planes 0
+!! #Type1 Type2 Type3 Type4 filename
+!! @endverbatim
 
 SUBROUTINE RDINTERACT()
   USE MODULEPARSING
@@ -7,10 +60,10 @@ SUBROUTINE RDINTERACT()
 
   IMPLICIT NONE
 
-  INTEGER		I, J, L, LL, IB, JB, IA, JA, KA, IT, JT, KT, LT, K,ITA,h
-  INTEGER		INB, JNB, TYPEI
-  INTEGER :: iosIN = 0
-  REAL*8		R
+  INTEGER :: I, J, L, LL, IB, JB, IA, JA, KA, IT, JT, KT, LT, K, ITA
+  INTEGER :: INB, JNB, TYPEI
+  INTEGER :: ios = 0, iosIN = 0, ios2=0
+  REAL*8 :: R
   CHARACTER(len=80) :: LINE2
   logical :: alloc=.true.
   !Detailed energy breakdown variables
@@ -42,6 +95,7 @@ SUBROUTINE RDINTERACT()
   ALLOCATE(MASS0(NTYPE))
   ALLOCATE(MASS(NTYPE))
   ALLOCATE(INVMASS(NTYPE))
+  ALLOCATE(NAME_LABEL(NTYPE))
 
   READ(4,*)
   DO I = 1, NTYPE
@@ -106,14 +160,11 @@ SUBROUTINE RDINTERACT()
      ALLOCATE(BOND_POT(NBTYPE,0:MAXINPUT))
      ALLOCATE(BINB(NBTYPE))
      ALLOCATE(NDATB(NBTYPE))
-     allocate(typeBond(nbtype))
      ALLOCATE(BOND_I(NBTYPE), BOND_J(NBTYPE))
 
-     typeBond = .false.
      BOND_FORCE = 0.0D0
      BOND_POT = 0.0D0
 
-     h=0
      DO I = 1, NBTYPE
         READ (4, '(A80)') LINE
         CALL PARSE ()
@@ -142,54 +193,33 @@ SUBROUTINE RDINTERACT()
            RETURN
         ENDIF
 
-        ! If you choose to use table for potentials INTERACT==1, else if you want to use gaussian function INTERACT==0
 
-        IF (INTERACT == 1) THEN
-           if(STRNGS(3) .eq. 'constraint')then
-              !   If there are some constraints, it allocates the corresponding vectors        
-              if(alloc)then
-                 allocate(constr(nbtype))
-                 alloc = .false.
-              end if
-              typeBond(i) = .true.
-              shakeOK = .true.
-              READ (STRNGS(4),*) constr(i)
-              h=h+1
-           else
+        OPEN (11, IOSTAT=IOS, FILE=STRNGS(3), STATUS='OLD')
+        IF (IOS.NE.0) THEN
+           WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+           WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
+           ISTOP=1
+           RETURN
+        END IF
 
-              shakeOK=.false.
-              OPEN (11, IOSTAT=IOS, FILE=STRNGS(3), STATUS='OLD')
-              IF (IOS.NE.0) THEN
-                 WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
-                 WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(3),' does not exist ****'
-                 ISTOP=1
-                 RETURN
-              END IF
+        K = 0
+        DO WHILE (.TRUE.)
+           READ(11,*,IOSTAT=IOS2) RBOND(I,K), BOND_POT(I,K)
+           IF(IOS2 .ne. 0) EXIT
+           K = K+1
+        END DO
+        NDATB(I) = K - 1
 
-              K = 0
-              DO WHILE (.TRUE.)
-                 READ(11,*,IOSTAT=IOS2) RBOND(I,K), BOND_POT(I,K)
-                 IF(IOS2 .ne. 0) EXIT
-                 K = K+1
-              END DO
-              NDATB(I) = K - 1
+        CLOSE(11)
 
-              CLOSE(11)
+        !Rescale energies
+        DO J =0,NDATB(I)
+           BOND_POT(I,J) = BOND_POT(I,J) *1000.0 /NA /ESCALE
+        END DO
 
-              !Rescale energies
-              DO J =0,NDATB(I)
-                 BOND_POT(I,J) = BOND_POT(I,J) *1000.0 /NA /ESCALE
-              END DO
+        BINB(I) = RBOND(I,1)-RBOND(I,0)
 
-              BINB(I) = RBOND(I,1)-RBOND(I,0)
-           END IF
-        end if
      END DO
-     if(h .eq. NBTYPE)then
-        NoBond=.true. ! if there are only constraints there is no need for the subroutine FPBOND.f90
-     else
-        NoBond=.false. 
-     end if
   END IF !If NBTYPE gt 0
 
   !**********************************
@@ -237,10 +267,10 @@ SUBROUTINE RDINTERACT()
         CALL PARSE ()
         IF (STRNGS(1) .EQ. 'torsion_types') THEN
            ISTOP = 1
-           WRITE(*,*) '             ******************* FATAL ERROR ************************'
-           WRITE(*,*) '             * Number of angle_types different from Number of Angle *'
-           WRITE(*,*) '             *                 Check Interaction File               *'
-           WRITE(*,*) '             ********************************************************'
+           WRITE(*,*) '******************* FATAL ERROR ************************'
+           WRITE(*,*) '* Number of angle_types different from Number of Angle *'
+           WRITE(*,*) '*                 Check Interaction File               *'
+           WRITE(*,*) '********************************************************'
            RETURN 
         END IF
         READ (STRNGS(1),*) IA
@@ -264,43 +294,40 @@ SUBROUTINE RDINTERACT()
            RETURN
         ENDIF
 
-        IF (INTERACT == 1) THEN
-
-           OPEN (11, IOSTAT=IOS, FILE=STRNGS(4), STATUS='OLD')
-           IF (IOS.NE.0) THEN
-              WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
-              WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
-              ISTOP=1
-              RETURN
-           END IF
-
-           READ(11,*,IOSTAT=IOS2)ANGLE(I,0), BEND_POT(I,0)
-           READ(11,*,IOSTAT=IOS2)ANGLE(I,1), BEND_POT(I,1)
-           BEND_POT(I,0) = BEND_POT(I,0)*1000.0/ NA / ESCALE
-           BEND_POT(I,1) = BEND_POT(I,1)*1000.0/ NA / ESCALE
-
-           BINA(I) = ANGLE(I,1)-ANGLE(I,0)
-
-           IF(ANGLE(I, 0) /= 0.0) THEN
-              ANGLE(I,0) = 0.0	
-              ANGLE(I,2) = ANGLE(I,1)
-              BEND_POT(I,2) = BEND_POT(I,1)
-              ANGLE(I,1) = BINA(I)
-              BEND_POT(I,1) = BEND_POT(I,0)
-              K = 3
-           ELSE
-              K = 2
-           END IF
-
-           DO WHILE (.TRUE.)
-              READ(11,*,IOSTAT=IOS2)ANGLE(I, K), BEND_POT(I,K)
-              BEND_POT(I,K) = BEND_POT(I,K)*1000.0/ NA / ESCALE
-              IF (IOS2 /= 0) EXIT
-              K = K + 1 
-           END DO
-           CLOSE (11)
-           NDATAN(I) = K - 1
+        OPEN (11, IOSTAT=IOS, FILE=STRNGS(4), STATUS='OLD')
+        IF (IOS.NE.0) THEN
+           WRITE (1,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
+           WRITE (*,*)' **** FATAL ERROR! File ', STRNGS(4),' does not exist ****'
+           ISTOP=1
+           RETURN
         END IF
+
+        READ(11,*,IOSTAT=IOS2)ANGLE(I,0), BEND_POT(I,0)
+        READ(11,*,IOSTAT=IOS2)ANGLE(I,1), BEND_POT(I,1)
+        BEND_POT(I,0) = BEND_POT(I,0)*1000.0/ NA / ESCALE
+        BEND_POT(I,1) = BEND_POT(I,1)*1000.0/ NA / ESCALE
+
+        BINA(I) = ANGLE(I,1)-ANGLE(I,0)
+
+        IF(ANGLE(I, 0) /= 0.0) THEN
+           ANGLE(I,0) = 0.0	
+           ANGLE(I,2) = ANGLE(I,1)
+           BEND_POT(I,2) = BEND_POT(I,1)
+           ANGLE(I,1) = BINA(I)
+           BEND_POT(I,1) = BEND_POT(I,0)
+           K = 3
+        ELSE
+           K = 2
+        END IF
+
+        DO WHILE (.TRUE.)
+           READ(11,*,IOSTAT=IOS2)ANGLE(I, K), BEND_POT(I,K)
+           BEND_POT(I,K) = BEND_POT(I,K)*1000.0/ NA / ESCALE
+           IF (IOS2 /= 0) EXIT
+           K = K + 1 
+        END DO
+        CLOSE (11)
+        NDATAN(I) = K - 1
      END DO
   END IF
   !**********************************
@@ -377,11 +404,8 @@ SUBROUTINE RDINTERACT()
 
         OPEN (11, IOSTAT=IOS, FILE=STRNGS(5), STATUS='OLD')
         IF (IOS.NE.0) THEN
-           WRITE (1,*)	&
-                ' **** FATAL ERROR! File ', STRNGS(5),' does not exist ****'
-
-           WRITE (*,*)	&
-                ' **** FATAL ERROR! File ', STRNGS(5),' does not exist ****'
+           WRITE (1,*) ' **** FATAL ERROR! File ', STRNGS(5),' does not exist ****'
+           WRITE (*,*) ' **** FATAL ERROR! File ', STRNGS(5),' does not exist ****'
            ISTOP=1
            RETURN
         END IF
@@ -449,10 +473,10 @@ SUBROUTINE RDINTERACT()
         CALL PARSE ()
         IF (STRNGS(1) .EQ. 'Out_of_Planes') THEN
            ISTOP = 1
-           WRITE(*,*) '******************************** FATAL ERROR **********************************'
-           WRITE(*,*) '* Number of non_bonded_interaction_types different from Number NB interaction *'
-           WRITE(*,*) '*                          Check Interaction File                             *'
-           WRITE(*,*) '*******************************************************************************'
+           WRITE(*,*)'******************************** FATAL ERROR **********************************'
+           WRITE(*,*)'* Number of non_bonded_interaction_types different from Number NB interaction *'
+           WRITE(*,*)'*                          Check Interaction File                             *'
+           WRITE(*,*)'*******************************************************************************'
            RETURN 
         END IF
         READ (STRNGS(1),*) INB

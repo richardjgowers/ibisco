@@ -72,7 +72,7 @@ SUBROUTINE NEW_LOOP()
      t_VIRTUAL_DEF(1) = OMP_GET_WTIME()
 #endif
 
-     IF(IBRDESCR .eq. 0 .and. MOD(STEP,VUPDATE) .eq. 0) THEN
+     IF(IBRDESCR .eq. 0) THEN
         CALL VIRTUAL_DEF() !Defines the position of virtual sites
      END IF
 

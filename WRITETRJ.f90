@@ -1,5 +1,8 @@
 !> @file
 !> @brief Write trajectory frame to TRZ format
+!!
+!> @details TRZ format can be read either by the YASP analysis tools, or the python package \n
+!! MDAnalysis.
 
 SUBROUTINE WRITETRJ (TM)
 
