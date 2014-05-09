@@ -33,6 +33,9 @@ nosetests tests.py
 
 rm hybridPA/IBIsCO
 rm atomisticPA/IBIsCO
+rm hybridPA/s-md.psf
+rm atomisticPA/s-md.psf
+rm tests.pyc
 
 rm hybrid.trj
 rm atomistic.trj
