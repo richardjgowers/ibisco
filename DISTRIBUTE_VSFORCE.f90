@@ -7,6 +7,7 @@
 !! done so that the nonbonded force can be properly accumulated for pressure calculations.
 !!
 !> @note Parallelised using OpenMP
+!> @author Richard J Gowers
 
 SUBROUTINE DISTRIBUTE_VSFORCE()
 

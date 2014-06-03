@@ -9,6 +9,7 @@
 !!
 !! For hybrid systems, bonds and angles between VS and beads can be defined in a supplemental file
 !! this is read in RDVIRTBONDS.f90 and RDVIRTANGLES.f90
+!> @author Richard J Gowers
 
 SUBROUTINE BUILD_CONNECTIVITY(N,INDEX_LIST,EXCLUSION)
 

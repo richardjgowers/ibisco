@@ -12,12 +12,8 @@ var files =
     [ "main.F90", "main_8F90.html", "main_8F90" ],
     [ "MAKE_LISTS.f90", "MAKE__LISTS_8f90.html", "MAKE__LISTS_8f90" ],
     [ "MAPS.f90", "MAPS_8f90.html", "MAPS_8f90" ],
-    [ "module_var.F90", "module__var_8F90.html", [
-      [ "var", "classvar.html", "classvar" ]
-    ] ],
-    [ "moduleparsing.f90", "moduleparsing_8f90.html", [
-      [ "moduleparsing", "classmoduleparsing.html", "classmoduleparsing" ]
-    ] ],
+    [ "module_var.F90", "module__var_8F90.html", null ],
+    [ "moduleparsing.f90", "moduleparsing_8f90.html", null ],
     [ "MOMENTUM.f90", "MOMENTUM_8f90.html", "MOMENTUM_8f90" ],
     [ "MOVE.F90", "MOVE_8F90.html", "MOVE_8F90" ],
     [ "NEW_FORCE.F90", "NEW__FORCE_8F90.html", "NEW__FORCE_8F90" ],

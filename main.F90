@@ -7,11 +7,14 @@
 !!
 !! \section IBIsCO Documentation!
 !!
-!! Each file in the source code has its own page, click around to explore the source code.
+!! \subsection build Building IBIsCO
 !!
-!! Everything starts in:
-!! main.F90
+!! To build IBIsCO, all that is required is a Fortran compiler such as gfortran or ifort. 
 !! 
+!! Simply type 'make all' and an executable 'IBIsCO' will be made
+!!
+!! This can then be run (./IBIsCO) from inside the same trajectory as the input files
+!!
 !! \subsection Inputs
 !!
 !! Read about the required input files in 
@@ -182,7 +185,7 @@ PROGRAM IBISCO
   TEMP_BEAD = EK(2) * MKTEMP_BEAD
 
   !     CREATE LISTS OF BONDS, ANGLES AND TORSIONS
-  CALL SETLIS
+  CALL SETLIS()
   IF (ISTOP == 1) STOP 'Failed in SETLIS'
 
   !Read virtangles
@@ -208,16 +211,14 @@ PROGRAM IBISCO
   CALL REPORT_EXCLUSIONS() ! Reports all nonbonded exclusions
 #endif
 
-  CALL MAPS (MAP_ATOM,MAPSIZE_ATOM &
-       , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
+  CALL MAPS (MAP_ATOM,MAPSIZE_ATOM, NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM) 
   CALL LINKS (HEAD_ATOM,MAXNUMCELL_ATOM,ATOM,NUMATOMS,CELL_ATOM &
        , NCELLX_ATOM, NCELLY_ATOM, NCELLZ_ATOM, LCLIST_ATOM)
 
   IF(IBRDESCR .eq. 0) THEN
-     CALL MAPS (MAP_BEAD,MAPSIZE_BEAD &
-          , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD) 
-     CALL LINKS (HEAD_BEAD,MAXNUMCELL_BEAD,BEAD,NCOARSE,CELL_BEAD &
-          , NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD, LCLIST_BEAD)
+     CALL MAPS (MAP_BEAD,MAPSIZE_BEAD, NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD) 
+     CALL LINKS (HEAD_BEAD,MAXNUMCELL_BEAD,BEAD,NCOARSE,CELL_BEAD, &
+          NCELLX_BEAD, NCELLY_BEAD, NCELLZ_BEAD, LCLIST_BEAD)
   END IF
 
   CALL UPDATE_NEIGHBOURLIST()
@@ -225,20 +226,11 @@ PROGRAM IBISCO
   !     WRITE THE TOPOLOGY FILE 
   CALL WRITEPSF()
 
-  !!*************************************************
-  !*********** START OF MAIN LOOP*****************
-  !*************************************************
-
   WRITE(*,*)
   WRITE(*,*) 'Beginning simulation'
   WRITE(*,*)
 
   CALL NEW_LOOP()
-
-
-  !*************************************************
-  !***********  END OF MAIN LOOP********************
-  !*************************************************
 
   CLOSE (201)
   CLOSE (202)

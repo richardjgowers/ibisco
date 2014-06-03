@@ -6,7 +6,7 @@
 !> @details This subroutine is designed to work with any particle list that is passed to it.
 !!         In this way, atoms and beads can use the same subroutine.
 !> @note This subroutine is parallelised using OpenMP
-!> @author Rich
+!> @author Richard J Gowers
 
 SUBROUTINE NONBONDED_FORCE(N,INDEX_LIST,MAXNAB,LIST,RCUT,RCUTSQ)
 

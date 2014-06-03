@@ -3,7 +3,7 @@
 !!
 !> @details Virtuals sites can take their position as either COM of the atoms or defined by the 
 !! position of another atom
-
+!> @author Richard J Gowers
 
 SUBROUTINE VIRTUAL_DEF()
 
