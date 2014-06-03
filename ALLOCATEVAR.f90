@@ -1,15 +1,9 @@
-!     Modified by Nicodemo
-!     2011
+!> @file
+!> @brief Allocates some arrays
+!! 
+!> @details Called from main.f90
 !
-!     Vector Allocated for the Multiple Time Step
-!
-!     FXi0,   FYi0,   FZi0   = components of the force at time i-1
-!     FXi1,   FYi1,   FZi1   = components of the force at time i
-!     FXii,   FYii,   FZii   = components of the force at time i+1
-!     FXiii,  FYiii,  FZiii  = components of the force at time i+2
-!     FXiiii, FYiiii, FZiiii = components of the force at time i+3     
-!
-!	*********************************************************************************************
+
 SUBROUTINE ALLOCATEVAR ()
 
   USE VAR
@@ -18,14 +12,9 @@ SUBROUTINE ALLOCATEVAR ()
 
   INTEGER :: MAXBONDS = 4 !Maximum number of bonds an atom can have
 
-  !       ******************************************************************
-
   !	PROGRAM CONSTANTS
   FAC = DT / TAUT
   PFAC = BETA*DT*LIMAVP/ (TAUP)
-  !       PFAC = BETA*DT/ (TAUP)
-  DT2   = DT / 2.0D0
-  DTSQ2 = DT * DT2
 
   !	CALCULATE THE TEMPERATURE BY KINETIC ENERGY (TEMP = EK*MKTEMP)
   MKTEMP = 2.0D0 / REAL( 3.0D0 * (NATOMS-1))
@@ -82,10 +71,6 @@ SUBROUTINE ALLOCATEVAR ()
   ALLOCATE(NOOPIJKL(NITEMS))
   ALLOCATE(JBOND(NITEMS,MAXBONDS))
 
-  IF (DPDINPUT.EQ.1.OR.LAINPUT.EQ.1) THEN
-     ALLOCATE(DPDPOINT(NATOMS+1))
-     ALLOCATE(DPDLIST(NATOMS*50))
-  ENDIF
 
   ALLOCATE(SP(LIMAVP))
 
@@ -118,12 +103,16 @@ SUBROUTINE ALLOCATEVAR ()
            ALLOCATE(FXiiii(NATOMS))
            ALLOCATE(FYiiii(NATOMS))
            ALLOCATE(FZiiii(NATOMS))
-           ALLOCATE(FXv(NATOMS))
-           ALLOCATE(FYv(NATOMS))
-           ALLOCATE(FZv(NATOMS))
         endif
      end if
   END IF
+
+!     FXi0,   FYi0,   FZi0   = components of the force at time i-1
+!     FXi1,   FYi1,   FZi1   = components of the force at time i
+!     FXii,   FYii,   FZii   = components of the force at time i+1
+!     FXiii,  FYiii,  FZiii  = components of the force at time i+2
+!     FXiiii, FYiiii, FZiiii = components of the force at time i+3     
+
 
   RETURN
 

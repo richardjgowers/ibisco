@@ -1,3 +1,6 @@
+!> @file
+!> @brief Moves all atoms to inside the primary unit cell
+
 !
 !
 !	If SX is n times (where n is even) greater than half side of the box 

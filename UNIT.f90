@@ -1,9 +1,10 @@
+!> @file
+!> @brief Defines some constants
+
 SUBROUTINE UNIT ()
   USE VAR
 
   IMPLICIT NONE
-
-  MMOLY = 0.012D0         ! KG / MOLE   C
 
   MASSSCALE = MMOLY / NA	!KG
   RSCALE = 1.0D-9		!METER

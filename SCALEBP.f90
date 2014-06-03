@@ -1,3 +1,4 @@
+!> @file
 !> @brief Berensden barostat
 !> @details Called from NEW_LOOP()
 !> @details Rescales positions and box size according to system pressure

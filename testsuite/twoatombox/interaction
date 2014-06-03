@@ -1,0 +1,16 @@
+atom_types 1
+# comment line:**** Type  Label   Mass/(kg/mole) Atomistic/CG
+	1	H	0.00100782	A
+bond_types 0
+# comment line:****  Type_1  Type_2  pot_file_name
+angle_types 0
+# comment line:****  Type_1  Type_2  Type_3  pot_file_name
+torsion_types 0
+# comment line:****  Atom_Types_1--2--3--4  pot_file_name
+non_bonded_interaction_types 1
+# comment line:**** Type_1  Type_2  pot_file_name
+	1	1	nb01
+Out_of_Planes 0
+# comment line:**** Type_1  Type_2  pot_file_name
+
+

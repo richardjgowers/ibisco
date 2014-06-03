@@ -1,3 +1,9 @@
+!> @file
+!> @brief Generate random velocities
+!> @details I have no idea if this works vOv
+!!
+!! called from main.f90
+
        SUBROUTINE COMVEL ()
 
 	USE VAR

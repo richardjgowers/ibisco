@@ -1,3 +1,16 @@
+!> @file
+!> @brief Defines which atoms are connected to which (for neighbourlist building)
+!!
+!> @details Goes through all bonds, angles, torsions and OOP torsions to define which
+!! atoms each atom is connected to.
+!! Only bonds are defined in the coordinate file, everything else is guessed
+!!
+!! Called from main.f90
+!!
+!! For hybrid systems, bonds and angles between VS and beads can be defined in a supplemental file
+!! this is read in RDVIRTBONDS.f90 and RDVIRTANGLES.f90
+!> @author Richard J Gowers
+
 SUBROUTINE BUILD_CONNECTIVITY(N,INDEX_LIST,EXCLUSION)
 
 USE VAR

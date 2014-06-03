@@ -1,6 +1,7 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
 !> @brief The molecular dynamics loop
 !> @details Called from IBIsCO()
 !> @details Calls a series of subroutines to perform the MD loop \n
@@ -56,7 +57,6 @@ SUBROUTINE NEW_LOOP()
      t_REPORTRESULTS = 0.0D0
      t_AVERAGE = 0.0D0
      t_WRITETRJ = 0.0D0
-     t_OUTPUT = 0.0D0
 
      t_LOOP(1) = OMP_GET_WTIME()
      t_SHIFT(1) = OMP_GET_WTIME()
@@ -71,7 +71,7 @@ SUBROUTINE NEW_LOOP()
      t_VIRTUAL_DEF(1) = OMP_GET_WTIME()
 #endif
 
-     IF(IBRDESCR .eq. 0 .and. MOD(STEP,VUPDATE) .eq. 0) THEN
+     IF(IBRDESCR .eq. 0) THEN
         CALL VIRTUAL_DEF() !Defines the position of virtual sites
      END IF
 
@@ -150,19 +150,11 @@ SUBROUTINE NEW_LOOP()
      !STORING THE TRAJECTORY FILE
      IF (MOD(STEP, NTRJ) == 0) THEN
         CALL WRITETRJ (STEP)
-     END IF
-
-#ifdef TIMING_ON
-     t_WRITETRJ(2) = OMP_GET_WTIME()
-     t_OUTPUT(1) = OMP_GET_WTIME()
-#endif
-
-     IF (MOD(STEP, NSAMPLING) == 0) THEN
         CALL OUTPUT(STEP)
      END IF
 
 #ifdef TIMING_ON
-     t_OUTPUT(2) = OMP_GET_WTIME()
+     t_WRITETRJ(2) = OMP_GET_WTIME()
      t_REPORTRESULTS(2) = OMP_GET_WTIME()
      t_LOOP(2) = OMP_GET_WTIME()
      !Write all timing results to file

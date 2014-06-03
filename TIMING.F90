@@ -1,6 +1,10 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
+!> @brief Debug timing subroutine
+!> @details If the TIMING_ON option is chosen in 'ibi_preprocess.h' then various timing functions
+!! are inserted into the code.  This subroutine prints the results of these every time step.
 
 SUBROUTINE TIMING()
 
@@ -45,7 +49,6 @@ SUBROUTINE TIMING()
   WRITE(44,*) 'Reporting_results  ',t_REPORTRESULTS(2) - t_REPORTRESULTS(1)
   WRITE(44,*) '  Average            ',t_AVERAGE(2) - t_AVERAGE(1)
   WRITE(44,*) '  Trj_writing        ',t_WRITETRJ(2) - t_WRITETRJ(1)
-  WRITE(44,*) '  Output             ',t_OUTPUT(2) - t_OUTPUT(1)
   WRITE(44,*) '________________________'
 
   FLUSH(44)
