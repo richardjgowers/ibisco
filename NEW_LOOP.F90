@@ -1,6 +1,7 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
 !> @brief The molecular dynamics loop
 !> @details Called from IBIsCO()
 !> @details Calls a series of subroutines to perform the MD loop \n
@@ -71,7 +72,7 @@ SUBROUTINE NEW_LOOP()
      t_VIRTUAL_DEF(1) = OMP_GET_WTIME()
 #endif
 
-     IF(IBRDESCR .eq. 0 .and. MOD(STEP,VUPDATE) .eq. 0) THEN
+     IF(IBRDESCR .eq. 0) THEN
         CALL VIRTUAL_DEF() !Defines the position of virtual sites
      END IF
 

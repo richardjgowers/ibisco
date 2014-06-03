@@ -1,6 +1,8 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
+!> @brief Writes the s-md.out file
 
 SUBROUTINE OUTPUT (I)
   USE VAR

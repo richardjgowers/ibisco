@@ -1,3 +1,4 @@
+!> @file
 !> @brief Neighbour list creation without linked cell lists, generally the slowest option
 !> @note Not currently used, kept in for debugging purposes
 !> @todo Parallelise this if it's ever used

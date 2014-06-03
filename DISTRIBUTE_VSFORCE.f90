@@ -1,3 +1,13 @@
+!> @file
+!> @brief Moves forces from VS to atoms underneath
+!!
+!> @details This is used in hybrid simulations to transfer forces from the virtual sites onto the
+!! atoms.  This is done on a mass weighted basis.  This subroutine is called twice, first after 
+!! nonbonded forces have been calculated, and then after bonded force has been calculated. This is
+!! done so that the nonbonded force can be properly accumulated for pressure calculations.
+!!
+!> @note Parallelised using OpenMP
+
 SUBROUTINE DISTRIBUTE_VSFORCE()
 
   USE VAR

@@ -1,9 +1,30 @@
+!> @file
+!> @brief Reads the file virtbonds
+!!
+!> @details virtbonds defines VS and beads which would be connected in a fully CG model, but are 
+!! separated by many atoms.  This is to avoid beads which are too close from trying to interact with
+!! eachother through the nonbonded forcefield.
+!!
+!! The file 'virtbonds' is a simple list of all the connected sites, eg:
+!!
+!! @verbatim
+!! 1    8185
+!! 1    9
+!! 8185 9
+!! etc
+!! @endverbatim
+!!
+!! The index of virtual sites is the (number of virtual site) + (number of atoms), so in our example
+!! 8185 refers to the first virtual site in a system with 8184 atoms.
+!!
+
 SUBROUTINE RDVIRTBONDS()
 
   USE VAR
 
   IMPLICIT NONE
 
+  INTEGER :: IOS = 0
   INTEGER :: I, J
 
   !Reads the file 'virtbonds' if it exists and adds to the nonbonded exclusions

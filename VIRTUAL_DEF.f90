@@ -1,3 +1,10 @@
+!> @file
+!> @brief Defines the positions of virtual sites in the system
+!!
+!> @details Virtuals sites can take their position as either COM of the atoms or defined by the 
+!! position of another atom
+
+
 SUBROUTINE VIRTUAL_DEF()
 
 USE VAR

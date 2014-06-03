@@ -1,3 +1,36 @@
+!> @file
+!> @brief Reads the file coordinate
+!!
+!> @details The coordinate file must be in a very specific format, detailed below
+!!
+!! The header needs to follow this format.  From this header, the time, box dimensions and 
+!! number of molecules in the system are read
+!!
+!! @verbatim
+!! **********************************************************************
+!!  ********** Time    1.0000000000000000      (ps)
+!!  ********** Box Length(X, Y, Z in nanometres)                **********
+!!   5.5422830581665039        5.5422830581665039        5.5422830581665039     
+!!  **********************************************************************
+!!  ********** Record for each atom is in the form:-            **********
+!!  ********** Index Atom_Type No._of_bonds X Y Z (coords.in nm)   *******
+!!  ********** Vx Vy Vz (in nm/ps) Indices_of_bonded_atoms         *******
+!!  **********************************************************************
+!! num_of_molecules:           24
+!! @endverbatim
+!!
+!! For each molecule, the following format is followed
+!!
+!! @verbatim
+!! 341 atoms_in_molecule_no.           1  polyamide
+!!     1  7  1   0.67832373D+01  -0.11701208D+02   0.20280079D+01   
+!!              -0.25225833D+00   0.25166263D+00   0.16474343D+00       2
+!!     2  3  4   0.69946531D+01  -0.11558007D+02   0.19942064D+01   
+!!               0.38742163D+00   0.10000559D+00  -0.62110003D-01       1     3     4     5
+!!     3  1  1   0.70425797D+01  -0.11580311D+02   0.20895295D+01   
+!!               0.19891964D+01   0.22775315D+01  -0.28066809D+00       2
+!! etc etc..
+!! @endverbatim
 
 SUBROUTINE RDCOOR()
 
@@ -6,16 +39,15 @@ SUBROUTINE RDCOOR()
 
   IMPLICIT NONE
 
+  INTEGER :: IOS
   INTEGER :: I, J, L=0, LL, K, TT
   character(len=20) :: text
 
   OPEN (3, IOSTAT=IOS, FILE='coordinate', STATUS='OLD')
 
   IF (IOS.NE.0) THEN
-     WRITE (1,*)	&
-          ' **** FATAL ERROR! File coordinate does not exist ****'
-     WRITE (*,*)	&
-          ' **** FATAL ERROR! File coordinate does not exist ****'
+     WRITE (1,*) ' **** FATAL ERROR! File coordinate does not exist ****'
+     WRITE (*,*) ' **** FATAL ERROR! File coordinate does not exist ****'
      ISTOP=1
      RETURN
   END IF

@@ -1,6 +1,8 @@
 #ifndef DOXY_SKIP
 #include "ibi-preprocess.h"
 #endif
+!> @file
+!> @brief Updates the... neighbourlist
 
 SUBROUTINE UPDATE_NEIGHBOURLIST()
 

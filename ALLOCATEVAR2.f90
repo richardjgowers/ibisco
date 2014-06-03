@@ -1,3 +1,10 @@
+!> @file
+!> @brief Allocates a bunch of arrays
+!!
+!> @details No really, that's all there is here
+!!
+!! Called from main.f90
+
 SUBROUTINE ALLOCATEVAR2()
 
 USE VAR

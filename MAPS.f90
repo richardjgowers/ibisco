@@ -1,3 +1,7 @@
+!> @file
+!> @brief Creates the helper array MAPS for neighbour list creation
+!> @details Called from UPDATE_NEIGHBOURLIST.f90
+
 !	SETS UP A LIST OF THE TWENTY SIX NEIGHBOURING CELLS OF EACH OF
 !	             THE SMALL CELLS IN THE CENTRAL BOX.
 

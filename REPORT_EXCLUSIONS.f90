@@ -1,3 +1,4 @@
+!> @file
 !> @brief Debug module to record of what nonbonded partners were excluded.
 !> @details Some nonbonded exclusions are detected automatically, to check that this has
 !!          been done properly the debug option REPORT_EXCLUSIONS can be enabled in "ibi-preprocess"

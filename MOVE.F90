@@ -2,6 +2,10 @@
 #include "ibi-preprocess.h"
 #endif
 
+!> @file
+!> @brief Moves atoms in box according to LF algorithm
+!> @details Called from NEW_LOOP.f90
+
 SUBROUTINE MOVE ( )
 
   USE VAR
@@ -25,8 +29,8 @@ SUBROUTINE MOVE ( )
   PT13K = 0.0D0
 
   IF ((ENSEMBLE == 1).OR.(ENSEMBLE == 2)) THEN !If NVT or NPT
-     LCFAC_ATOM = SQRT(1.0D0+FAC*((TIN/TEMP_ATOM)-1.0D0))
-     LCFAC_BEAD = SQRT(1.0D0+FAC*((TIN/TEMP_BEAD)-1.0D0)) 
+     LCFAC_ATOM = SQRT(1.0D0+FAC*((TEMP_IN/TEMP_ATOM)-1.0D0))
+     LCFAC_BEAD = SQRT(1.0D0+FAC*((TEMP_IN/TEMP_BEAD)-1.0D0)) 
   ELSE
      LCFAC_ATOM = 1.0D0
      LCFAC_BEAD = 1.0D0

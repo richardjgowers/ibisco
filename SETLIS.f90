@@ -1,13 +1,18 @@
+!> @file
+!> @brief Builds topology of system
+!> @details In coordinate only bonds are defined, this subroutine works from that information to 
+!! detect all angles, torsions and OOP that exists within the system
+
 SUBROUTINE SETLIS()
 
   USE VAR
   IMPLICIT NONE
-  INTEGER		N, M, I, J, K, J1, K1, L, L1,Z,P,O,ll
-  INTEGER		IT, JT, KT, LT, SWITCH,ITA, ZT,PT,OT,tmp
-  INTEGER	::	H,Q=0,X=0,NOWRITE=0 !,COUNTER=0
+  INTEGER :: N, M, I, J, K, J1, K1, L, L1,Z,P,O,ll
+  INTEGER :: IT, JT, KT, LT, SWITCH,ITA, ZT,PT,OT,tmp
+  INTEGER :: H,Q=0,X=0,NOWRITE=0
+  INTEGER :: NOANGLE = 0, NOTORS = 0
   INTEGER,DIMENSION(500):: ATOM_TORS = 0, ATOM_ANG = 0
   INTEGER, DIMENSION(10,10,10,10) :: NOWRITE2 = 0
-  !       *******************************************************************
 
   IF (NBTYPE.GT.0) THEN
      I = 0
@@ -298,13 +303,13 @@ SUBROUTINE SETLIS()
 
                                       END IF
 
-!                                      WRITE (1,*) ' '
-!                                      WRITE (1,*) &
-!                                           ' **** FATAL ERROR! FATAL ERROR! ****'
-!                                      WRITE (1,*) ' No parameters found for the torsion'
-!                                      WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
-!                                      WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
-!                                      WRITE (1,*) ' **** Check interaction file ****'
+                                      !                                      WRITE (1,*) ' '
+                                      !                                      WRITE (1,*) &
+                                      !                                           ' **** FATAL ERROR! FATAL ERROR! ****'
+                                      !                                      WRITE (1,*) ' No parameters found for the torsion'
+                                      !                                      WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
+                                      !                                      WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
+                                      !                                      WRITE (1,*) ' **** Check interaction file ****'
                                       !                        WRITE (*,*) ' '
 
                                       !                        ISTOP = 1
@@ -366,13 +371,13 @@ SUBROUTINE SETLIS()
 
                                    END IF
 
-!                                   WRITE (1,*) ' '
-!                                   WRITE (1,*) &
-!                                        ' **** FATAL ERROR! FATAL ERROR! ****'
-!                                   WRITE (1,*) ' No parameters found for the torsion'
-!                                   WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
-!                                   WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
-!                                   WRITE (1,*) ' **** Check interaction file ****'
+                                   !                                   WRITE (1,*) ' '
+                                   !                                   WRITE (1,*) &
+                                   !                                        ' **** FATAL ERROR! FATAL ERROR! ****'
+                                   !                                   WRITE (1,*) ' No parameters found for the torsion'
+                                   !                                   WRITE (1,*) ' between  atoms',I,' & ',J,' & ',K,' & ',L
+                                   !                                   WRITE (1,*) ' of atom types ',IT,' & ',JT,' & ',KT,' & ',LT
+                                   !                                   WRITE (1,*) ' **** Check interaction file ****'
                                    !                        WRITE (*,*) ' '
 
                                    !                        ISTOP = 1
@@ -415,27 +420,27 @@ SUBROUTINE SETLIS()
 
                  IF (NOANGLE .EQ. 1) THEN
 
-!                    WRITE(*,*) '             ********************* WARNING *********************'
-!                    WRITE(*,*) '             *       No parameters found for the angle(s)      *'
-!                    DO H=3,X,3
-!                       WRITE (*,570) ATOM_ANG(H-2),ATOM_ANG(H-1),ATOM_ANG(H)
-!570                    FORMAT(2X, '            *         of atom types:',3(3X,I3),'        *')
-!                    END DO
-!                    WRITE(*,*) '             ***************************************************'
-!                    WRITE(*,*)
+                    !                    WRITE(*,*) '             ********************* WARNING *********************'
+                    !                    WRITE(*,*) '             *       No parameters found for the angle(s)      *'
+                    !                    DO H=3,X,3
+                    !                       WRITE (*,570) ATOM_ANG(H-2),ATOM_ANG(H-1),ATOM_ANG(H)
+                    !570                    FORMAT(2X, '            *         of atom types:',3(3X,I3),'        *')
+                    !                    END DO
+                    !                    WRITE(*,*) '             ***************************************************'
+                    !                    WRITE(*,*)
 
                  END IF
 
                  IF (NOTORS .EQ. 1) THEN
 
-!                    WRITE(*,*) '             ********************* WARNING *********************'
-!                    WRITE(*,*) '             *       No parameters found for the torsion(s)    *'
-!                    DO H=4,Q,4
-!                       WRITE (*,510) ATOM_TORS(H-3),ATOM_TORS(H-2),ATOM_TORS(H-1),ATOM_TORS(H)
-!510                    FORMAT(2X, '            *        of atom types:',4(3X,I3),'   *')
-!                    END DO
-!                    WRITE(*,*) '             ***************************************************'
-!                    WRITE(*,*)
+                    !                    WRITE(*,*) '             ********************* WARNING *********************'
+                    !                    WRITE(*,*) '             *       No parameters found for the torsion(s)    *'
+                    !                    DO H=4,Q,4
+                    !                       WRITE (*,510) ATOM_TORS(H-3),ATOM_TORS(H-2),ATOM_TORS(H-1),ATOM_TORS(H)
+                    !510                    FORMAT(2X, '            *        of atom types:',4(3X,I3),'   *')
+                    !                    END DO
+                    !                    WRITE(*,*) '             ***************************************************'
+                    !                    WRITE(*,*)
 
                  END IF
 
@@ -477,6 +482,29 @@ SUBROUTINE SETLIS()
                  !                    end do
                  !                 end if
 
+  IF (NOANGLE .EQ. 1) THEN
+     IF (NOTORS .EQ. 1) THEN
+        WRITE(*,*) '     ********************* WARNING ********************'
+        WRITE(*,*) '     *  Some angle(s) and torsion(s) are not defined  *'
+        WRITE(*,*) '     *    Simulation will run anyway                  *'
+        WRITE(*,*) '     **************************************************'
+        WRITE(*,*)
+     ELSE
+        WRITE(*,*) '     **************** WARNING **************'
+        WRITE(*,*) '     *    Some angles are not defined      *'
+        WRITE(*,*) '     *     Simulation will run anyway      *'
+        WRITE(*,*) '     ***************************************'
+        WRITE(*,*)
+     END IF
+  ELSE 
+     IF (NOTORS .EQ. 1) THEN
+        WRITE(*,*) '     ***************** WARNING ***************'
+        WRITE(*,*) '     *    Some torsions are not defined      *'
+        WRITE(*,*) '     *     Simulation will run anyway        *'
+        WRITE(*,*) '     *****************************************'
+        WRITE(*,*)
+     END IF
+  END IF
 
                  RETURN
                END SUBROUTINE SETLIS

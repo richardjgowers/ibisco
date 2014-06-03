@@ -1,3 +1,7 @@
+!> @file
+!> @brief Thermostat
+!> @details I have no idea if this works
+
 SUBROUTINE SCALEV ()
   USE VAR
 
@@ -15,7 +19,7 @@ SUBROUTINE SCALEV ()
 
   EK(1) = 0.5D0 * EK(1)
   T = EK(1) *  MKTEMP
-  FACTOR = TIN / T
+  FACTOR = TEMP_IN / T
 
   DO  I = 1, NATOMS
      VX(I) = SQRT(FACTOR) * VX(I)

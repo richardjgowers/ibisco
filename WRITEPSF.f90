@@ -1,3 +1,6 @@
+!> @file
+!> @brief Writes s-md.psf, used for later analysis
+
 SUBROUTINE WRITEPSF()
 
   USE VAR

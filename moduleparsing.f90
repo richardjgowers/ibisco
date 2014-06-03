@@ -1,3 +1,6 @@
+!> @file
+!> @brief Helping variables for parsing
+
 MODULE moduleparsing
 
  Character(80) :: line,errmesg

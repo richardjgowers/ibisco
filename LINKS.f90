@@ -1,3 +1,7 @@
+!> @file
+!> @brief Creates the linked cell lists for neighbour list updates
+!> @details Called from UPDATE_NEIGHBOURLIST.f90
+
 SUBROUTINE LINKS(HEAD,MAXNUMCELL,INDEX_LIST,N,CELL,NCELLX, NCELLY, NCELLZ, LCLIST)
   USE VAR
   IMPLICIT NONE
