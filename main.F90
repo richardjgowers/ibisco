@@ -5,7 +5,13 @@
 
 !> \mainpage
 !!
-!! \section IBIsCO Documentation!
+!! \section Hybrid IBIsCO Documentation!
+!!
+!! Hybrid IBIsCO is a molecular dynamics program for simulating hybrid scale models.
+!!
+!! For more details on the original program see \cite ibisco 
+!!
+!! For more details on hybrid scale models, please refer to \cite hybrid
 !!
 !! \subsection build Building IBIsCO
 !!
@@ -36,9 +42,9 @@
 !! OUTPUT.F90 \n
 !! WRITETRJ.f90 \n
 !!
-!! Or check out the molecular dynamics loop in
-!!
-!! NEW_LOOP.F90
+!! Trajectories produced can be analysed using the MDAnalysis python package available from \n
+!! https://code.google.com/p/mdanalysis/
+
 
 !> @file
 !> @brief IBIsCO MD program
@@ -74,14 +80,17 @@
 PROGRAM IBISCO
 
   USE MODULEPARSING
-
+  USE MTS
   USE VAR
 
   IMPLICIT NONE
 
   INTEGER :: I, A !< Used as counter variables
 
-  WRITE(*,*) 'IBIsCO TIME! Revision 78'
+  WRITE(*,*) '-----------------------------------------'
+  WRITE(*,*) 'Hybrid IBIsCO! Revision 79 - Now with MTS'
+  WRITE(*,*) '-----------------------------------------'
+
   OPEN ( 115 , FILE = 's-md.out')
   OPEN ( 116 , FILE = 's-md.tp')
   OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
@@ -89,9 +98,9 @@ PROGRAM IBISCO
   OPEN ( 44  , FILE = 'timing.out')
 #endif
 
-  WRITE( 115, *)'IBIsCO Revision 78'
+  WRITE( 115, *)'IBIsCO Revision 79'
   OPEN (1, FILE='ERROR')
-  WRITE(*,*)
+
   ISTOP = 0
 
   !DEFINE REDUCED UNITS
@@ -163,7 +172,7 @@ PROGRAM IBISCO
   !     CALCULATE THE INITIAL TEMPERATURE AND KINETIC ENERGY
   EK(1) = 0.0
   EK(2) = 0.0
-  WRITE(*,*) NUMATOMS, NUMBEADS
+
   MKTEMP_ATOM = 2.0D0 / REAL(3.0D0 * (NUMATOMS - 1))
   MKTEMP_BEAD = 2.0D0 / REAL(3.0D0 * (NUMBEADS - 1))
   DO A = 1, NUMATOMS
@@ -229,8 +238,13 @@ PROGRAM IBISCO
   WRITE(*,*)
   WRITE(*,*) 'Beginning simulation'
   WRITE(*,*)
+  WRITE(*,*) 'Step:    Temperature:        Pressure:'
 
-  CALL NEW_LOOP()
+  IF(NMTS .eq. 0) THEN
+     CALL NEW_LOOP()
+  ELSE
+     CALL MTS_LOOP()
+  END IF
 
   CLOSE (201)
   CLOSE (202)

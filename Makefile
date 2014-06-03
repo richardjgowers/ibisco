@@ -1,6 +1,6 @@
 PROG = IBIsCO
 
-SRCS =    moduleparsing.f90 module_var.F90  \
+SRCS =    moduleparsing.f90 module_var.F90 module_MTS.f90 \
           main.F90 MAPS.f90  FTABLE.f90 WRITETRJ.f90 \
           AVERAGE.f90 ALLOCATEVAR.f90 SCALEBP.f90 MOMENTUM.f90 OUTPUT.F90 MOVE.F90 \
           UNIT.f90 COMVEL.f90 RDCONTROL.f90 \
@@ -14,9 +14,10 @@ SRCS =    moduleparsing.f90 module_var.F90  \
           BUILD_CONNECTIVITY.f90 BONDED_FORCE.F90 ALLOCATEVAR2.f90 \
           NEW_NEIGHBOUR_NOLIST.f90 \
           TIMING.F90 \
-	  RDVIRTBONDS.f90 RDVIRTANGLES.f90 REPORT_EXCLUSIONS.f90
+	  RDVIRTBONDS.f90 RDVIRTANGLES.f90 REPORT_EXCLUSIONS.f90 \
+          MTS_LOOP.f90
 
-OBJS =    moduleparsing.o module_var.o \
+OBJS =    moduleparsing.o module_var.o module_MTS.o \
           main.o MAPS.o   FTABLE.o WRITETRJ.o \
           AVERAGE.o ALLOCATEVAR.o SCALEBP.o MOMENTUM.o OUTPUT.o MOVE.o \
           UNIT.o COMVEL.o  RDCONTROL.o RDCOOR.o \
@@ -29,7 +30,8 @@ OBJS =    moduleparsing.o module_var.o \
           BUILD_CONNECTIVITY.o BONDED_FORCE.o ALLOCATEVAR2.o \
           NEW_NEIGHBOUR_NOLIST.o \
           TIMING.o \
-	  RDVIRTBONDS.o RDVIRTANGLES.o REPORT_EXCLUSIONS.o
+	  RDVIRTBONDS.o RDVIRTANGLES.o REPORT_EXCLUSIONS.o \
+          MTS_LOOP.o
 
 .SUFFIXES: $(SUFFIXES) .f90 .F90
 

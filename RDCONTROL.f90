@@ -34,6 +34,7 @@ SUBROUTINE RDCONTROL ()
 
   USE MODULEPARSING
   USE VAR
+  USE MTS
 
   IMPLICIT NONE
 
@@ -454,7 +455,6 @@ SUBROUTINE RDCONTROL ()
 
   ALARM = 10
   REWIND (2)
-
   DO WHILE (.TRUE.)
      READ (2, '(A80)',IOSTAT=IOS2) LINE
      CALL PARSE ()
@@ -478,6 +478,23 @@ SUBROUTINE RDCONTROL ()
      CALL CONTROL_ERROR('initialize_velocities')
      ISTOP=1
   END IF  
+
+  ALARM = 10
+  REWIND(2)
+  DO WHILE (.TRUE.)
+     READ(2, '(A80)', IOSTAT=IOS2) LINE
+     CALL PARSE()
+     IF (STRNGS(1) == 'mts') THEN
+        READ(STRNGS(2), *) NMTS
+        ALARM = 0
+     END IF
+     IF (IOS2 .ne. 0) EXIT
+  END DO
+  IF (ALARM .ne. 0) THEN
+     CALL CONTROL_ERROR('mts')
+     ISTOP = 1
+  END IF
+
 
   ALARM = 10
   REWIND (2)
