@@ -78,7 +78,7 @@ PROGRAM IBISCO
 
   INTEGER :: I, A !< Used as counter variables
 
-  WRITE(*,*) 'IBIsCO TIME! Revision 77'
+  WRITE(*,*) 'IBIsCO TIME! Revision 78'
   OPEN ( 115 , FILE = 's-md.out')
   OPEN ( 116 , FILE = 's-md.tp')
   OPEN ( 113 , FILE = 's-md.trj', form='UNFORMATTED', access='SEQUENTIAL')
@@ -86,7 +86,7 @@ PROGRAM IBISCO
   OPEN ( 44  , FILE = 'timing.out')
 #endif
 
-  WRITE( 115, *)'IBIsCO Revision 77'
+  WRITE( 115, *)'IBIsCO Revision 78'
   OPEN (1, FILE='ERROR')
   WRITE(*,*)
   ISTOP = 0

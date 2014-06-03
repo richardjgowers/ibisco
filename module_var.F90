@@ -26,7 +26,7 @@ MODULE VAR
 
   INTEGER*4 :: ENSEMBLE
   INTEGER*4 :: NITEMS, NCOARSE, NSTEP, NMOL 
-  INTEGER*4 :: NAVERAGE, HALT_DRIFT, NSAMPLING
+  INTEGER*4 :: HALT_DRIFT
   INTEGER*4 :: NUPDATE
   CHARACTER(6), POINTER :: LABEL(:), NAME_LABEL(:)
   CHARACTER(72) :: TITLE
@@ -44,7 +44,7 @@ MODULE VAR
   REAL*8, DIMENSION(2) :: t_NEW_FORCE, t_NONBONDED_atom, t_NONBONDED_bead, t_DISTRIBUTE_VSFORCE
   REAL*8, DIMENSION(2) :: t_BONDED_FORCE, t_BONDS, t_ANGLES, t_TORSIONS, t_OUTOFPLANES
   REAL*8, DIMENSION(2) :: t_SHIFT, t_MOVE, t_MOMENTUM, t_SCALEBP
-  REAL*8, DIMENSION(2) :: t_REPORTRESULTS, t_AVERAGE, t_WRITETRJ, t_OUTPUT
+  REAL*8, DIMENSION(2) :: t_REPORTRESULTS, t_AVERAGE, t_WRITETRJ
   !End timing variables
 
   !Averaging and output variables
@@ -102,8 +102,8 @@ MODULE VAR
   REAL(KIND=RKIND), POINTER :: SX(:), SY(:), SZ(:) ! folded coords
   REAL(KIND=RKIND), POINTER :: VX(:), VY(:), VZ(:)
   REAL(KIND=RKIND), POINTER :: VTX(:),VTY(:),VTZ(:) !previous velocities for leapfrog
-  REAL(KIND=RKIND), allocatable :: FX(:), FY(:), FZ(:)
-  REAL(KIND=RKIND), allocatable :: FXNB(:), FYNB(:), FZNB(:) !for pressure calcs
+  REAL(KIND=RKIND), ALLOCATABLE :: FX(:), FY(:), FZ(:)
+  REAL(KIND=RKIND), ALLOCATABLE :: FXNB(:), FYNB(:), FZNB(:) !for pressure calcs
   ! End coordinate variables
 
   !Forcefield information
@@ -135,7 +135,6 @@ MODULE VAR
   ! End forcefield information
 
   !     Variables for Hybrid Description
-!  integer :: contactB=0, contactA=0
   INTEGER, POINTER :: VIRT_NUMATOMS(:), VIRT_CENTER(:), VIRT_VS_IND(:), VIRT_ATM_IND(:,:)
   REAL(KIND=RKIND), POINTER :: VIRT_MASS(:), VIRT_INVMASS(:), VIRT_MASSCOEFF(:,:)
   character(len=7),pointer  :: name_mol(:)
@@ -151,7 +150,7 @@ MODULE VAR
 
   !     Variables for MTS
   INTEGER :: MTS_CHECK,type_mts,I0,I1,I2,I3,I4,I5,MTSPARAM2,TSMTS,MTSPARAM,Kmts
-  reaL(KIND=RKIND) :: idt,idt2,idt3,idt4,idt5,mtsdt2,dt3,dt4,dt5
+  REAL(KIND=RKIND) :: idt,idt2,idt3,idt4,idt5,mtsdt2,dt3,dt4,dt5
   REAL(KIND=RKIND),POINTER :: FXi0(:),FYi0(:),FZi0(:) 
   REAL(KIND=RKIND),POINTER :: FXi1(:),FYi1(:),FZi1(:) 
   REAL(KIND=RKIND),POINTER :: FXii(:),FYii(:),FZii(:) 
