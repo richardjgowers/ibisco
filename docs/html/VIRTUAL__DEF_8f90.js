@@ -1,4 +1,4 @@
 var VIRTUAL__DEF_8f90 =
 [
-    [ "VIRTUAL_DEF", "VIRTUAL__DEF_8f90.html#adb30a69178107a734208cc3d7b662eb5", null ]
+    [ "virtual_def", "VIRTUAL__DEF_8f90.html#a8b2aca5a2b14a74a7eefa9c82862722b", null ]
 ];

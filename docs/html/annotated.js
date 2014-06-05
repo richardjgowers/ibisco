@@ -1,5 +1,6 @@
 var annotated =
 [
     [ "moduleparsing", "classmoduleparsing.html", "classmoduleparsing" ],
-    [ "VAR", "classVAR.html", "classVAR" ]
+    [ "mts", "classmts.html", "classmts" ],
+    [ "var", "classvar.html", "classvar" ]
 ];

@@ -1,4 +1,4 @@
 var MOVE_8F90 =
 [
-    [ "MOVE", "MOVE_8F90.html#a42aaa02a1546beefe7a795b9a2115c95", null ]
+    [ "move", "MOVE_8F90.html#a72524a568f5553b57c243d5e65d1b446", null ]
 ];
