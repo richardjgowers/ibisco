@@ -17,6 +17,7 @@
 !! pressure_coupling_time     5.0D0       (Pressure relaxation time in ps)
 !! isothermal_compressibility 1.0D-6      (Isothermal compressibility (1/kPa))
 !! virtual_sites              960         (Number of virtual sites in system)
+!! mts                        0           (Number of approximated MTS steps to make 0=off)
 !! bead_cutoff                1.200       (Nonbonded cutoff for beads)
 !! bead_neighbour_list_cutoff 1.300       (Neighbour list cutoff for beads)
 !! non_bonded_bead            4           (Use non-bonded potential for bead on 1..4 OR 1..5)
