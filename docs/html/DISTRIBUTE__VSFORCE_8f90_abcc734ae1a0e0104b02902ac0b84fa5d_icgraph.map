@@ -1,5 +1,7 @@
 <map id="G" name="G">
-<area shape="rect" id="node3" href="$NEW__FORCE_8F90.html#afe1a9c5cea7ce2d3785cd2617fa11aa5" title="NEW_FORCE" alt="" coords="231,5,337,35"/>
-<area shape="rect" id="node5" href="$NEW__LOOP_8F90.html#a8193d5bcbe8bae16cec7e320e2862c6b" title="NEW_LOOP" alt="" coords="388,5,484,35"/>
-<area shape="rect" id="node7" href="$main_8F90.html#a17e13bf00726da8632999ac707b96cce" title="IBISCO" alt="" coords="535,5,601,35"/>
+<area shape="rect" id="node3" href="$MTS__LOOP_8f90.html#a9751def032c7112f060437d94bce71fc" title="The force loop for MTS simulation." alt="" coords="232,5,336,35"/>
+<area shape="rect" id="node9" href="$NEW__FORCE_8F90.html#afe1a9c5cea7ce2d3785cd2617fa11aa5" title="NEW_FORCE" alt="" coords="231,59,337,88"/>
+<area shape="rect" id="node5" href="$MTS__LOOP_8f90.html#ac5c5651471f163a9c9295b3b2c93255c" title="The alternate molecular dynamics loop for MTS simulations." alt="" coords="389,5,483,35"/>
+<area shape="rect" id="node7" href="$main_8F90.html#a17e13bf00726da8632999ac707b96cce" title="IBISCO" alt="" coords="535,32,601,61"/>
+<area shape="rect" id="node11" href="$NEW__LOOP_8F90.html#a8193d5bcbe8bae16cec7e320e2862c6b" title="NEW_LOOP" alt="" coords="388,59,484,88"/>
 </map>
