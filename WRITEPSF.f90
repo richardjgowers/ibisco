@@ -126,7 +126,7 @@ SUBROUTINE WRITEPSF()
            P = P + 3
         END DO
 
-        SELECT CASE(MOD(NTHETA,4))
+        SELECT CASE(MOD(NTHETA,3))
         CASE(1)
            P = NTHETA
            WRITE(117,*) ANGLELIST(P,1), ANGLELIST(P,2), ANGLELIST(P,3)
