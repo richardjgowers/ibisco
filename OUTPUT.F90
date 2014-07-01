@@ -78,35 +78,9 @@ SUBROUTINE OUTPUT (I)
   WRITE (115, 100)
   WRITE (115, 100)
 
+  FLUSH(115)
+
 100 format (A,2(F16.5,2X))
-
-  OPEN (22, FILE = 'timestep')
-
-  WRITE (22, *)'Step:                      ', I
-  WRITE (22, *)'Simulated_time:            ', TREAL
-  WRITE (22, *)'Total_energy:              ', TOT_E*CONV, AV_TOT_E*AV_CONV
-  WRITE (22, *)'Potential_energy:          ', POT_E*CONV, AV_POT_E*AV_CONV
-  WRITE (22, *)'Kinetic_energy:            ', KIN_E*CONV, AV_KIN_E*AV_CONV
-  WRITE (22, *)'Nonbonded_energy:          ', SUM(V_NB)*CONV, SUM(AV_V_NB)*AV_CONV
-  WRITE (22, *)'Bond_energy:               ', SUM(V_BOND)*CONV, SUM(AV_V_BOND)*AV_CONV
-  WRITE (22, *)'Angle_energy:              ', SUM(V_ANGLE)*CONV, SUM(AV_V_ANGLE)*AV_CONV
-  WRITE (22, *)'Torsion_energy:            ', SUM(V_TORSION)*CONV, SUM(AV_V_TORSION)*AV_CONV
-  WRITE (22, *)'Improper_torsion_energy:   ', SUM(V_OOP)*CONV, SUM(AV_V_OOP)*AV_CONV
-  WRITE (22, *)'Temperature:               ', TEMP*TEMPSCALE, AV_TEMP*INV_AV*TEMPSCALE
-  WRITE (22, *)'Pressure:                  ', PRES(1)*PSCALE, AV_PRES(1)*AV_PSCALE
-  WRITE (22, *)'Pressure(x):               ', PRES(2)*PSCALE, AV_PRES(2)*AV_PSCALE
-  WRITE (22, *)'Pressure(y):               ', PRES(3)*PSCALE, AV_PRES(3)*AV_PSCALE
-  WRITE (22, *)'Pressure(z):               ', PRES(4)*PSCALE, AV_PRES(4)*AV_PSCALE
-  WRITE (22, *)'Pressure(xy):              ', PRES(5)*PSCALE, AV_PRES(5)*AV_PSCALE
-  WRITE (22, *)'Pressure(xz):              ', PRES(6)*PSCALE, AV_PRES(6)*AV_PSCALE
-  WRITE (22, *)'Pressure(yz):              ', PRES(7)*PSCALE, AV_PRES(7)*AV_PSCALE
-  WRITE (22, *)'Box_volume:                ', BOX(1), AV_BOX(1)*INV_AV
-  WRITE (22, *)'Box_length(x):             ', BOX(2), AV_BOX(2)*INV_AV
-  WRITE (22, *)'Box_length(y):             ', BOX(3), AV_BOX(3)*INV_AV
-  WRITE (22, *)'Box_length(z):             ', BOX(4), AV_BOX(4)*INV_AV
-  WRITE (22, *)'Mass_density:              ', DENS * DSCALE, AV_DENS*INV_AV*DSCALE
-
-  CLOSE (22)      
 
   !Reset average totals to 0 to begin new averaging window
   AV_TOT_E = 0.0

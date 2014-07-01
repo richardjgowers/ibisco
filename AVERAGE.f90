@@ -1,15 +1,10 @@
-SUBROUTINE AVERAGE (TM)
+!> @file 
+!> @brief Keeps track of the average values for various things
+SUBROUTINE AVERAGE()
 
   USE VAR
 
   IMPLICIT NONE
-
-  INTEGER :: I, J, L, KK, TM
-  REAL(KIND=RKIND) :: TREAL
-!       *******************************************************************
-!       ********     STORING AVERAGE DATA AND RESTART FILE      ***********
-
-  TREAL = TM * DT * TIMESCALE * 1.0D+12 + INITIME
 
   ! Calculate a few totals, why not
   POT_E = SUM(V_NB) + SUM(V_BOND) + SUM(V_ANGLE) + SUM(V_TORSION) + SUM(V_OOP)
@@ -50,55 +45,6 @@ SUBROUTINE AVERAGE (TM)
 ! Box volume & density
   AV_BOX = AV_BOX + BOX
   AV_DENS = AV_DENS + DENS
-
- IF(MOD(STEP, NTRJ) == 0) THEN
-    !	WRITING THE RESTART FILE
-
-    OPEN ( 112 , FILE = 'restart', STATUS='replace')
-    WRITE(112,*)TITLE
-    WRITE(112,*)'Time	',TREAL, '	(ps)'
-    WRITE(112,*)'***** Box Length(X, Y, Z in nanometres) **'
-    WRITE(112,*)BOXX, BOXY, BOXZ
-
-9040 FORMAT (1X,I6,1X,I2,1X,I1,1X,3 (G21.14,1X))
-9030 FORMAT (70 ('*'),/,10 ('*'),&
-         ' Record for each atom is in the form:-            ', &
-         10 ('*'),/,10 ('*'), &
-         ' Index Atom_Type No._of_bonds X Y Z (coords.in m) ', &
-         10 ('*'),/,10 ('*'), &
-         ' Vx Vy Vz (in m/s) Indices_of_bonded_atoms        ', &
-         10 ('*'),/,70 ('*'))
-    WRITE (112,9030)
-    WRITE (112,*) 'num_of_molecules  ', NMOL
-    L = 0
-    DO I = 1,NMOL !120
-       WRITE (112,*) NATM(I),'  Atoms_in_Molecule_No. ',I,name_mol(i)
-       DO J = 1,NATM(I) !110
-          L = L + 1
-          WRITE (112,9040) L,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
-          SELECT CASE (NBONDS(L))
-          CASE(0)
-             WRITE(112,9090)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3
-9090         FORMAT (3(F16.10,1X))
-          CASE(1)
-             WRITE(112,9050)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3,(JBOND(L,KK),KK=1,NBONDS(L))
-9050         FORMAT (3(F16.10,1X), I5)
-          CASE(2)
-             WRITE(112,9060)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3,(JBOND(L,KK),KK=1,NBONDS(L))
-9060         FORMAT (3(F16.10,2X),2(I5,2X))
-          CASE(3)
-             WRITE(112,9070)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3,(JBOND(L,KK),KK=1,NBONDS(L))
-9070         FORMAT (3(F16.10,1X), 3(I5,2X))
-          CASE(4)
-             WRITE(112,9080)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3,(JBOND(L,KK),KK=1,NBONDS(L))
-9080         FORMAT (3(F16.10,1X), 4(I5,2X))
-          END SELECT
-          !        WRITE (112,*) VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, (JBOND(L,KK),KK=1,NBONDS(L))
-       END DO! 110 	   	CONTINUE
-    END DO!120 	CONTINUE
-
-    CLOSE (112)
- END IF
 
  RETURN
 END SUBROUTINE AVERAGE
