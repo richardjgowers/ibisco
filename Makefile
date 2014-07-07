@@ -46,8 +46,8 @@ F90 = gfortran
 #F90FLAGS = -openmp -openmp-report1 -O2
 #LDFLAGS = -openmp -O2 
 #Debugging with gfortran
-#F90FLAGS = -pg -fbounds-check -fbacktrace -O0
-#LDFLAGS = -g -pg -fbounds-check -fbacktrace -O0
+#F90FLAGS = -pg -fbounds-check -fbacktrace -O0 -fopenmp
+#LDFLAGS = -g -pg -fbounds-check -fbacktrace -O0 -fopenmp
 #F90FLAGS = -Mbounds -g pt=px-Bstatic
 #Fast gfortran options
 F90FLAGS = -O2 -fopenmp

@@ -22,6 +22,7 @@ MODULE VAR
   !These are called in WRITETRJ (binary file!) so need to remain strictly as these types
   INTEGER*4 :: NFRAME, NTRJ, NATOMS
   REAL*8, DIMENSION(2) :: EK
+  REAL*4, DIMENSION(:), ALLOCATABLE :: NSX, NSY, NSZ, NVX, NVY, NVZ
   !End WRITETRJ stuff
 
   INTEGER*4 :: ENSEMBLE
