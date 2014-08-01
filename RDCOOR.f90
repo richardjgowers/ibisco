@@ -52,17 +52,20 @@ SUBROUTINE RDCOOR()
      RETURN
   END IF
 
-  READ (3, '(A80)') LINE
+  READ (3, '(A80)', iostat=ios) LINE
+  IF (ios .NE. 0) CALL RDCOOR_ERROR()
   CALL PARSE ()
   READ (STRNGS(1),*) TITLE
 
-  READ (3, '(A80)') LINE
+  READ (3, '(A80)', iostat=ios) LINE
+  IF (ios .NE. 0) CALL RDCOOR_ERROR()
   CALL PARSE ()
   IF (STRNGS(1) == 'Time') THEN
      READ (STRNGS(2),*) INITIME
   END IF
   READ(3,*)
-  READ(3,*)BOXX, BOXY, BOXZ
+  READ(3,*, iostat=ios)BOXX, BOXY, BOXZ
+  IF (ios .NE. 0) CALL RDCOOR_ERROR()  
   BOXXINV = 1.0D0 / BOXX
   BOXYINV = 1.0D0 / BOXY
   BOXZINV = 1.0D0 / BOXZ
@@ -76,11 +79,11 @@ SUBROUTINE RDCOOR()
   READ (3,*)
   READ (3,*)
   READ (3,*)
-  READ (3,*)text, NMOL
+  READ (3,*, iostat=ios)text, NMOL
+  IF (ios .NE. 0) CALL RDCOOR_ERROR()
 
   ALLOCATE(NATM(NMOL))
-  allocate(name_mol(nmol))
-
+  ALLOCATE(name_mol(NMOL))
   ALLOCATE(TYPE_LABEL(NITEMS))
   TYPE_LABEL = 1 !All things are labelled as atoms by default
 
@@ -101,9 +104,10 @@ SUBROUTINE RDCOOR()
            ISTOP=1
            RETURN
         END IF
-        READ (3,*) LL,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
-        READ (3,*) VX(L),VY(L),VZ(L),(JBOND(L,K),K=1,NBONDS(L))
-        !READ (3,*)(JBOND(L,K),K=1,NBONDS(L))
+        READ (3,*,iostat=ios) LL,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
+        READ (3,*,iostat=ios) VX(L),VY(L),VZ(L),(JBOND(L,K),K=1,NBONDS(L))
+
+        IF(ios .NE. 0) CALL RDCOOR_ERROR()
 
         MOL(L) = I !Which molecule atom L belongs to
 
@@ -139,6 +143,20 @@ SUBROUTINE RDCOOR()
 
   RETURN
 END SUBROUTINE RDCOOR
+
+SUBROUTINE RDCOOR_ERROR()
+
+  IMPLICIT NONE
+
+  WRITE(*,*) '************************************************'
+  WRITE(*,*) '*                                              *'
+  WRITE(*,*) '* Fatal error in RDCOOR, check coordinate file *'
+  WRITE(*,*) '*                                              *'
+  WRITE(*,*) '************************************************'
+
+  STOP
+
+END SUBROUTINE RDCOOR_ERROR
 
 subroutine error_noname
 		WRITE (*,*)
