@@ -1,3 +1,6 @@
+#ifndef DOXY_SKIP
+#include "ibi-preprocess.h"
+#endif
 !> @file
 !> @brief Write trajectory frame to TRZ format.  Saves the restart file.
 !!
@@ -104,7 +107,10 @@ SUBROUTINE WRITETRJ(TM)
 9050 FORMAT (1X,A8,1X,3 (G21.14,1X))
   CLOSE (114)
 
+
+#ifndef SKIP_WRITE_RESTART
   CALL WRITE_RESTART(TM)
+#endif
 
   RETURN
 
