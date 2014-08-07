@@ -22,14 +22,14 @@
     INTEGER, INTENT(IN) :: LIST(MAXNAB,N) !< 2d array, first dimension goes over all particles, 
     !! second dimension contains neighbours for 
     !!             this particle
-    REAL(KIND=RKIND), INTENT(IN) :: RCUT !< Cutoff radius for nonbonded interactions
-    REAL(KIND=RKIND), INTENT(IN) :: RCUTSQ !< Cutoff radius squared
+    REAL*4, INTENT(IN) :: RCUT !< Cutoff radius for nonbonded interactions
+    REAL*4, INTENT(IN) :: RCUTSQ !< Cutoff radius squared
     INTEGER :: A, B, I, J, TI, TJ, TIJ
     INTEGER :: JNAB
     INTEGER :: NI
-    REAL(KIND=RKIND) :: FXI, FYI, FZI
-    REAL(KIND=RKIND) :: RXI, RYI, RZI, RXIJ, RYIJ, RZIJ, RIJSQ, RIJ
-    REAL(KIND=RKIND) :: ALPHA, FIJ, VIJ
+    REAL*4 :: FXI, FYI, FZI
+    REAL*4 :: RXI, RYI, RZI, RXIJ, RYIJ, RZIJ, RIJSQ, RIJ
+    REAL*4 :: ALPHA, FIJ, VIJ
 
     !$OMP PARALLEL DO DEFAULT(NONE) SCHEDULE(STATIC,1)&
     !$OMP& SHARED(N,B,NITEMS,INDEX_LIST,LIST,ITYPE,INBONDT,NNEBS)&
@@ -74,10 +74,10 @@
 
              ALPHA = (RIJ - RNBOND(NI,TIJ))/BINNB(TIJ)
 
-             FIJ = NBOND_FORCE(NI,TIJ)*(1.0D0 - ALPHA) &
+             FIJ = NBOND_FORCE(NI,TIJ)*(1.0 - ALPHA) &
                   + NBOND_FORCE(NI+1,TIJ)*ALPHA
 
-             VIJ = NBOND_POT(NI,TIJ)*(1.0D0 - ALPHA) &
+             VIJ = NBOND_POT(NI,TIJ)*(1.0 - ALPHA) &
                   + NBOND_POT(NI+1,TIJ)*ALPHA
 
              IF(TYPE_LABEL(I) .eq. 1) THEN !ATOM

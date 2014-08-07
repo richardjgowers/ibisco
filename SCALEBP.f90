@@ -8,8 +8,8 @@ SUBROUTINE SCALEBP (TM)
   USE VAR
   IMPLICIT NONE
   INTEGER :: I, TM
-  REAL(KIND=RKIND) :: P, AVP
-  REAL(KIND=RKIND) :: MIUX, MIUY, MIUZ
+  REAL*4 :: P, AVP
+  REAL*4 :: MIUX, MIUY, MIUZ
   !      REAL*8 :: DBX, DBY, DBZ, NBOXX, NBOXY, NBOXZ, MIUX, MIUY, MIUZ
   !      REAL*8 :: PSCALEX, PSCALEY, PSCALEZ, P, AVP
   !       ******************************************************************************

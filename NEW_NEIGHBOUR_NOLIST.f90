@@ -10,12 +10,12 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
   INTEGER, INTENT(IN) :: INDEX_LIST(N) !< Gives global index of each particle
   INTEGER, INTENT(IN) :: MAXNAB !< Maximum possible number neighbours per particle
   INTEGER, INTENT(INOUT) :: LIST(MAXNAB, N) !< The neighbour list
-  REAL(KIND=RKIND), INTENT(IN) :: RLIST !< Cutoff radius for the neighbour list
+  REAL*4, INTENT(IN) :: RLIST !< Cutoff radius for the neighbour list
   INTEGER :: A, B, C, D, I, J, NLIST
-  REAL(KIND=RKIND) :: RXI, RYI, RZI
-  REAL(KIND=RKIND) :: RIJSQ
-  REAL(KIND=RKIND) :: RXIJ, RYIJ, RZIJ
-  REAL(KIND=RKIND) :: RLISTSQ
+  REAL*4 :: RXI, RYI, RZI
+  REAL*4 :: RIJSQ
+  REAL*4 :: RXIJ, RYIJ, RZIJ
+  REAL*4 :: RLISTSQ
 
   RLISTSQ = RLIST * RLIST
   LIST = 0 ! Set neighbour list to 0, this indicates end of list

@@ -18,7 +18,7 @@
      RIJ = SQRT(RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0)
      RKJ = SQRT(RXKJ ** 2.0D0 + RYKJ ** 2.0D0 + RZKJ ** 2.0D0)
      CT = (RXIJ*RXKJ + RYIJ*RYKJ + RZIJ*RZKJ)/RIJ/RKJ
-     THETA = DACOS(CT) * R2D
+     THETA = ACOS(CT) * R2D
 
      !	****** vector M cross product -IJxKJ	
      RXM = - ( RYIJ*RZKJ - RZIJ*RYKJ)

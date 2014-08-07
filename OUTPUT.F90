@@ -14,7 +14,7 @@ SUBROUTINE OUTPUT (I)
   REAL*8 :: TREAL
   REAL*8 :: AV_CONV, AV_PSCALE, INV_AV
 #ifdef DEBUG_OOP
-  real(kind=rkind) :: VOOPP_L,VOOPP_LD,VOOPP_D,VOOPP_ring
+  real*4 :: VOOPP_L,VOOPP_LD,VOOPP_D,VOOPP_ring
 #endif
 
   INV_AV = 1.0 / NTRJ

@@ -74,7 +74,7 @@
         COST=-1.0D0 
      END IF
 
-     PHI = DACOS(COST)
+     PHI = ACOS(COST)
      phi = signt * phi
      !    phi = phi - pi*0.5D0 * anint(phi * ipi*2.0D0)
      phi = phi*R2D

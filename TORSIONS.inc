@@ -96,7 +96,7 @@ DO  A = 1, NIJKL(I)
         COST = -1.0
     end if
 
-    PHI = DACOS(COST)*R2D
+    PHI = ACOS(COST)*R2D
 
     IF (SIGNT.LT.0) PHI=360.D0 - PHI
 

@@ -30,7 +30,7 @@ SUBROUTINE RDVIRTUAL()
   INTEGER :: iost, I, J, K, NUMATOM, TI, TJ, A
   INTEGER, PARAMETER :: MAX_ATOMS = 15 !Temp max number of atoms within a VS
   INTEGER :: ACTUAL_MAX
-  REAL(KIND=RKIND), PARAMETER :: MASSTOL = 0.0001
+  REAL*4, PARAMETER :: MASSTOL = 0.0001
   REAL*8 :: SUMTOTBMASS
   INTEGER, POINTER :: INDX_ATM(:,:) !Temp array for filling in index of atoms before max VIRT_NUMATOMS is known
 
