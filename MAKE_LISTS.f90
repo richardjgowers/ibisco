@@ -4,7 +4,7 @@
 !> @details Hybrid simulations work on the basis of having 2 pointer arrays which point to the master
 !! coordinate list.  These two pointer lists are called ATOM and BEAD. These are integer arrays 
 !! which are the length of the number of atoms or beads.  ATOM(1) returns the index of the first atom
-!! in the master arrays, eg RX(ATOM(1)) is the x coordinate of the first atom.
+!! in the master arrays, eg RXYZ(1, ATOM(1)) is the x coordinate of the first atom.
 !!
 !! In this way, all atoms or beads can easily be cycled through.
 !! 

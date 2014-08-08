@@ -32,18 +32,18 @@ SUBROUTINE WRITETRJ(TM)
 
   ! Convert all values to be saved into correct precision
   !$OMP PARALLEL DO DEFAULT(NONE) SCHEDULE(STATIC, 4)&
-  !$OMP& SHARED(NSX, NSY, NSZ, SX, SY, SZ)&
-  !$OMP& SHARED(NVX, NVY, NVZ, VX, VY, VZ)&
+  !$OMP& SHARED(NSX, NSY, NSZ, SXYZ)&
+  !$OMP& SHARED(NVX, NVY, NVZ, VXYZ)&
   !$OMP& SHARED(smallnumber, NATOMS)&
   !$OMP& PRIVATE(J)
   DO J = 1, NATOMS
-     NSX(J) = SX(J)
-     NSY(J) = SY(J)
-     NSZ(J) = SZ(J)
+     NSX(J) = SXYZ(1,J)
+     NSY(J) = SXYZ(2,J)
+     NSZ(J) = SXYZ(3,J)
 
-     NVX(J) = VX(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
-     NVY(J) = VY(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
-     NVZ(J) = VZ(J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+     NVX(J) = VXYZ(1,J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+     NVY(J) = VXYZ(2,J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
+     NVZ(J) = VXYZ(3,J) *smallnumber !/ TIMESCALE / 1.0D+12      !nanometer/ps
   END DO
   !$OMP END PARALLEL DO
 
@@ -146,29 +146,29 @@ SUBROUTINE WRITE_RESTART(TM)
        WRITE (112,*) NATM(I),'  Atoms_in_Molecule_No. ',I,name_mol(i)
        DO J = 1,NATM(I) !110
           L = L + 1
-          WRITE (112,9040) L,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
+          WRITE (112,9040) L,ITYPE(L),NBONDS(L),SXYZ(1,L),SXYZ(2,L),SXYZ(3,L)
           SELECT CASE (NBONDS(L)) ! Format statement changes depending on number of bonds
           CASE(0)
-             WRITE(112,9090)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3
+             WRITE(112,9090)VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3
 9090         FORMAT (3(F16.10,1X))
           CASE(1)
-             WRITE(112,9050)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, & 
+             WRITE(112,9050)VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3, & 
                   (JBOND(L,KK),KK=1,NBONDS(L))
 9050         FORMAT (3(F16.10,1X), I5)
           CASE(2)
-             WRITE(112,9060)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, & 
+             WRITE(112,9060)VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3, & 
                   (JBOND(L,KK),KK=1,NBONDS(L))
 9060         FORMAT (3(F16.10,2X),2(I5,2X))
           CASE(3)
-             WRITE(112,9070)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, & 
+             WRITE(112,9070)VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3, & 
                   (JBOND(L,KK),KK=1,NBONDS(L))
 9070         FORMAT (3(F16.10,1X), 3(I5,2X))
           CASE(4)
-             WRITE(112,9080)VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, & 
+             WRITE(112,9080)VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3, & 
                   (JBOND(L,KK),KK=1,NBONDS(L))
 9080         FORMAT (3(F16.10,1X), 4(I5,2X))
           END SELECT
-          !        WRITE (112,*) VX(L)*VSCALE*1.d-3,VY(L)*VSCALE*1.d-3,VZ(L)*VSCALE*1.d-3, (JBOND(L,KK),KK=1,NBONDS(L))
+          !        WRITE (112,*) VXYZ(1,L)*VSCALE*1.d-3,VXYZ(2,L)*VSCALE*1.d-3,VXYZ(3,L)*VSCALE*1.d-3, (JBOND(L,KK),KK=1,NBONDS(L))
        END DO! 110 	   	CONTINUE
     END DO!120 	CONTINUE
 

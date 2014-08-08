@@ -8,6 +8,8 @@
 
 MODULE VAR
 
+  ! Precision definition, 8 = double, 4 = single
+  INTEGER,PARAMETER :: RKIND = 4
   !UNIT CONSTANTS
   REAL*4, PARAMETER :: KB = 1.380658D-23
   REAL*4, PARAMETER :: NA = 6.0221367D+23
@@ -98,12 +100,9 @@ MODULE VAR
   !End barostat variables
 
   ! Coordinate variables
-  REAL*4, POINTER :: RX(:), RY(:), RZ(:) ! unfolded coords
-  REAL*4, POINTER :: SX(:), SY(:), SZ(:) ! folded coords
-  REAL*4, POINTER :: VX(:), VY(:), VZ(:)
-  REAL*4, POINTER :: VTX(:),VTY(:),VTZ(:) !previous velocities for leapfrog
-  REAL*4, ALLOCATABLE :: FX(:), FY(:), FZ(:)
-  REAL*4, ALLOCATABLE :: FXNB(:), FYNB(:), FZNB(:) !for pressure calcs
+  REAL*4, DIMENSION(:,:), ALLOCATABLE :: RXYZ, SXYZ ! Folded and unfolded coords
+  REAL*4, DIMENSION(:,:), ALLOCATABLE :: VXYZ, VTXYZ ! Velocity and previous velocity
+  REAL*4, DIMENSION(:,:), ALLOCATABLE :: FXYZ, FXYZNB
   ! End coordinate variables
 
   !Forcefield information

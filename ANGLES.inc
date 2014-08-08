@@ -7,38 +7,38 @@
      TK = ITYPE(K)
      TIJK = IANGT(TI, TJ, TK)
 
-     RXIJ = RXI - SX(J)
-     RYIJ = RYI - SY(J)
-     RZIJ = RZI - SZ(J)
+     RXYZ_IJ(1) = RXYZ_I(1) - SXYZ(1,J)
+     RXYZ_IJ(2) = RXYZ_I(2) - SXYZ(2,J)
+     RXYZ_IJ(3) = RXYZ_I(3) - SXYZ(3,J)
 
-     RXKJ = SX(K) - SX(J)
-     RYKJ = SY(K) - SY(J)
-     RZKJ = SZ(K) - SZ(J)
+     RXYZ_KJ(1) = SXYZ(1,K) - SXYZ(1,J)
+     RXYZ_KJ(2) = SXYZ(2,K) - SXYZ(2,J)
+     RXYZ_KJ(3) = SXYZ(3,K) - SXYZ(3,J)
 
-     RIJ = SQRT(RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0)
-     RKJ = SQRT(RXKJ ** 2.0D0 + RYKJ ** 2.0D0 + RZKJ ** 2.0D0)
-     CT = (RXIJ*RXKJ + RYIJ*RYKJ + RZIJ*RZKJ)/RIJ/RKJ
+     RIJ = SQRT(RXYZ_IJ(1) ** 2.0 + RXYZ_IJ(2) ** 2.0 + RXYZ_IJ(3) ** 2.0)
+     RKJ = SQRT(RXYZ_KJ(1) ** 2.0 + RXYZ_KJ(2) ** 2.0 + RXYZ_KJ(3) ** 2.0)
+     CT = (RXYZ_IJ(1)*RXYZ_KJ(1) + RXYZ_IJ(2)*RXYZ_KJ(2) + RXYZ_IJ(3)*RXYZ_KJ(3))/RIJ/RKJ
      THETA = ACOS(CT) * R2D
 
      !	****** vector M cross product -IJxKJ	
-     RXM = - ( RYIJ*RZKJ - RZIJ*RYKJ)
-     RYM = - (-RXIJ*RZKJ + RZIJ*RXKJ)
-     RZM = - ( RXIJ*RYKJ - RYIJ*RXKJ)
-     RM = SQRT(RXM ** 2.0D0 + RYM ** 2.0D0 + RZM ** 2.0D0)
+     RXYZ_M(1) = - ( RXYZ_IJ(2)*RXYZ_KJ(3) - RXYZ_IJ(3)*RXYZ_KJ(2))
+     RXYZ_M(2) = - (-RXYZ_IJ(1)*RXYZ_KJ(3) + RXYZ_IJ(3)*RXYZ_KJ(1))
+     RXYZ_M(3) = - ( RXYZ_IJ(1)*RXYZ_KJ(2) - RXYZ_IJ(2)*RXYZ_KJ(1))
+     RM = SQRT(RXYZ_M(1) ** 2.0 + RXYZ_M(2) ** 2.0 + RXYZ_M(3) ** 2.0)
 
-     RXM = RXM / RM
-     RYM = RYM / RM
-     RZM = RZM / RM
+     RXYZ_M(1) = RXYZ_M(1) / RM
+     RXYZ_M(2) = RXYZ_M(2) / RM
+     RXYZ_M(3) = RXYZ_M(3) / RM
 
      !	***** vector N cross product MxIJ
-     RXN = ( RYM*RZIJ - RZM*RYIJ )/RIJ
-     RYN = (-RXM*RZIJ + RZM*RXIJ )/RIJ
-     RZN = ( RXM*RYIJ - RYM*RXIJ )/RIJ
+     RXYZ_N(1) = ( RXYZ_M(2)*RXYZ_IJ(3) - RXYZ_M(3)*RXYZ_IJ(2) ) / RIJ
+     RXYZ_N(2) = (-RXYZ_M(1)*RXYZ_IJ(3) + RXYZ_M(3)*RXYZ_IJ(1) ) / RIJ
+     RXYZ_N(3) = ( RXYZ_M(1)*RXYZ_IJ(2) - RXYZ_M(2)*RXYZ_IJ(1) ) / RIJ
 
      !	***** vector S cross product -MxKJ
-     RXS = -( RYM*RZKJ - RZM*RYKJ )/RKJ
-     RYS = -(-RXM*RZKJ + RZM*RXKJ )/RKJ
-     RZS = -( RXM*RYKJ - RYM*RXKJ )/RKJ
+     RXYZ_S(1) = -( RXYZ_M(2)*RXYZ_KJ(3) - RXYZ_M(3)*RXYZ_KJ(2) ) / RKJ
+     RXYZ_S(2) = -(-RXYZ_M(1)*RXYZ_KJ(3) + RXYZ_M(3)*RXYZ_KJ(1) ) / RKJ
+     RXYZ_S(3) = -( RXYZ_M(1)*RXYZ_KJ(2) - RXYZ_M(2)*RXYZ_KJ(1) ) / RKJ
 
      NI = INT (THETA / BINA(TIJK))
      IF (THETA == 180.0) THEN
@@ -56,20 +56,20 @@
 
      V_ANGLE(ANGLE_TYPE_LABEL(TIJK)) = V_ANGLE(ANGLE_TYPE_LABEL(TIJK)) + VIJK
 
-     FXIJK  = FIJK * RXN/RIJ
-     FYIJK  = FIJK * RYN/RIJ
-     FZIJK  = FIJK * RZN/RIJ
+     FXYZ_IJK(1)  = FIJK * RXYZ_N(1) / RIJ
+     FXYZ_IJK(2)  = FIJK * RXYZ_N(2) / RIJ
+     FXYZ_IJK(3)  = FIJK * RXYZ_N(3) / RIJ
 
-     FXI   = FXI + FXIJK
-     FYI   = FYI + FYIJK
-     FZI   = FZI + FZIJK
+     FXYZ_I(1)   = FXYZ_I(1) + FXYZ_IJK(1)
+     FXYZ_I(2)   = FXYZ_I(2) + FXYZ_IJK(2)
+     FXYZ_I(3)   = FXYZ_I(3) + FXYZ_IJK(3)
 
-     FXL(K) = FXL(K) + FIJK* RXS/RKJ
-     FYL(K) = FYL(K) + FIJK* RYS/RKJ
-     FZL(K) = FZL(K) + FIJK* RZS/RKJ
+     FXYZ_L(1,K) = FXYZ_L(1,K) + FIJK * RXYZ_S(1) / RKJ
+     FXYZ_L(2,K) = FXYZ_L(2,K) + FIJK * RXYZ_S(2) / RKJ
+     FXYZ_L(3,K) = FXYZ_L(3,K) + FIJK * RXYZ_S(3) / RKJ
 
-     FXL(J) = FXL(J) - FIJK* RXS/RKJ - FXIJK
-     FYL(J) = FYL(J) - FIJK* RYS/RKJ - FYIJK
-     FZL(J) = FZL(J) - FIJK* RZS/RKJ - FZIJK
+     FXYZ_L(1,J) = FXYZ_L(1,J) - FIJK * RXYZ_S(1) / RKJ - FXYZ_IJK(1)
+     FXYZ_L(2,J) = FXYZ_L(2,J) - FIJK * RXYZ_S(2) / RKJ - FXYZ_IJK(2)
+     FXYZ_L(3,J) = FXYZ_L(3,J) - FIJK * RXYZ_S(3) / RKJ - FXYZ_IJK(3)
 
   END DO

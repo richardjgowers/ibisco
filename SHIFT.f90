@@ -23,35 +23,35 @@ SUBROUTINE SHIFT()
   USE OMP_LIB
   IMPLICIT NONE
   INTEGER :: I
-  REAL*8 ::SPX, SPY, SPZ
-  !       *******************************************************************
+  REAL*4, DIMENSION(3) ::SPXYZ
+  !      *******************************************************************
 
   ! INT(funzione parte intera) is an intrinsic function that reads a real, cuts the decimal 
   ! part of the number leaving only its integer part (the final format is real)
 
-  !$OMP PARALLEL DO SCHEDULE(STATIC,1) NUM_THREADS(7) DEFAULT(NONE) &
-  !$OMP& SHARED(NATOMS,SX,SY,SZ,BOXX2,BOXY2,BOXZ2,RX,RY,RZ)&
-  !$OMP& private(I,SPX,SPY,SPZ)
+  !$OMP PARALLEL DO SCHEDULE(STATIC,1) DEFAULT(NONE) &
+  !$OMP& SHARED(NATOMS,SXYZ,BOXX2,BOXY2,BOXZ2,RXYZ)&
+  !$OMP& PRIVATE(I,SPXYZ)
   DO I = 1, NATOMS
-     IF ((SX(I)> BOXX2).OR.(SX(I) < -BOXX2).OR.(SY(I)> BOXY2) &
-          .OR.(SY(I)< -BOXY2).OR.(SZ(I)> BOXZ2).OR.(SZ(I)<-BOXZ2)) THEN
+     IF ((SXYZ(1,I)> BOXX2).OR.(SXYZ(1,I) < -BOXX2).OR.(SXYZ(2,I)> BOXY2) &
+          .OR.(SXYZ(2,I)< -BOXY2).OR.(SXYZ(3,I)> BOXZ2).OR.(SXYZ(3,I)<-BOXZ2)) THEN
 
-        RX(I) = SX(I)/BOXX2
-        RY(I) = SY(I)/BOXY2
-        RZ(I) = SZ(I)/BOXZ2
+        RXYZ(1,I) = SXYZ(1,I)/BOXX2
+        RXYZ(2,I) = SXYZ(2,I)/BOXY2
+        RXYZ(3,I) = SXYZ(3,I)/BOXZ2
 
-        SPX = RX(I) - 2.0*INT(RX(I)/2.0)
-        SPY = RY(I) - 2.0*INT(RY(I)/2.0)
-        SPZ = RZ(I) - 2.0*INT(RZ(I)/2.0)
+        SPXYZ(1) = RXYZ(1,I) - 2.0*INT(RXYZ(1,I)/2.0)
+        SPXYZ(2) = RXYZ(2,I) - 2.0*INT(RXYZ(2,I)/2.0)
+        SPXYZ(3) = RXYZ(3,I) - 2.0*INT(RXYZ(3,I)/2.0)
 
-        RX(I) = (SPX - 2.0*INT(SPX))*BOXX2
-        RY(I) = (SPY - 2.0*INT(SPY))*BOXY2
-        RZ(I) = (SPZ - 2.0*INT(SPZ))*BOXZ2
+        RXYZ(1,I) = (SPXYZ(1) - 2.0*INT(SPXYZ(1)))*BOXX2
+        RXYZ(2,I) = (SPXYZ(2) - 2.0*INT(SPXYZ(2)))*BOXY2
+        RXYZ(3,I) = (SPXYZ(3) - 2.0*INT(SPXYZ(3)))*BOXZ2
      ELSE
 
-        RX(I) = SX(I)
-        RY(I) = SY(I)
-        RZ(I) = SZ(I)
+        RXYZ(1,I) = SXYZ(1,I)
+        RXYZ(2,I) = SXYZ(2,I)
+        RXYZ(3,I) = SXYZ(3,I)
      END IF
   END DO
   !$OMP END PARALLEL DO

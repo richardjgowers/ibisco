@@ -20,10 +20,10 @@
 		CALL RANDOM_NUMBER (X)
 		RO = -LOG(X)
 		CALL RANDOM_NUMBER(Y)
-		TETA = Y * 8.0D0 * ATAN(1.0D0)
-		Q =( 2.0D0 * RO )** 0.50D0 * COS(TETA)
-		IF ( Q ** 2.0D0 <= 2.0D0  ) THEN
-			VX(I) = Q
+		TETA = Y * 8.0 * ATAN(1.0)
+		Q =( 2.0 * RO )** 0.50 * COS(TETA)
+		IF ( Q ** 2.0 <= 2.0  ) THEN
+			VXYZ(1,I) = Q
 			I = I + 1
 		END IF
 	END DO
@@ -33,10 +33,10 @@
 		CALL RANDOM_NUMBER (X)
 		RO = -LOG(X)
 		CALL RANDOM_NUMBER(Y)
-		TETA = Y * 8.0D0 * ATAN(1.0D0)
-		Q = ( 2.0D0 * RO )** 0.50D0 * COS(TETA)
-		IF ( Q ** 2.0D0 <= 2.0D0  ) THEN
-			VY(I) = Q
+		TETA = Y * 8.0 * ATAN(1.0)
+		Q = ( 2.0 * RO )** 0.50 * COS(TETA)
+		IF ( Q ** 2.0 <= 2.0  ) THEN
+			VXYZ(2,I) = Q
 			I = I + 1
 		END IF
 	END DO
@@ -46,23 +46,23 @@
 		CALL RANDOM_NUMBER (X)
 		RO = -LOG(X)
 		CALL RANDOM_NUMBER(Y)
-		TETA = Y * 8.0D0 * ATAN(1.0D0)
-		Q = ( 2.0D0 * RO )** 0.50D0 * COS(TETA)
-		IF ( Q ** 2.0D0 <= 2.0D0  ) THEN
-			VZ(I) = Q
+		TETA = Y * 8.0 * ATAN(1.0)
+		Q = ( 2.0 * RO )** 0.50 * COS(TETA)
+		IF ( Q ** 2.0 <= 2.0  ) THEN
+			VXYZ(3,I) = Q
 			I = I + 1
 		END IF
 	END DO
 
-        SUMX = 0.0D0
-        SUMY = 0.0D0
-        SUMZ = 0.0D0
+        SUMX = 0.0
+        SUMY = 0.0
+        SUMZ = 0.0
 
         DO 200 I = 1, NATOMS
 
-           SUMX = SUMX + MASS(ITYPE(I))*VX(I)
-           SUMY = SUMY + MASS(ITYPE(I))*VY(I)
-           SUMZ = SUMZ + MASS(ITYPE(I))*VZ(I)
+           SUMX = SUMX + MASS(ITYPE(I))*VXYZ(1,I)
+           SUMY = SUMY + MASS(ITYPE(I))*VXYZ(2,I)
+           SUMZ = SUMZ + MASS(ITYPE(I))*VXYZ(3,I)
 	   
 200     CONTINUE
 
@@ -72,9 +72,9 @@
 
         DO 300 I = 1, NATOMS
 
-           VX(I) = VX(I) - SUMX/MASS(ITYPE(I))
-           VY(I) = VY(I) - SUMY/MASS(ITYPE(I))
-           VZ(I) = VZ(I) - SUMZ/MASS(ITYPE(I))
+           VXYZ(1,I) = VXYZ(1,I) - SUMX/MASS(ITYPE(I))
+           VXYZ(2,I) = VXYZ(2,I) - SUMY/MASS(ITYPE(I))
+           VXYZ(3,I) = VXYZ(3,I) - SUMZ/MASS(ITYPE(I))
 
 300     CONTINUE
 

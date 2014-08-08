@@ -21,7 +21,7 @@ SUBROUTINE DISTRIBUTE_VSFORCE()
   !$OMP PARALLEL DO DEFAULT(NONE) SCHEDULE(STATIC,1) &
   !$OMP& SHARED(NVIRTA,VITYPE,NATOMS,ITYPE)&
   !$OMP& SHARED(VIRT_NUMATOMS,VIRT_ATM_IND,VIRT_MASSCOEFF)&
-  !$OMP& SHARED(FX,FY,FZ)&
+  !$OMP& SHARED(FXYZ)&
   !$OMP& PRIVATE(I,TI,VS_POS,A,J,TJ)
   !FX FY and FZ do not need to be reduction variables because only one virtual site will ever address them
   DO I=1,NVIRTA
@@ -30,14 +30,14 @@ SUBROUTINE DISTRIBUTE_VSFORCE()
      DO A=1,VIRT_NUMATOMS(TI)
         J = VIRT_ATM_IND(I,A)
         TJ = ITYPE(J)
-        FX(J) = FX(J) + FX(VS_POS)*VIRT_MASSCOEFF(TI,TJ)
-        FY(J) = FY(J) + FY(VS_POS)*VIRT_MASSCOEFF(TI,TJ)
-        FZ(J) = FZ(J) + FZ(VS_POS)*VIRT_MASSCOEFF(TI,TJ)
+        FXYZ(1,J) = FXYZ(1,J) + FXYZ(1,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
+        FXYZ(2,J) = FXYZ(2,J) + FXYZ(2,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
+        FXYZ(3,J) = FXYZ(3,J) + FXYZ(3,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
      END DO
      !Reset force on virtual site to 0 once distributed
-     FX(VS_POS) = 0.0
-     FY(VS_POS) = 0.0
-     FZ(VS_POS) = 0.0
+     FXYZ(1,VS_POS) = 0.0
+     FXYZ(2,VS_POS) = 0.0
+     FXYZ(3,VS_POS) = 0.0
   END DO
   !$OMP END PARALLEL DO
 

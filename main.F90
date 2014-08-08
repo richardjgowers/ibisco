@@ -174,22 +174,22 @@ PROGRAM IBISCO
   EK(1) = 0.0
   EK(2) = 0.0
 
-  MKTEMP_ATOM = 2.0D0 / REAL(3.0D0 * (NUMATOMS - 1))
-  MKTEMP_BEAD = 2.0D0 / REAL(3.0D0 * (NUMBEADS - 1))
+  MKTEMP_ATOM = 2.0 / REAL(3.0 * (NUMATOMS - 1))
+  MKTEMP_BEAD = 2.0 / REAL(3.0 * (NUMBEADS - 1))
   DO A = 1, NUMATOMS
      I = ATOM(A)
-     EK(1) = EK(1) + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+     EK(1) = EK(1) + MASS(ITYPE(I))*(VXYZ(1,I)**2.0 + VXYZ(2,I)**2.0 + VXYZ(3,I)**2.0)
      TOTMASS = TOTMASS + MASS(ITYPE(I))
   END DO
 
   DO A=1,NUMBEADS
      I = BEAD(A)
-     EK(2) = EK(2) + MASS(ITYPE(I))*(VX(I)**2.0D0 + VY(I)**2.0D0 + VZ(I)**2.0D0)
+     EK(2) = EK(2) + MASS(ITYPE(I))*(VXYZ(1,I)**2.0 + VXYZ(2,I)**2.0 + VXYZ(3,I)**2.0)
      TOTMASS = TOTMASS + MASS(ITYPE(I))
   END DO
 
-  EK(1) = 0.5D0 * EK(1)
-  EK(2) = 0.5D0 * EK(2)
+  EK(1) = 0.5 * EK(1)
+  EK(2) = 0.5 * EK(2)
   TEMP = SUM(EK) * MKTEMP	
   TEMP_ATOM = EK(1) * MKTEMP_ATOM
   TEMP_BEAD = EK(2) * MKTEMP_BEAD

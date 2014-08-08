@@ -9,10 +9,8 @@ SUBROUTINE SCALEBP (TM)
   IMPLICIT NONE
   INTEGER :: I, TM
   REAL*4 :: P, AVP
-  REAL*4 :: MIUX, MIUY, MIUZ
-  !      REAL*8 :: DBX, DBY, DBZ, NBOXX, NBOXY, NBOXZ, MIUX, MIUY, MIUZ
-  !      REAL*8 :: PSCALEX, PSCALEY, PSCALEZ, P, AVP
-  !       ******************************************************************************
+  REAL*4, DIMENSION(3) :: MIU
+
   !	***** CALCULATE THE NEW VOLUME AND SCALE THE POSITIONS IN NPT ENSEMBLE	******
 
   !	CALCULATE AVERAGE
@@ -29,62 +27,27 @@ SUBROUTINE SCALEBP (TM)
 
      P = AVP / LIMAVP
 
-     MIUX = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
-     MIUY = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
-     MIUZ = (1.0D0 + (P-PRESSURE)*PFAC)**(1.0d0/3.0d0)
+     MIU(1) = (1.0 + (P - PRESSURE) * PFAC) ** (1.0 / 3.0)
+     MIU(2) = (1.0 + (P - PRESSURE) * PFAC) ** (1.0 / 3.0)
+     MIU(3) = (1.0 + (P - PRESSURE) * PFAC) ** (1.0 / 3.0)
 
-     BOXX = BOXX * MIUX
-     BOXY = BOXY * MIUY
-     BOXZ = BOXZ * MIUZ
+     BOXX = BOXX * MIU(1)
+     BOXY = BOXY * MIU(2)
+     BOXZ = BOXZ * MIU(3)
 
      DO I = 1, NATOMS
-
-        SX(I) = SX(I)*MIUX
-        SY(I) = SY(I)*MIUY
-        SZ(I) = SZ(I)*MIUZ
-
+        SXYZ(1,I) = SXYZ(1,I) * MIU(1)
+        SXYZ(2,I) = SXYZ(2,I) * MIU(2)
+        SXYZ(3,I) = SXYZ(3,I) * MIU(3)
      END DO
 
-     BOXXINV = 1.0D0 / BOXX
-     BOXYINV = 1.0D0 / BOXY
-     BOXZINV = 1.0D0 / BOXZ
+     BOXXINV = 1.0 / BOXX
+     BOXYINV = 1.0 / BOXY
+     BOXZINV = 1.0 / BOXZ
 
-     BOXX2 = BOXX / 2.0D0
-     BOXY2 = BOXY / 2.0D0
-     BOXZ2 = BOXZ / 2.0D0
-
-     !	P = (PT11 + PT22 + PT33)/3.0d0
-
-     !	DBX = 2.0D0*(P-PRESSURE)*PFAC
-     !	DBY = 2.0D0*(P-PRESSURE)*PFAC
-     !	DBZ = 2.0D0*(P-PRESSURE)*PFAC
-
-     !	NBOXX = BOXX + DBX
-     !	NBOXY = BOXY + DBY
-     !	NBOXZ = BOXZ + DBZ
-
-     !	PSCALEX = 1.0D0 + DBX/BOXX
-     !	PSCALEY = 1.0D0 + DBY/BOXY
-     !	PSCALEZ = 1.0D0 + DBZ/BOXZ
-
-     !	DO I = 1, NATOMS
-
-     !		SX(I) = SX(I)*PSCALEX
-     !		SY(I) = SY(I)*PSCALEY
-     !		SZ(I) = SZ(I)*PSCALEZ
-     !	END DO
-
-     !	BOXX = NBOXX
-     !	BOXY = NBOXY
-     !	BOXZ = NBOXZ
-     !	BOXXINV = 1.0D0 / BOXX
-     !	BOXYINV = 1.0D0 / BOXY
-     !	BOXZINV = 1.0D0 / BOXZ
-
-     !	BOXX2 = BOXX / 2.0D0
-     !	BOXY2 = BOXY / 2.0D0
-     !	BOXZ2 = BOXZ / 2.0D0
-
+     BOXX2 = BOXX / 2.0
+     BOXY2 = BOXY / 2.0
+     BOXZ2 = BOXZ / 2.0
   END IF
 
   RETURN

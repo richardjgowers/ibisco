@@ -9,86 +9,86 @@ DO  A = 1, NIJKL(I)
     TL = ITYPE(L)
     TIJKL = ITORT(TI, TJ, TK, TL)
 
-    RXIJ = RXI - SX(J)
-    RYIJ = RYI - SY(J)
-    RZIJ = RZI - SZ(J)
+    RXYZ_IJ(1) = RXYZ_I(1) - SXYZ(1,J)
+    RXYZ_IJ(2) = RXYZ_I(2) - SXYZ(2,J)
+    RXYZ_IJ(3) = RXYZ_I(3) - SXYZ(3,J)
 
-    RXJK = SX(J) - SX(K)
-    RYJK = SY(J) - SY(K)
-    RZJK = SZ(J) - SZ(K)
+    RXYZ_JK(1) = SXYZ(1,J) - SXYZ(1,K)
+    RXYZ_JK(2) = SXYZ(2,J) - SXYZ(2,K)
+    RXYZ_JK(3) = SXYZ(3,J) - SXYZ(3,K)
 
-    RXKL = SX(K) - SX(L)
-    RYKL = SY(K) - SY(L)
-    RZKL = SZ(K) - SZ(L)
+    RXYZ_KL(1) = SXYZ(1,K) - SXYZ(1,L)
+    RXYZ_KL(2) = SXYZ(2,K) - SXYZ(2,L)
+    RXYZ_KL(3) = SXYZ(3,K) - SXYZ(3,L)
 
-!		RXKL = SX(L) - SX(K)
-!              	RYKL = SY(L) - SY(K)
-!              	RZKL = SZ(L) - SZ(K)
+!		RXYZ_KL(1) = SXYZ(1,L) - SXYZ(1,K)
+!              	RXYZ_KL(2) = SXYZ(2,L) - SXYZ(2,K)
+!              	RXYZ_KL(3) = SXYZ(3,L) - SXYZ(3,K)
 
-    RIJ = SQRT(RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0)
-    RJK = SQRT(RXJK ** 2.0D0 + RYJK ** 2.0D0 + RZJK ** 2.0D0)
-    RKL = SQRT(RXKL ** 2.0D0 + RYKL ** 2.0D0 + RZKL ** 2.0D0)
+    RIJ = SQRT(RXYZ_IJ(1) ** 2.0 + RXYZ_IJ(2) ** 2.0 + RXYZ_IJ(3) ** 2.0)
+    RJK = SQRT(RXYZ_JK(1) ** 2.0 + RXYZ_JK(2) ** 2.0 + RXYZ_JK(3) ** 2.0)
+    RKL = SQRT(RXYZ_KL(1) ** 2.0 + RXYZ_KL(2) ** 2.0 + RXYZ_KL(3) ** 2.0)
 
 !	****** vector M cross product IJxJK
-    RXM = RYIJ*RZJK - RZIJ*RYJK
-    RYM =-RXIJ*RZJK + RZIJ*RXJK
-    RZM = RXIJ*RYJK - RYIJ*RXJK
-    RM = SQRT(RXM ** 2.0D0 + RYM ** 2.0D0 + RZM ** 2.0D0)
+    RXYZ_M(1) = RXYZ_IJ(2)*RXYZ_JK(3) - RXYZ_IJ(3)*RXYZ_JK(2)
+    RXYZ_M(2) =-RXYZ_IJ(1)*RXYZ_JK(3) + RXYZ_IJ(3)*RXYZ_JK(1)
+    RXYZ_M(3) = RXYZ_IJ(1)*RXYZ_JK(2) - RXYZ_IJ(2)*RXYZ_JK(1)
+    RM = SQRT(RXYZ_M(1) ** 2.0 + RXYZ_M(2) ** 2.0 + RXYZ_M(3) ** 2.0)
 
 !	if RM = 0 IJ & JK are parallel
 
     if (RM.GT.0) THEN
-        RXM = RXM / RM
-        RYM = RYM / RM
-        RZM = RZM / RM                
-        COSM = (RXIJ*RXJK+RYIJ*RYJK+RZIJ*RZJK)/RIJ/RJK
+        RXYZ_M(1) = RXYZ_M(1) / RM
+        RXYZ_M(2) = RXYZ_M(2) / RM
+        RXYZ_M(3) = RXYZ_M(3) / RM                
+        COSM = (RXYZ_IJ(1)*RXYZ_JK(1)+RXYZ_IJ(2)*RXYZ_JK(2)+RXYZ_IJ(3)*RXYZ_JK(3))/RIJ/RJK
         SINM = SQRT(1-COSM*COSM)
         COTANM = COSM/SINM
     else if (RM .EQ. 0) then                
-        RXIJ = RXI*0.99d0 - SX(J)       
-        RIJ = SQRT(RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0)              
-        RXM = RYIJ*RZJK - RZIJ*RYJK
-        RYM =-RXIJ*RZJK + RZIJ*RXJK
-        RZM = RXIJ*RYJK - RYIJ*RXJK
-        RM = SQRT(RXM ** 2.0D0 + RYM ** 2.0D0 + RZM ** 2.0D0)
-        RXM = RXM / RM
-        RYM = RYM / RM
-        RZM = RZM / RM
-        COSM = (RXIJ*RXJK+RYIJ*RYJK+RZIJ*RZJK)/RIJ/RJK
+        RXYZ_IJ(1) = RXYZ_I(1)*0.99 - SXYZ(1,J)       
+        RIJ = SQRT(RXYZ_IJ(1) ** 2.0 + RXYZ_IJ(2) ** 2.0 + RXYZ_IJ(3) ** 2.0)              
+        RXYZ_M(1) = RXYZ_IJ(2)*RXYZ_JK(3) - RXYZ_IJ(3)*RXYZ_JK(2)
+        RXYZ_M(2) =-RXYZ_IJ(1)*RXYZ_JK(3) + RXYZ_IJ(3)*RXYZ_JK(1)
+        RXYZ_M(3) = RXYZ_IJ(1)*RXYZ_JK(2) - RXYZ_IJ(2)*RXYZ_JK(1)
+        RM = SQRT(RXYZ_M(1) ** 2.0 + RXYZ_M(2) ** 2.0 + RXYZ_M(3) ** 2.0)
+        RXYZ_M(1) = RXYZ_M(1) / RM
+        RXYZ_M(2) = RXYZ_M(2) / RM
+        RXYZ_M(3) = RXYZ_M(3) / RM
+        COSM = (RXYZ_IJ(1)*RXYZ_JK(1)+RXYZ_IJ(2)*RXYZ_JK(2)+RXYZ_IJ(3)*RXYZ_JK(3))/RIJ/RJK
         SINM = SQRT(1-COSM*COSM)
         COTANM = COSM/SINM         
     end if
 
 !	****** vector N cross product JKxKL
-    RXN = RYJK*RZKL - RZJK*RYKL
-    RYN =-RXJK*RZKL + RZJK*RXKL
-    RZN = RXJK*RYKL - RYJK*RXKL
-    RN = SQRT(RXN ** 2.0D0 + RYN ** 2.0D0 + RZN ** 2.0D0)
+    RXYZ_N(1) = RXYZ_JK(2)*RXYZ_KL(3) - RXYZ_JK(3)*RXYZ_KL(2)
+    RXYZ_N(2) =-RXYZ_JK(1)*RXYZ_KL(3) + RXYZ_JK(3)*RXYZ_KL(1)
+    RXYZ_N(3) = RXYZ_JK(1)*RXYZ_KL(2) - RXYZ_JK(2)*RXYZ_KL(1)
+    RN = SQRT(RXYZ_N(1) ** 2.0 + RXYZ_N(2) ** 2.0 + RXYZ_N(3) ** 2.0)
 
     if (RN .GT. 0) then
-        RXN = RXN / RN
-        RYN = RYN / RN
-        RZN = RZN / RN
-        COSN = (RXJK*RXKL+RYJK*RYKL+RZJK*RZKL)/RJK/RKL
+        RXYZ_N(1) = RXYZ_N(1) / RN
+        RXYZ_N(2) = RXYZ_N(2) / RN
+        RXYZ_N(3) = RXYZ_N(3) / RN
+        COSN = (RXYZ_JK(1)*RXYZ_KL(1)+RXYZ_JK(2)*RXYZ_KL(2)+RXYZ_JK(3)*RXYZ_KL(3))/RJK/RKL
         SINN = SQRT(1-COSN*COSN)
         COTANN = COSN/SINN
     elseif (RN .EQ. 0)then
-        RXKL = SX(K) - SX(L)*0.99d0
-        RKL = SQRT(RXKL ** 2.0D0 + RYKL ** 2.0D0 + RZKL ** 2.0D0)                
-        RXN = RYJK*RZKL - RZJK*RYKL
-        RYN =-RXJK*RZKL + RZJK*RXKL
-        RZN = RXJK*RYKL - RYJK*RXKL
-        RN = SQRT(RXN ** 2.0D0 + RYN ** 2.0D0 + RZN ** 2.0D0)
-        RXN = RXN / RN
-        RYN = RYN / RN
-        RZN = RZN / RN
-        COSN = (RXJK*RXKL+RYJK*RYKL+RZJK*RZKL)/RJK/RKL
+        RXYZ_KL(1) = SXYZ(1,K) - SXYZ(1,L)*0.99
+        RKL = SQRT(RXYZ_KL(1) ** 2.0 + RXYZ_KL(2) ** 2.0 + RXYZ_KL(3) ** 2.0)                
+        RXYZ_N(1) = RXYZ_JK(2)*RXYZ_KL(3) - RXYZ_JK(3)*RXYZ_KL(2)
+        RXYZ_N(2) =-RXYZ_JK(1)*RXYZ_KL(3) + RXYZ_JK(3)*RXYZ_KL(1)
+        RXYZ_N(3) = RXYZ_JK(1)*RXYZ_KL(2) - RXYZ_JK(2)*RXYZ_KL(1)
+        RN = SQRT(RXYZ_N(1) ** 2.0 + RXYZ_N(2) ** 2.0 + RXYZ_N(3) ** 2.0)
+        RXYZ_N(1) = RXYZ_N(1) / RN
+        RXYZ_N(2) = RXYZ_N(2) / RN
+        RXYZ_N(3) = RXYZ_N(3) / RN
+        COSN = (RXYZ_JK(1)*RXYZ_KL(1)+RXYZ_JK(2)*RXYZ_KL(2)+RXYZ_JK(3)*RXYZ_KL(3))/RJK/RKL
         SINN = SQRT(1-COSN*COSN)
         COTANN = COSN/SINN               
     endif
 
-    COST = RXM*RXN + RYM*RYN + RZM*RZN
-    SIGNT = -(RXM*RXKL + RYM*RYKL + RZM*RZKL)
+    COST = RXYZ_M(1)*RXYZ_N(1) + RXYZ_M(2)*RXYZ_N(2) + RXYZ_M(3)*RXYZ_N(3)
+    SIGNT = -(RXYZ_M(1)*RXYZ_KL(1) + RXYZ_M(2)*RXYZ_KL(2) + RXYZ_M(3)*RXYZ_KL(3))
 
     if(COST .GT. 1.0) then
         COST = 1.0
@@ -98,7 +98,7 @@ DO  A = 1, NIJKL(I)
 
     PHI = ACOS(COST)*R2D
 
-    IF (SIGNT.LT.0) PHI=360.D0 - PHI
+    IF (SIGNT.LT.0) PHI=360. - PHI
 
     NI = INT (PHI / BINT(TIJKL))
 
@@ -113,40 +113,40 @@ DO  A = 1, NIJKL(I)
         VIJKL = TOR_POT(TIJKL,NI)
     ELSE
         ALPHA=(PHI-ANGLE_TOR(TIJKL,NI))/BINT(TIJKL)
-        FIJKL = TOR_FORCE(TIJKL,NI)*(1.0D0-ALPHA) &
+        FIJKL = TOR_FORCE(TIJKL,NI)*(1.0-ALPHA) &
                 + ALPHA*TOR_FORCE(TIJKL,NI+1)
-        VIJKL = TOR_POT(TIJKL,NI)*(1.0D0-ALPHA) &
+        VIJKL = TOR_POT(TIJKL,NI)*(1.0-ALPHA) &
                 + ALPHA*TOR_POT(TIJKL,NI+1)
     END  IF
 
     V_TORSION(TORSION_TYPE_LABEL(TIJKL)) = V_TORSION(TORSION_TYPE_LABEL(TIJKL)) + VIJKL
 
-    FX1 = -FIJKL * RXM/SINM/RIJ
-    FY1 = -FIJKL * RYM/SINM/RIJ
-    FZ1 = -FIJKL * RZM/SINM/RIJ
+    FXYZ_1(1) = -FIJKL * RXYZ_M(1)/SINM/RIJ
+    FXYZ_1(2) = -FIJKL * RXYZ_M(2)/SINM/RIJ
+    FXYZ_1(3) = -FIJKL * RXYZ_M(3)/SINM/RIJ
 
-    FXI = FXI + FX1
-    FYI = FYI + FY1
-    FZI = FZI + FZ1
+    FXYZ_I(1) = FXYZ_I(1) + FXYZ_1(1)
+    FXYZ_I(2) = FXYZ_I(2) + FXYZ_1(2)
+    FXYZ_I(3) = FXYZ_I(3) + FXYZ_1(3)
+
+    FXYZ_4(1) = FIJKL * RXYZ_N(1)/SINN/RKL
+    FXYZ_4(2) = FIJKL * RXYZ_N(2)/SINN/RKL
+    FXYZ_4(3) = FIJKL * RXYZ_N(3)/SINN/RKL
 		
-    FX4 = FIJKL * RXN/SINN/RKL
-    FY4 = FIJKL * RYN/SINN/RKL
-    FZ4 = FIJKL * RZN/SINN/RKL
-		
-    FXL(L) = FXL(L) + FX4
-    FYL(L) = FYL(L) + FY4
-    FZL(L) = FZL(L) + FZ4
+    FXYZ_L(1,L) = FXYZ_L(1,L) + FXYZ_4(1)
+    FXYZ_L(2,L) = FXYZ_L(2,L) + FXYZ_4(2)
+    FXYZ_L(3,L) = FXYZ_L(3,L) + FXYZ_4(3)
 
-    FX12 = FIJKL*(COTANM*RXM+COTANN*RXN)/RJK
-    FY12 = FIJKL*(COTANM*RYM+COTANN*RYN)/RJK
-    FZ12 = FIJKL*(COTANM*RZM+COTANN*RZN)/RJK
+    FXYZ_12(1) = FIJKL*(COTANM*RXYZ_M(1)+COTANN*RXYZ_N(1))/RJK
+    FXYZ_12(2) = FIJKL*(COTANM*RXYZ_M(2)+COTANN*RXYZ_N(2))/RJK
+    FXYZ_12(3) = FIJKL*(COTANM*RXYZ_M(3)+COTANN*RXYZ_N(3))/RJK
 
-    FXL(J) = FXL(J) - FX1 + FX12
-    FYL(J) = FYL(J) - FY1 + FY12
-    FZL(J) = FZL(J) - FZ1 + FZ12
+    FXYZ_L(1,J) = FXYZ_L(1,J) - FXYZ_1(1) + FXYZ_12(1)
+    FXYZ_L(2,J) = FXYZ_L(2,J) - FXYZ_1(2) + FXYZ_12(2)
+    FXYZ_L(3,J) = FXYZ_L(3,J) - FXYZ_1(3) + FXYZ_12(3)
 
-    FXL(K) = FXL(K) - FX4 - FX12
-    FYL(K) = FYL(K) - FY4 - FY12
-    FZL(K) = FZL(K) - FZ4 - FZ12
+    FXYZ_L(1,K) = FXYZ_L(1,K) - FXYZ_4(1) - FXYZ_12(1)
+    FXYZ_L(2,K) = FXYZ_L(2,K) - FXYZ_4(2) - FXYZ_12(2)
+    FXYZ_L(3,K) = FXYZ_L(3,K) - FXYZ_4(3) - FXYZ_12(3)
 
 END DO 

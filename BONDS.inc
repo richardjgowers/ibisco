@@ -8,22 +8,17 @@
      IF (J > I) THEN
         TJ = ITYPE(J)
         TIJ = IBONDT(TI, TJ)
-        RXIJ = RXI - SX(J)
-        RYIJ = RYI - SY(J)
-        RZIJ = RZI - SZ(J)
+        RXYZ_IJ(1) = RXYZ_I(1) - SXYZ(1,J)
+        RXYZ_IJ(2) = RXYZ_I(2) - SXYZ(2,J)
+        RXYZ_IJ(3) = RXYZ_I(3) - SXYZ(3,J)
 
-        RIJSQ = RXIJ ** 2.0D0 + RYIJ ** 2.0D0 + RZIJ ** 2.0D0
+        RIJSQ = RXYZ_IJ(1) ** 2.0 + RXYZ_IJ(2) ** 2.0 + RXYZ_IJ(3) ** 2.0
 
         RIJ = SQRT(RIJSQ)
         NI = INT((RIJ - RBOND(TIJ,0)) / BINB(TIJ))
 
         !If doesn't fall within table, use last/first entry
         IF(NI .GT. NDATB(TIJ)) THEN
-!           WRITE(*,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'
-!	   WRITE(*,*) I, J, RIJ
-!           WRITE(1,*)'FATAL ERROR: Entry in bond table', TIJ,' does not exist'                   
-!           WRITE(*,*)'Simulation stopped at Time Step: ',STEP
-!           STOP 'Failure in BONDS.inc'
            WRITE(*,*) 'Overextended bond between atoms ', I, ' and ', J
            WRITE(*,*) 'Distance ', RIJ, ' Timestep ', STEP
            WRITE(*,*) 'Continuing on, but this might be a problem!'
@@ -46,17 +41,17 @@
 
         V_BOND(BOND_TYPE_LABEL(TIJ)) = V_BOND(BOND_TYPE_LABEL(TIJ)) + VIJ           
 
-        FXIJ  = FIJ * RXIJ
-        FYIJ  = FIJ * RYIJ
-        FZIJ  = FIJ * RZIJ
+        FXYZ_IJ(1)  = FIJ * RXYZ_IJ(1)
+        FXYZ_IJ(2)  = FIJ * RXYZ_IJ(2)
+        FXYZ_IJ(3)  = FIJ * RXYZ_IJ(3)
 
-        FXI   = FXI + FXIJ
-        FYI   = FYI + FYIJ
-        FZI   = FZI + FZIJ
+        FXYZ_I(1)   = FXYZ_I(1) + FXYZ_IJ(1)
+        FXYZ_I(2)   = FXYZ_I(2) + FXYZ_IJ(2)
+        FXYZ_I(3)   = FXYZ_I(3) + FXYZ_IJ(3)
 
-        FXL(J) = FXL(J) - FXIJ
-        FYL(J) = FYL(J) - FYIJ
-        FZL(J) = FZL(J) - FZIJ
+        FXYZ_L(1,J) = FXYZ_L(1,J) - FXYZ_IJ(1)
+        FXYZ_L(2,J) = FXYZ_L(2,J) - FXYZ_IJ(2)
+        FXYZ_L(3,J) = FXYZ_L(3,J) - FXYZ_IJ(3)
 
      END IF
   END DO

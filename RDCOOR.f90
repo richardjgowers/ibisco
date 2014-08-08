@@ -104,8 +104,8 @@ SUBROUTINE RDCOOR()
            ISTOP=1
            RETURN
         END IF
-        READ (3,*,iostat=ios) LL,ITYPE(L),NBONDS(L),SX(L),SY(L),SZ(L)
-        READ (3,*,iostat=ios) VX(L),VY(L),VZ(L),(JBOND(L,K),K=1,NBONDS(L))
+        READ (3,*,iostat=ios) LL,ITYPE(L),NBONDS(L),SXYZ(1,L),SXYZ(2,L),SXYZ(3,L)
+        READ (3,*,iostat=ios) VXYZ(1,L),VXYZ(2,L),VXYZ(3,L),(JBOND(L,K),K=1,NBONDS(L))
 
         IF(ios .NE. 0) CALL RDCOOR_ERROR()
 
@@ -126,9 +126,9 @@ SUBROUTINE RDCOOR()
            END IF
         END IF
 
-        VX(L) = VX(L)*1.e3 / VSCALE
-        VY(L) = VY(L)*1.e3 / VSCALE 
-        VZ(L) = VZ(L)*1.e3 / VSCALE 
+        VXYZ(1,L) = VXYZ(1,L) * 1.e3 / VSCALE
+        VXYZ(2,L) = VXYZ(2,L) * 1.e3 / VSCALE 
+        VXYZ(3,L) = VXYZ(3,L) * 1.e3 / VSCALE 
 
      END DO !102 		CONTINUE
   END DO !101     CONTINUE

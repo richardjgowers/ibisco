@@ -12,9 +12,9 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
   INTEGER, INTENT(INOUT) :: LIST(MAXNAB, N) !< The neighbour list
   REAL*4, INTENT(IN) :: RLIST !< Cutoff radius for the neighbour list
   INTEGER :: A, B, C, D, I, J, NLIST
-  REAL*4 :: RXI, RYI, RZI
+  REAL*4, DIMENSION(3) :: RXYZ_I
   REAL*4 :: RIJSQ
-  REAL*4 :: RXIJ, RYIJ, RZIJ
+  REAL*4, DIMENSION(3) :: RXYZ_IJ
   REAL*4 :: RLISTSQ
 
   RLISTSQ = RLIST * RLIST
@@ -24,9 +24,9 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
      I = INDEX_LIST(A)
      NLIST = 0
 
-     RXI = RX(I)
-     RYI = RY(I)
-     RZI = RZ(I)
+     RXYZ_I(1) = RXYZ(1,I)
+     RXYZ_I(2) = RXYZ(2,I)
+     RXYZ_I(3) = RXYZ(3,I)
 
      DO B=A+1,N
         J = INDEX_LIST(B)
@@ -49,14 +49,14 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
         END IF
 
         IF(NONBOND .eq. 1) THEN
-           RXIJ  = RXI - RX(J)
-           RYIJ  = RYI - RY(J)
-           RZIJ  = RZI - RZ(J)
+           RXYZ_IJ(1)  = RXYZ_I(1) - RXYZ(1,J)
+           RXYZ_IJ(2)  = RXYZ_I(2) - RXYZ(2,J)
+           RXYZ_IJ(3)  = RXYZ_I(3) - RXYZ(3,J)
 
-           RXIJ = RXIJ - ANINT ( RXIJ * BOXXINV ) * BOXX
-           RYIJ = RYIJ - ANINT ( RYIJ * BOXYINV ) * BOXY
-           RZIJ = RZIJ - ANINT ( RZIJ * BOXZINV ) * BOXZ
-           RIJSQ = RXIJ * RXIJ + RYIJ * RYIJ + RZIJ * RZIJ
+           RXYZ_IJ(1) = RXYZ_IJ(1) - ANINT ( RXYZ_IJ(1) * BOXXINV ) * BOXX
+           RXYZ_IJ(2) = RXYZ_IJ(2) - ANINT ( RXYZ_IJ(2) * BOXYINV ) * BOXY
+           RXYZ_IJ(3) = RXYZ_IJ(3) - ANINT ( RXYZ_IJ(3) * BOXZINV ) * BOXZ
+           RIJSQ = RXYZ_IJ(1) * RXYZ_IJ(1) + RXYZ_IJ(2) * RXYZ_IJ(2) + RXYZ_IJ(3) * RXYZ_IJ(3)
 
            IF (RIJSQ.LT.RLISTSQ) THEN
               NLIST = NLIST +1

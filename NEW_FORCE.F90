@@ -14,20 +14,16 @@ SUBROUTINE NEW_FORCE()
   INTEGER :: I
 
   !Reset all forces and pressure
-  FX = 0.0D0
-  FY = 0.0D0
-  FZ = 0.0D0
+  FXYZ = 0.0
 
-  FXNB = 0.0D0
-  FYNB = 0.0D0
-  FZNB = 0.0D0
+  FXYZNB = 0.0
 
-  PT11 = 0.0D0
-  PT22 = 0.0D0
-  PT33 = 0.0D0
-  PT12 = 0.0D0
-  PT13 = 0.0D0
-  PT23 = 0.0D0
+  PT11 = 0.0
+  PT22 = 0.0
+  PT33 = 0.0
+  PT12 = 0.0
+  PT13 = 0.0
+  PT23 = 0.0
 
   !Reset potential energy measures
   V_NB = 0.0
@@ -61,9 +57,9 @@ SUBROUTINE NEW_FORCE()
   END IF
 
   DO I=1,NATOMS
-     FXNB(I) = FX(I)
-     FYNB(I) = FY(I)
-     FZNB(I) = FZ(I)
+     FXYZNB(1,I) = FXYZ(1,I)
+     FXYZNB(2,I) = FXYZ(2,I)
+     FXYZNB(3,I) = FXYZ(3,I)
   END DO
 
 #ifdef TIMING_ON
@@ -77,12 +73,12 @@ SUBROUTINE NEW_FORCE()
   CALL DISTRIBUTE_VSFORCE() !Distribute forces on virtual sites arising from bonded interactions
 
   DO I=1,NATOMS
-     PT11 = PT11 + (FX(I) - FXNB(I))*SX(I)
-     PT22 = PT22 + (FY(I) - FYNB(I))*SY(I)
-     PT33 = PT33 + (FZ(I) - FZNB(I))*SZ(I)
-     PT12 = PT12 + (FY(I) - FYNB(I))*SX(I)
-     PT13 = PT13 + (FZ(I) - FZNB(I))*SX(I)
-     PT23 = PT23 + (FZ(I) - FZNB(I))*SY(I)
+     PT11 = PT11 + (FXYZ(1,I) - FXYZNB(1,I)) * SXYZ(1,I)
+     PT22 = PT22 + (FXYZ(2,I) - FXYZNB(2,I)) * SXYZ(2,I)
+     PT33 = PT33 + (FXYZ(3,I) - FXYZNB(3,I)) * SXYZ(3,I)
+     PT12 = PT12 + (FXYZ(2,I) - FXYZNB(2,I)) * SXYZ(1,I)
+     PT13 = PT13 + (FXYZ(3,I) - FXYZNB(3,I)) * SXYZ(1,I)
+     PT23 = PT23 + (FXYZ(3,I) - FXYZNB(3,I)) * SXYZ(2,I)
   END DO
 
   RETURN

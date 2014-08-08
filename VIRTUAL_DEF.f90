@@ -12,8 +12,8 @@ USE VAR
 IMPLICIT NONE
 
 INTEGER :: I, J, K, TI, POS
-REAL*4 :: SUMTOTX, SUMTOTY, SUMTOTZ
-REAL*4 :: SPX, SPY, SPZ
+REAL*4, DIMENSION(3) :: SUMTOTXYZ
+REAL*4, DIMENSION(3) :: SPXYZ
 
 !Calculate centres of virtual sites
 DO I=1,NVIRTA
@@ -25,50 +25,48 @@ DO I=1,NVIRTA
    IF (VIRT_CENTER(I) .NE. 0)THEN !If using a functional site
       J = VIRT_CENTER(I)
 
-      RX(POS) = SX(J)
-      RY(POS) = SY(J)
-      RZ(POS) = SZ(J)
+      RXYZ(1,POS) = SXYZ(1,J)
+      RXYZ(2,POS) = SXYZ(2,J)
+      RXYZ(3,POS) = SXYZ(3,J)
 
-      SX(POS) = SX(J)
-      SY(POS) = SY(J)
-      SZ(POS) = SZ(J)
+      SXYZ(1,POS) = SXYZ(1,J)
+      SXYZ(2,POS) = SXYZ(2,J)
+      SXYZ(3,POS) = SXYZ(3,J)
    ELSE !Else using a COM
       TI = VITYPE(I)
-      SUMTOTX = 0.0D0
-      SUMTOTY = 0.0D0
-      SUMTOTZ = 0.0D0
+      SUMTOTXYZ(1) = 0.0D0
       !Finds COM
       DO J=1,VIRT_NUMATOMS(TI)
          K = VIRT_ATM_IND(I,J)
-         SUMTOTX = SUMTOTX + MASS(ITYPE(K))*SX(K)
-         SUMTOTY = SUMTOTY + MASS(ITYPE(K))*SY(K)
-         SUMTOTZ = SUMTOTZ + MASS(ITYPE(K))*SZ(K)
+         SUMTOTXYZ(1) = SUMTOTXYZ(1) + MASS(ITYPE(K))*SXYZ(1,K)
+         SUMTOTXYZ(2) = SUMTOTXYZ(2) + MASS(ITYPE(K))*SXYZ(2,K)
+         SUMTOTXYZ(3) = SUMTOTXYZ(3) + MASS(ITYPE(K))*SXYZ(3,K)
       END DO
 
-      RX(POS) = SUMTOTX*VIRT_INVMASS(TI)
-      RY(POS) = SUMTOTY*VIRT_INVMASS(TI)
-      RZ(POS) = SUMTOTZ*VIRT_INVMASS(TI)
+      RXYZ(1,POS) = SUMTOTXYZ(1)*VIRT_INVMASS(TI)
+      RXYZ(2,POS) = SUMTOTXYZ(2)*VIRT_INVMASS(TI)
+      RXYZ(3,POS) = SUMTOTXYZ(3)*VIRT_INVMASS(TI)
 
-      SX(POS) = RX(POS)
-      SY(POS) = RY(POS)
-      SZ(POS) = RZ(POS)
+      SXYZ(1,POS) = RXYZ(1,POS)
+      SXYZ(2,POS) = RXYZ(2,POS)
+      SXYZ(3,POS) = RXYZ(3,POS)
    END IF
 
-   IF ((RX(POS)> BOXX2).OR.(RX(POS) < -BOXX2) &
-        .OR.(RY(POS)> BOXY2) .OR.(RY(POS)< -BOXY2) &
-        .OR.(RZ(POS)> BOXZ2).OR.(RZ(POS)<-BOXZ2)) THEN
+   IF ((RXYZ(1,POS)> BOXX2).OR.(RXYZ(1,POS) < -BOXX2) &
+        .OR.(RXYZ(2,POS)> BOXY2) .OR.(RXYZ(2,POS)< -BOXY2) &
+        .OR.(RXYZ(3,POS)> BOXZ2).OR.(RXYZ(3,POS)<-BOXZ2)) THEN
 
-      RX(POS) = RX(POS)/BOXX2
-      RY(POS) = RY(POS)/BOXY2
-      RZ(POS) = RZ(POS)/BOXZ2
+      RXYZ(1,POS) = RXYZ(1,POS)/BOXX2
+      RXYZ(2,POS) = RXYZ(2,POS)/BOXY2
+      RXYZ(3,POS) = RXYZ(3,POS)/BOXZ2
 
-      SPX = RX(POS) - 2.0*INT(RX(POS)/2.0)
-      SPY = RY(POS) - 2.0*INT(RY(POS)/2.0)
-      SPZ = RZ(POS) - 2.0*INT(RZ(POS)/2.0)
+      SPXYZ(1) = RXYZ(1,POS) - 2.0*INT(RXYZ(1,POS)/2.0)
+      SPXYZ(2) = RXYZ(2,POS) - 2.0*INT(RXYZ(2,POS)/2.0)
+      SPXYZ(3) = RXYZ(3,POS) - 2.0*INT(RXYZ(3,POS)/2.0)
 
-      RX(POS) = (SPX - 2.0*INT(SPX))*BOXX2
-      RY(POS) = (SPY - 2.0*INT(SPY))*BOXY2
-      RZ(POS) = (SPZ - 2.0*INT(SPZ))*BOXZ2
+      RXYZ(1,POS) = (SPXYZ(1) - 2.0*INT(SPXYZ(1)))*BOXX2
+      RXYZ(2,POS) = (SPXYZ(2) - 2.0*INT(SPXYZ(2)))*BOXY2
+      RXYZ(3,POS) = (SPXYZ(3) - 2.0*INT(SPXYZ(3)))*BOXZ2
    END IF
 
 
