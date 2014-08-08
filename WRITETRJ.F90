@@ -58,9 +58,9 @@ SUBROUTINE WRITETRJ(TM)
   WRITE(113) NFRAME, NTRJ*NFRAME, NATOMS, TREAL
 
   !	... simulation cell unit vectors
-  BOX_X = BOXX
-  BOX_Y = BOXY
-  BOX_Z = BOXZ
+  BOX_X = BOX(1)
+  BOX_Y = BOX(2)
+  BOX_Z = BOX(3)
   WRITE(113) BOX_X, 0.0D00, 0.0D00, &
        0.0D00, BOX_Y, 0.0D00, &
        0.0D00, 0.0D00, BOX_Z
@@ -132,7 +132,7 @@ SUBROUTINE WRITE_RESTART(TM)
     WRITE(112,*)TITLE
     WRITE(112,*)'Time	',TREAL, '	(ps)'
     WRITE(112,*)'***** Box Length(X, Y, Z in nanometres) **'
-    WRITE(112,*)BOXX, BOXY, BOXZ
+    WRITE(112,*)BOX(1), BOX(2), BOX(3)
 
 9040 FORMAT (1X,I6,1X,I2,1X,I1,1X,3 (G21.14,1X))
 9030 FORMAT (70 ('*'),/,10 ('*'),&

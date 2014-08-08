@@ -34,7 +34,7 @@
 
     !$OMP PARALLEL DO DEFAULT(NONE) SCHEDULE(STATIC,1)&
     !$OMP& SHARED(N,B,NITEMS,INDEX_LIST,LIST,ITYPE,INBONDT,NNEBS)&
-    !$OMP& SHARED(RXYZ,BOXXINV,BOXYINV,BOXZINV,BOXX,BOXY,BOXZ,RCUTSQ)&
+    !$OMP& SHARED(RXYZ,BOXINV,BOX,RCUTSQ)&
     !$OMP& SHARED(BINNB,RNBOND,NBOND_FORCE,NBOND_POT,TYPE_LABEL)&
     !$OMP& PRIVATE(A,I,TI,J,TJ,TIJ,JNAB)&
     !$OMP& PRIVATE(FXYZ_I,RXYZ_I,RXYZ_IJ,RIJSQ,RIJ)&
@@ -44,13 +44,9 @@
     !$OMP& REDUCTION(+:FXYZ)
     DO A=1,N
        I = INDEX_LIST(A) !I is the index of atom being considered
-       RXYZ_I(1) = RXYZ(1,I)
-       RXYZ_I(2) = RXYZ(2,I)
-       RXYZ_I(3) = RXYZ(3,I)
+       RXYZ_I = RXYZ(:,I)
+       FXYZ_I = 0.0
 
-       FXYZ_I(1)=0.0D0
-       FXYZ_I(2)=0.0D0
-       FXYZ_I(3)=0.0D0
        TI = ITYPE(I)
 
        DO JNAB = 1, NNEBS(I)
@@ -58,15 +54,10 @@
           TJ = ITYPE(J)
           TIJ = INBONDT(TI,TJ)
 
-          RXYZ_IJ(1) = RXYZ_I(1) - RXYZ(1,J)
-          RXYZ_IJ(2) = RXYZ_I(2) - RXYZ(2,J)
-          RXYZ_IJ(3) = RXYZ_I(3) - RXYZ(3,J)
+          RXYZ_IJ(:) = RXYZ_I(:) - RXYZ(:,J)
+          RXYZ_IJ(:) = RXYZ_IJ(:) - ANINT(RXYZ_IJ(:) * BOXINV(:)) * BOX(:)
 
-          RXYZ_IJ(1) = RXYZ_IJ(1) - ANINT(RXYZ_IJ(1)*BOXXINV)*BOXX
-          RXYZ_IJ(2) = RXYZ_IJ(2) - ANINT(RXYZ_IJ(2)*BOXYINV)*BOXY
-          RXYZ_IJ(3) = RXYZ_IJ(3) - ANINT(RXYZ_IJ(3)*BOXZINV)*BOXZ
-
-          RIJSQ = RXYZ_IJ(1)*RXYZ_IJ(1) + RXYZ_IJ(2)*RXYZ_IJ(2) + RXYZ_IJ(3)*RXYZ_IJ(3)
+          RIJSQ = SUM(RXYZ_IJ(:) * RXYZ_IJ(:)) ! R(1)*R(1) + R(2)*R(2) + ..etc
 
           IF(RIJSQ .LT. RCUTSQ) THEN
              RIJ = SQRT(RIJSQ) 
@@ -93,13 +84,9 @@
                 V_NB(3) = V_NB(3) + VIJ
              END IF
 
-             FXYZ_I(1) = FXYZ_I(1) + FIJ * RXYZ_IJ(1)
-             FXYZ_I(2) = FXYZ_I(2) + FIJ * RXYZ_IJ(2)
-             FXYZ_I(3) = FXYZ_I(3) + FIJ * RXYZ_IJ(3)
+             FXYZ_I(:) = FXYZ_I(:) + FIJ * RXYZ_IJ(:)
 
-             FXYZ(1,J) = FXYZ(1,J) - FIJ * RXYZ_IJ(1)
-             FXYZ(2,J) = FXYZ(2,J) - FIJ * RXYZ_IJ(2)
-             FXYZ(3,J) = FXYZ(3,J) - FIJ * RXYZ_IJ(3)
+             FXYZ(:,J) = FXYZ(:,J) - FIJ * RXYZ_IJ(:)
 
              PT11 = PT11 + FIJ * RXYZ_IJ(1) * RXYZ_IJ(1)
              PT22 = PT22 + FIJ * RXYZ_IJ(2) * RXYZ_IJ(2)
@@ -112,9 +99,7 @@
           END IF !End if RIJSQ lt RCUTSQ	
        END DO !End loop over neighbours
 
-       FXYZ(1,I) = FXYZ(1,I) + FXYZ_I(1)
-       FXYZ(2,I) = FXYZ(2,I) + FXYZ_I(2)
-       FXYZ(3,I) = FXYZ(3,I) + FXYZ_I(3)
+       FXYZ(:,I) = FXYZ(:,I) + FXYZ_I(:)
     END DO !End loop over all items
     !$OMP END PARALLEL DO
 

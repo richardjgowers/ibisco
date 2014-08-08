@@ -15,7 +15,6 @@ SUBROUTINE NEW_FORCE()
 
   !Reset all forces and pressure
   FXYZ = 0.0
-
   FXYZNB = 0.0
 
   PT11 = 0.0
@@ -56,11 +55,10 @@ SUBROUTINE NEW_FORCE()
 #endif
   END IF
 
-  DO I=1,NATOMS
-     FXYZNB(1,I) = FXYZ(1,I)
-     FXYZNB(2,I) = FXYZ(2,I)
-     FXYZNB(3,I) = FXYZ(3,I)
+  DO I=1,NATOMS ! Could probably reduce this to a one liner?
+     FXYZNB(:,I) = FXYZ(:,I)
   END DO
+  !FXYZNB(:,1:NATOMS) = FXYZ(:,1:NATOMS)
 
 #ifdef TIMING_ON
   t_BONDED_FORCE(1) = OMP_GET_WTIME()

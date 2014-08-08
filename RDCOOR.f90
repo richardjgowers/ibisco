@@ -64,15 +64,11 @@ SUBROUTINE RDCOOR()
      READ (STRNGS(2),*) INITIME
   END IF
   READ(3,*)
-  READ(3,*, iostat=ios)BOXX, BOXY, BOXZ
+  READ(3,*, iostat=ios)BOX(1), BOX(2), BOX(3)
   IF (ios .NE. 0) CALL RDCOOR_ERROR()  
-  BOXXINV = 1.0D0 / BOXX
-  BOXYINV = 1.0D0 / BOXY
-  BOXZINV = 1.0D0 / BOXZ
 
-  BOXX2 = BOXX / 2.0D0
-  BOXY2 = BOXY / 2.0D0
-  BOXZ2 = BOXZ / 2.0D0
+  BOXINV(:) = 1.0 / BOX(:)
+  BOX2(:) = BOX(:) / 2.0
 
   READ (3,*)
   READ (3,*)
@@ -126,9 +122,7 @@ SUBROUTINE RDCOOR()
            END IF
         END IF
 
-        VXYZ(1,L) = VXYZ(1,L) * 1.e3 / VSCALE
-        VXYZ(2,L) = VXYZ(2,L) * 1.e3 / VSCALE 
-        VXYZ(3,L) = VXYZ(3,L) * 1.e3 / VSCALE 
+        VXYZ(:,L) = VXYZ(:,L) * 1.e3 / VSCALE
 
      END DO !102 		CONTINUE
   END DO !101     CONTINUE

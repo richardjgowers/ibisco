@@ -17,9 +17,6 @@
 ! IMAP = (ICELL ( IX, IY, IZ ) - 1 ) * 13 = 13
 ! so, the positions from 14 to 26 in the vector MAP will store the index of the neighbour of cell 2
 
-
-
-
 SUBROUTINE MAPS (MAP,MAPSIZE,NCELLX,NCELLY,NCELLZ)
 
   IMPLICIT NONE
@@ -59,23 +56,23 @@ SUBROUTINE MAPS (MAP,MAPSIZE,NCELLX,NCELLY,NCELLZ)
 
   END DO!50      CONTINUE
 
-        RETURN
-        END
+  RETURN
+END SUBROUTINE MAPS
 
 !       *******************************************************************
 !    ** STATEMENT FUNCTION TO GIVE CELL INDEX **
-      FUNCTION ICELL ( IX, IY, IZ,NCELLX, NCELLY, NCELLZ )
+FUNCTION ICELL ( IX, IY, IZ,NCELLX, NCELLY, NCELLZ )
 
-!      USE VAR
-      IMPLICIT NONE
-      
-      INTEGER, INTENT(IN) :: NCELLX, NCELLY, NCELLZ
-      INTEGER :: IX, IY, IZ, ICELL
-!       *******************************************************************
+  !      USE VAR
+  IMPLICIT NONE
 
-      ICELL = 1 + MOD ( IZ - 1 + NCELLZ, NCELLZ )     &
-                  + MOD ( IY - 1 + NCELLY, NCELLY ) * NCELLZ &
-                  + MOD ( IX - 1 + NCELLX, NCELLX ) * NCELLZ * NCELLY
+  INTEGER, INTENT(IN) :: NCELLX, NCELLY, NCELLZ
+  INTEGER :: IX, IY, IZ, ICELL
+  !       *******************************************************************
 
-      END
+  ICELL = 1 + MOD ( IZ - 1 + NCELLZ, NCELLZ )     &
+       + MOD ( IY - 1 + NCELLY, NCELLY ) * NCELLZ &
+       + MOD ( IX - 1 + NCELLX, NCELLX ) * NCELLZ * NCELLY
+
+END FUNCTION ICELL
 

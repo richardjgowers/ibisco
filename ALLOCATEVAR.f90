@@ -30,7 +30,7 @@ SUBROUTINE ALLOCATEVAR ()
   AV_V_OOP = 0.0
   AV_TEMP = 0.0
   AV_PRES = 0.0
-  AV_BOX = 0.0
+  AV_BOXSIZE = 0.0
   AV_DENS = 0.0
 
   !Force and position variables

@@ -43,25 +43,15 @@ SUBROUTINE MOVE()
      REG_MASS = MASS(TI)
      INV_MASS = INVMASS(TI)
 
-     VXYZ_I(1) = VXYZ(1,I)
-     VXYZ_I(2) = VXYZ(2,I)
-     VXYZ_I(3) = VXYZ(3,I)
+     VXYZ_I(:) = VXYZ(:,I)
 
-     VXYZ(1,I) = (VXYZ_I(1) + DT * FXYZ(1,I) * INV_MASS) * LCFAC_ATOM
-     VXYZ(2,I) = (VXYZ_I(2) + DT * FXYZ(2,I) * INV_MASS) * LCFAC_ATOM
-     VXYZ(3,I) = (VXYZ_I(3) + DT * FXYZ(3,I) * INV_MASS) * LCFAC_ATOM
+     VXYZ(:,I) = (VXYZ_I(:) + DT * FXYZ(:,I) * INV_MASS) * LCFAC_ATOM
 
-     SXYZ(1,I) = SXYZ(1,I) + DT * VXYZ(1,I)
-     SXYZ(2,I) = SXYZ(2,I) + DT * VXYZ(2,I)
-     SXYZ(3,I) = SXYZ(3,I) + DT * VXYZ(3,I)
+     SXYZ(:,I) = SXYZ(:,I) + DT * VXYZ(:,I)
 
-     VTXYZ(1,I) = 0.5 * (VXYZ(1,I) + VXYZ_I(1))
-     VTXYZ(2,I) = 0.5 * (VXYZ(2,I) + VXYZ_I(2))
-     VTXYZ(3,I) = 0.5 * (VXYZ(3,I) + VXYZ_I(3))
+     VTXYZ(:,I) = 0.5 * (VXYZ(:,I) + VXYZ_I(:))
 
-     VXYZ_I(1) = VTXYZ(1,I)
-     VXYZ_I(2) = VTXYZ(2,I)
-     VXYZ_I(3) = VTXYZ(3,I)
+     VXYZ_I(:) = VTXYZ(:,I)
   
      PT11K(1) = PT11K(1) + REG_MASS *VXYZ_I(1) * VXYZ_I(1)
      PT22K(1) = PT22K(1) + REG_MASS *VXYZ_I(2) * VXYZ_I(2)  
@@ -78,25 +68,15 @@ SUBROUTINE MOVE()
      REG_MASS = MASS(TI)
      INV_MASS = INVMASS(TI)
 
-     VXYZ_I(1) = VXYZ(1,I)
-     VXYZ_I(2) = VXYZ(2,I)
-     VXYZ_I(3) = VXYZ(3,I)
+     VXYZ_I(:) = VXYZ(:,I)
 
-     VXYZ(1,I) = (VXYZ_I(1) + DT * FXYZ(1,I) * INV_MASS) * LCFAC_BEAD
-     VXYZ(2,I) = (VXYZ_I(2) + DT * FXYZ(2,I) * INV_MASS) * LCFAC_BEAD
-     VXYZ(3,I) = (VXYZ_I(3) + DT * FXYZ(3,I) * INV_MASS) * LCFAC_BEAD
+     VXYZ(:,I) = (VXYZ_I(:) + DT * FXYZ(:,I) * INV_MASS) * LCFAC_BEAD
 
-     SXYZ(1,I) = SXYZ(1,I) + DT * VXYZ(1,I)
-     SXYZ(2,I) = SXYZ(2,I) + DT * VXYZ(2,I)
-     SXYZ(3,I) = SXYZ(3,I) + DT * VXYZ(3,I)
+     SXYZ(:,I) = SXYZ(:,I) + DT * VXYZ(:,I)
 
-     VTXYZ(1,I) = 0.5 * (VXYZ(1,I) + VXYZ_I(1))
-     VTXYZ(2,I) = 0.5 * (VXYZ(2,I) + VXYZ_I(2))
-     VTXYZ(3,I) = 0.5 * (VXYZ(3,I) + VXYZ_I(3))
+     VTXYZ(:,I) = 0.5 * (VXYZ(:,I) + VXYZ_I(:))
 
-     VXYZ_I(1) = VTXYZ(1,I)
-     VXYZ_I(2) = VTXYZ(2,I)
-     VXYZ_I(3) = VTXYZ(3,I)
+     VXYZ_I(:) = VTXYZ(:,I)
   
      PT11K(2) = PT11K(2) + REG_MASS * VXYZ_I(1) * VXYZ_I(1)
      PT22K(2) = PT22K(2) + REG_MASS * VXYZ_I(2) * VXYZ_I(2)  
@@ -123,7 +103,7 @@ SUBROUTINE MOVE()
   TEMP_ATOM = EK(1) * MKTEMP_ATOM
   TEMP_BEAD = EK(2) * MKTEMP_BEAD
 
-  VOLUME = BOXX * BOXY * BOXZ
+  VOLUME = BOX(1) * BOX(2) * BOX(3)
   INV_VOLUME = 1.0 / VOLUME
 
   PT11 = PT11 * INV_VOLUME

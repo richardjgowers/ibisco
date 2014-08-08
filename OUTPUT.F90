@@ -70,10 +70,10 @@ SUBROUTINE OUTPUT (I)
   WRITE (115, 100)'Pressure(xy):             ', PRES(5)*PSCALE, AV_PRES(5)*AV_PSCALE
   WRITE (115, 100)'Pressure(xz):             ', PRES(6)*PSCALE, AV_PRES(6)*AV_PSCALE
   WRITE (115, 100)'Pressure(yz):             ', PRES(7)*PSCALE, AV_PRES(7)*AV_PSCALE
-  WRITE (115, 100)'Box_volume:               ', BOX(1), AV_BOX(1)*INV_AV
-  WRITE (115, 100)'Box_length(x):            ', BOX(2), AV_BOX(2)*INV_AV
-  WRITE (115, 100)'Box_length(y):            ', BOX(3), AV_BOX(3)*INV_AV
-  WRITE (115, 100)'Box_length(z):            ', BOX(4), AV_BOX(4)*INV_AV
+  WRITE (115, 100)'Box_volume:               ', BOXSIZE(1), AV_BOXSIZE(1)*INV_AV
+  WRITE (115, 100)'Box_length(x):            ', BOXSIZE(2), AV_BOXSIZE(2)*INV_AV
+  WRITE (115, 100)'Box_length(y):            ', BOXSIZE(3), AV_BOXSIZE(3)*INV_AV
+  WRITE (115, 100)'Box_length(z):            ', BOXSIZE(4), AV_BOXSIZE(4)*INV_AV
   WRITE (115, 100)'Mass_density:             ', DENS * DSCALE, AV_DENS*INV_AV*DSCALE
   WRITE (115, 100)
   WRITE (115, 100)
@@ -93,7 +93,7 @@ SUBROUTINE OUTPUT (I)
   AV_V_OOP = 0.0
   AV_TEMP = 0.0
   AV_PRES = 0.0
-  AV_BOX = 0.0
+  AV_BOXSIZE = 0.0
   AV_DENS = 0.0
 
   RETURN

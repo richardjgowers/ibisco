@@ -30,14 +30,10 @@ SUBROUTINE DISTRIBUTE_VSFORCE()
      DO A=1,VIRT_NUMATOMS(TI)
         J = VIRT_ATM_IND(I,A)
         TJ = ITYPE(J)
-        FXYZ(1,J) = FXYZ(1,J) + FXYZ(1,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
-        FXYZ(2,J) = FXYZ(2,J) + FXYZ(2,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
-        FXYZ(3,J) = FXYZ(3,J) + FXYZ(3,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
+        FXYZ(:,J) = FXYZ(:,J) + FXYZ(:,VS_POS) * VIRT_MASSCOEFF(TI,TJ)
      END DO
      !Reset force on virtual site to 0 once distributed
-     FXYZ(1,VS_POS) = 0.0
-     FXYZ(2,VS_POS) = 0.0
-     FXYZ(3,VS_POS) = 0.0
+     FXYZ(:,VS_POS) = 0.0
   END DO
   !$OMP END PARALLEL DO
 

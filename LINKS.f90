@@ -13,9 +13,9 @@ SUBROUTINE LINKS(HEAD,MAXNUMCELL,INDEX_LIST,N,CELL,NCELLX, NCELLY, NCELLZ, LCLIS
   HEAD = 0
   DO A = 1,N
      I = INDEX_LIST(A)
-     JCELL = 1 + INT((RXYZ(1,I)*BOXXINV + 0.5D0)*NCELLX)*NCELLZ*NCELLY                     &
-          + INT((RXYZ(2,I)*BOXYINV + 0.5D0)*NCELLY)*NCELLZ              &
-          + INT((RXYZ(3,I)*BOXZINV + 0.5D0)*NCELLZ)
+     JCELL = 1 + INT((RXYZ(1,I) * BOXINV(1) + 0.5) * NCELLX) * NCELLZ * NCELLY &
+               + INT((RXYZ(2,I) * BOXINV(2) + 0.5) * NCELLY) * NCELLZ &
+               + INT((RXYZ(3,I) * BOXINV(3) + 0.5) * NCELLZ)
      LCLIST(A) = HEAD(JCELL)
      HEAD(JCELL) = A
      CELL(A) = JCELL

@@ -24,9 +24,7 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
      I = INDEX_LIST(A)
      NLIST = 0
 
-     RXYZ_I(1) = RXYZ(1,I)
-     RXYZ_I(2) = RXYZ(2,I)
-     RXYZ_I(3) = RXYZ(3,I)
+     RXYZ_I(:) = RXYZ(:,I)
 
      DO B=A+1,N
         J = INDEX_LIST(B)
@@ -49,14 +47,11 @@ SUBROUTINE NEW_NEIGHBOUR_NOLIST(N, INDEX_LIST, MAXNAB, LIST, RLIST)
         END IF
 
         IF(NONBOND .eq. 1) THEN
-           RXYZ_IJ(1)  = RXYZ_I(1) - RXYZ(1,J)
-           RXYZ_IJ(2)  = RXYZ_I(2) - RXYZ(2,J)
-           RXYZ_IJ(3)  = RXYZ_I(3) - RXYZ(3,J)
+           RXYZ_IJ(:)  = RXYZ_I(:) - RXYZ(:,J)
 
-           RXYZ_IJ(1) = RXYZ_IJ(1) - ANINT ( RXYZ_IJ(1) * BOXXINV ) * BOXX
-           RXYZ_IJ(2) = RXYZ_IJ(2) - ANINT ( RXYZ_IJ(2) * BOXYINV ) * BOXY
-           RXYZ_IJ(3) = RXYZ_IJ(3) - ANINT ( RXYZ_IJ(3) * BOXZINV ) * BOXZ
-           RIJSQ = RXYZ_IJ(1) * RXYZ_IJ(1) + RXYZ_IJ(2) * RXYZ_IJ(2) + RXYZ_IJ(3) * RXYZ_IJ(3)
+           RXYZ_IJ(:) = RXYZ_IJ(:) - ANINT(RXYZ_IJ(:) * BOXINV(:)) * BOX(:)
+
+           RIJSQ = SUM(RXYZ_IJ(:) * RXYZ_IJ(:))
 
            IF (RIJSQ.LT.RLISTSQ) THEN
               NLIST = NLIST +1

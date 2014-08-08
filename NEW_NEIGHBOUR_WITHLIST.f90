@@ -29,23 +29,21 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST(INDEX_LIST,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
   !***********LOOP IN THE CELL WHERE ATOM I IS **************************
   !$OMP PARALLEL DO DEFAULT(NONE), SCHEDULE(STATIC,1)&
   !$OMP& SHARED(N,INDEX_LIST,CELL,RXYZ,LCLIST,CONNECTIONS,CONNECTED_TO,IBRDESCR,NATOMS)&
-  !$OMP& SHARED(BOXX,BOXY,BOXZ,BOXXINV,BOXYINV,BOXZINV,RLISTSQ,LIST,MAXNAB,MAP,HEAD, NNEBS)&
+  !$OMP& SHARED(BOX,BOXINV,RLISTSQ,LIST,MAXNAB,MAP,HEAD, NNEBS)&
   !$OMP& PRIVATE(A,I,NLIST,JCELL,RXYZ_I,B,J,NONBOND,C,D,RXYZ_IJ,RIJSQ,JCELL0,NABOR)
   DO A = 1,N
      I = INDEX_LIST(A)
      NLIST = 0 !Counter for number of neighbours this atom has
 
      JCELL = CELL(A)
-     RXYZ_I(1) = RXYZ(1,I)
-     RXYZ_I(2) = RXYZ(2,I)
-     RXYZ_I(3) = RXYZ(3,I)
+
+     RXYZ_I(:) = RXYZ(:,I)
   
      B = LCLIST(A)
      DO
         IF(B .eq. 0) EXIT !If reached end of list
         J = INDEX_LIST(B) !Fetch real index of B
 
-        !           if(abs(ip-jp) .le. contactA)then
         NONBOND=1
         IF(CONNECTIONS(I) .gt. 0) THEN !If I has connections:
            DO C=1,CONNECTIONS(I) !Connections is the number of connected atoms to I
@@ -63,14 +61,10 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST(INDEX_LIST,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
         END IF
 
         IF (NONBOND.EQ.1) THEN
-           RXYZ_IJ(1) = RXYZ_I(1) - RXYZ(1,J)
-           RXYZ_IJ(2) = RXYZ_I(2) - RXYZ(2,J)
-           RXYZ_IJ(3) = RXYZ_I(3) - RXYZ(3,J)
+           RXYZ_IJ(:) = RXYZ_I(:) - RXYZ(:,J)
 
-           RXYZ_IJ(1) = RXYZ_IJ(1) - ANINT(RXYZ_IJ(1)*BOXXINV)*BOXX
-           RXYZ_IJ(2) = RXYZ_IJ(2) - ANINT(RXYZ_IJ(2)*BOXYINV)*BOXY
-           RXYZ_IJ(3) = RXYZ_IJ(3) - ANINT(RXYZ_IJ(3)*BOXZINV)*BOXZ
-           RIJSQ = RXYZ_IJ(1)*RXYZ_IJ(1) + RXYZ_IJ(2)*RXYZ_IJ(2) + RXYZ_IJ(3)*RXYZ_IJ(3)
+           RXYZ_IJ(:) = RXYZ_IJ(:) - ANINT(RXYZ_IJ(:) * BOXINV(:)) * BOX(:)
+           RIJSQ = SUM(RXYZ_IJ(:) * RXYZ_IJ(:))
 
            IF (RIJSQ.LT.RLISTSQ) THEN
               NLIST = NLIST + 1
@@ -90,10 +84,7 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST(INDEX_LIST,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
         DO
            IF(B .eq. 0) EXIT
            J = INDEX_LIST(B)
-           !              if(abs(ip-jp) .le. contactA)then
-           !              else
-           !                 NONBOND=1
-           !              end if
+
            NONBOND=1
            IF(CONNECTIONS(I) .gt. 0) THEN !If I has connections:
               DO C=1,CONNECTIONS(I)
@@ -111,14 +102,10 @@ SUBROUTINE NEW_NEIGHBOUR_WITHLIST(INDEX_LIST,CELL,LCLIST,N,RLIST,LIST,MAXNAB &
            END IF
 
            IF (NONBOND.EQ.1) THEN
-              RXYZ_IJ(1) = RXYZ_I(1) - RXYZ(1,J)
-              RXYZ_IJ(2) = RXYZ_I(2) - RXYZ(2,J) 
-              RXYZ_IJ(3) = RXYZ_I(3) - RXYZ(3,J)
+              RXYZ_IJ(:) = RXYZ_I(:) - RXYZ(:,J)
 
-              RXYZ_IJ(1) = RXYZ_IJ(1) - ANINT(RXYZ_IJ(1)*BOXXINV)*BOXX
-              RXYZ_IJ(2) = RXYZ_IJ(2) - ANINT(RXYZ_IJ(2)*BOXYINV)*BOXY
-              RXYZ_IJ(3) = RXYZ_IJ(3) - ANINT(RXYZ_IJ(3)*BOXZINV)*BOXZ
-              RIJSQ = RXYZ_IJ(1)*RXYZ_IJ(1) + RXYZ_IJ(2)*RXYZ_IJ(2) + RXYZ_IJ(3)*RXYZ_IJ(3)
+              RXYZ_IJ(:) = RXYZ_IJ(:) - ANINT(RXYZ_IJ(:) * BOXINV(:)) * BOX(:)
+              RIJSQ = SUM(RXYZ_IJ(:) * RXYZ_IJ(:))
 
               IF (RIJSQ.LT.RLISTSQ) THEN
                  NLIST = NLIST + 1

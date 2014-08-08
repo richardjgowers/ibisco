@@ -116,9 +116,7 @@ SUBROUTINE MTS_FORCE(STEPNO)
   CALL NONBONDED_FORCE(NUMATOMS, ATOM, MAXNAB_ATOM, LIST_ATOM, RCUT_ATOM, RCUTSQ_ATOM)
 
   DO I = 1, NATOMS
-     FXYZNB(1,I) = FXYZ(1,I)
-     FXYZNB(2,I) = FXYZ(2,I)
-     FXYZNB(3,I) = FXYZ(3,I)
+     FXYZNB(:,I) = FXYZ(:,I)
   END DO
 
   CALL BONDED_FORCE()
@@ -140,8 +138,6 @@ END SUBROUTINE MTS_FORCE
 !> @brief Records the coarse grained force from an explicit MTS step.
 SUBROUTINE MTS_SAVEFORCE(I, BEAD, FXYZ, NITEMS, MTS_FXYZ, NCOARSE)
 
-  USE VAR, ONLY : RKIND
-
   IMPLICIT NONE
 
   INTEGER, INTENT(IN) :: I !< Mod of current MTS step
@@ -154,9 +150,7 @@ SUBROUTINE MTS_SAVEFORCE(I, BEAD, FXYZ, NITEMS, MTS_FXYZ, NCOARSE)
 
   DO A = 1, NCOARSE
      ATOM_ID = BEAD(A)
-     MTS_FXYZ(1,I, A) = FXYZ(1,ATOM_ID)
-     MTS_FXYZ(2,I, A) = FXYZ(2,ATOM_ID)
-     MTS_FXYZ(3,I, A) = FXYZ(3,ATOM_ID)
+     MTS_FXYZ(:,I,A) = FXYZ(:,ATOM_ID)
   END DO
   
   RETURN
@@ -165,8 +159,6 @@ END SUBROUTINE MTS_SAVEFORCE
 
 !> @brief Generates approximated coarse grained forces for MTS steps.
 SUBROUTINE MTS_APPROX(I, BEAD, FXYZ, NITEMS, MTS_FXYZ, NCOARSE)
-
-  USE VAR, ONLY : RKIND
 
   IMPLICIT NONE
 
@@ -181,9 +173,7 @@ SUBROUTINE MTS_APPROX(I, BEAD, FXYZ, NITEMS, MTS_FXYZ, NCOARSE)
   DO A = 1, NCOARSE
      ATOM_ID = BEAD(A)
      ! Forwards approx
-     FXYZ(1,ATOM_ID) = MTS_FXYZ(1,3,A) + (I-3) * 0.5 * (MTS_FXYZ(1,3,A) - MTS_FXYZ(1,1,A)) 
-     FXYZ(2,ATOM_ID) = MTS_FXYZ(2,3,A) + (I-3) * 0.5 * (MTS_FXYZ(2,3,A) - MTS_FXYZ(2,1,A)) 
-     FXYZ(3,ATOM_ID) = MTS_FXYZ(3,3,A) + (I-3) * 0.5 * (MTS_FXYZ(3,3,A) - MTS_FXYZ(3,1,A)) 
+     FXYZ(:,ATOM_ID) = MTS_FXYZ(:,3,A) + (I-3) * 0.5 * (MTS_FXYZ(:,3,A) - MTS_FXYZ(:,1,A)) 
   END DO
 
   RETURN
@@ -200,9 +190,7 @@ SUBROUTINE MTS_SAVEAUXS(I)
 
   INTEGER, INTENT(IN) :: I !< The current mod of the MTS step (1, 2, or 3 here)
   
-  MTS_V_NB(I, 1) = V_NB(1)
-  MTS_V_NB(I, 2) = V_NB(2)
-  MTS_V_NB(I, 3) = V_NB(3)
+  MTS_V_NB(I,:) = V_NB(:)
 
   MTS_PT11(I) = PT11
   MTS_PT22(I) = PT22
@@ -223,9 +211,7 @@ SUBROUTINE MTS_LOADAUXS(I)
 
   INTEGER, INTENT(IN) :: I
 
-  V_NB(1) = MTS_V_NB(3, 1) + (I-3) * 0.5 * (MTS_V_NB(3, 1) - MTS_V_NB(1, 1))
-  V_NB(2) = MTS_V_NB(3, 2) + (I-3) * 0.5 * (MTS_V_NB(3, 2) - MTS_V_NB(1, 2))
-  V_NB(3) = MTS_V_NB(3, 3) + (I-3) * 0.5 * (MTS_V_NB(3, 3) - MTS_V_NB(1, 3))
+  V_NB(:) = MTS_V_NB(3,:) + (I-3) * 0.5 * (MTS_V_NB(3,:) - MTS_V_NB(1,:))
 
   PT11 = MTS_PT11(3) + (I-3) * 0.5 * (MTS_PT11(3) - MTS_PT11(1))
   PT22 = MTS_PT22(3) + (I-3) * 0.5 * (MTS_PT22(3) - MTS_PT22(1))
