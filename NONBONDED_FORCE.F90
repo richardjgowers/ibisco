@@ -44,11 +44,12 @@
     !$OMP& REDUCTION(+:FXYZ)
     DO A=1,N
        I = INDEX_LIST(A) !I is the index of atom being considered
-       RXYZ_I = RXYZ(:,I)
-       FXYZ_I = 0.0
+       RXYZ_I(:) = RXYZ(:,I)
+       FXYZ_I(:) = 0.0
 
        TI = ITYPE(I)
-
+       
+       !DIR$ IVDEP
        DO JNAB = 1, NNEBS(I)
           J = LIST(JNAB,A)
           TJ = ITYPE(J)
@@ -62,9 +63,9 @@
           IF(RIJSQ .LT. RCUTSQ) THEN
              RIJ = SQRT(RIJSQ) 
 
-             NI = INT(RIJ/BINNB(TIJ))
+             NI = INT(RIJ / BINNB(TIJ))
 
-             ALPHA = (RIJ - RNBOND(NI,TIJ))/BINNB(TIJ)
+             ALPHA = (RIJ - RNBOND(NI,TIJ)) / BINNB(TIJ)
 
              FIJ = NBOND_FORCE(NI,TIJ)*(1.0 - ALPHA) &
                   + NBOND_FORCE(NI+1,TIJ)*ALPHA
