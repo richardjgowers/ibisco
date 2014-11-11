@@ -43,8 +43,8 @@ F90 = gfortran
 #F90FLAGS  = -g -pg
 #*****************************************
 #Fast ifort options
-#F90FLAGS = -openmp -openmp-report1 -O2
-#LDFLAGS = -openmp -O2 
+#F90FLAGS = -openmp -O3 -xAVX -fno-alias -fast
+#LDFLAGS = -openmp -O3 -xAVX -fno-alias -fast
 #Debugging with gfortran
 #F90FLAGS = -pg -fbounds-check -fbacktrace -O0 -fopenmp
 #LDFLAGS = -g -pg -fbounds-check -fbacktrace -O0 -fopenmp

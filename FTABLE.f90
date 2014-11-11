@@ -57,12 +57,12 @@ SUBROUTINE FTABLE ()
   !	MAKE TABLE FORCE FOR NON-BONDED INTERACTIONS
 
   DO I = 1, NNBTYPE
-     NBOND_FORCE(1,I) = -(NBOND_POT(2,I) - NBOND_POT(1,I))/BINNB(I)/RNBOND(1,I)
-     NBOND_FORCE(0,I) = NBOND_FORCE(1,I)
-     DO J = 2, NDATNB(I) - 1 
+!     NBOND_FORCE(1,I) = -(NBOND_POT(2,I) - NBOND_POT(1,I))/BINNB(I)/RNBOND(1,I)
+     DO J = 1, NDATNB(I)
         NBOND_FORCE(J,I) = -(NBOND_POT(J+1,I) - NBOND_POT(J-1,I))/BINNB(I)/RNBOND(J,I)/2.0D0
      END DO
-     NBOND_FORCE(NDATNB(I),I) = 0.0D0
+     NBOND_FORCE(0,I) = NBOND_FORCE(1,I)
+!     NBOND_FORCE(NDATNB(I),I) = 0.0D0
 
      !Shift forces towards end of cutoff to make smooth
      !     RAMP_SIZE = 0.1 !Length of potential to shift
